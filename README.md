@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GameHub & Services Ecosystem
 
-## Getting Started
+Plataforma web completa para la industria del videojuego. Proyecto académico de Ingeniería del Software.
 
-First, run the development server:
+## Descripción
+
+GameHub centraliza noticias, rankings de videojuegos, calendario de eventos, contenido multimedia y espacios de opinión en una única plataforma web moderna y responsive.
+
+## Stack Tecnológico
+
+| Capa | Tecnología |
+|------|------------|
+| Frontend | Next.js 16 + React 19 + TypeScript |
+| Estilos | Tailwind CSS 4 |
+| UI Components | shadcn/ui + Radix UI |
+| Backend | Next.js API Routes |
+| Base de datos | Supabase (PostgreSQL) |
+| Autenticación | NextAuth.js v5 + Supabase Auth |
+| Validación | Zod |
+| Internacionalización | next-intl |
+
+## Requisitos Funcionales Implementados
+
+- **RF-01**: Sistema de autenticación con 4 roles (Admin, Redactor, Colaborador, Suscriptor)
+- **RF-02**: Panel de usuario con funciones específicas por rol
+- **RF-03**: Catálogo de videojuegos con rankings (nota prensa/comunidad)
+- **RF-04**: Módulo de noticias y actualidad
+- **RF-05**: Blog de opinión con sistema de comentarios
+- **RF-06**: Hub multimedia (videos, streams, trailers)
+- **RF-07**: Agenda de eventos y lanzamientos
+- **RF-08**: Página del equipo de redacción
+- **RF-09**: Formulario de contacto
+- **RF-10**: Soporte ES/EN (estructura i18n lista)
+- **RF-11**: Diseño responsive (mobile-first)
+
+## Estructura del Proyecto
+
+```
+├── app/                    # Rutas de Next.js App Router
+│   ├── api/               # API routes
+│   ├── login/             # Página de autenticación
+│   ├── dashboard/         # Panel de usuario
+│   ├── games/             # Catálogo de juegos
+│   ├── news/              # Noticias
+│   ├── blog/              # Blog de opinión
+│   ├── multimedia/        # Hub multimedia
+│   ├── events/            # Calendario de eventos
+│   ├── team/              # Equipo de redacción
+│   ├── contact/           # Formulario de contacto
+│   └── page.tsx           # Landing page
+├── components/ui/         # Componentes reutilizables
+├── lib/                   # Utilidades y clientes
+│   ├── supabase.ts        # Cliente Supabase + tipos
+│   └── utils.ts           # Utilidades (cn, etc)
+├── types/                 # Tipos globales
+├── messages/              # Traducciones i18n
+├── supabase/              # Schema SQL
+└── middleware.ts          # Autenticación y roles
+```
+
+## Configuración de Supabase
+
+1. Crear proyecto en [Supabase](https://supabase.com)
+2. Ejecutar el schema SQL en `supabase/schema.sql`
+3. Configurar variables de entorno:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+NEXT_PUBLIC_SUPABASE_URL=tu_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key
+SUPABASE_SERVICE_ROLE_KEY=tu_service_role_key
+NEXTAUTH_SECRET=secreto_random
+NEXTAUTH_URL=http://localhost:3000
+```
+
+## Instalación y Desarrollo
+
+```bash
+# Instalar dependencias
+bun install
+
+# Iniciar servidor de desarrollo
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Roles de Usuario
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Rol | Permisos |
+|-----|----------|
+| **Admin** | Gestión completa: usuarios, mensajes, configuración |
+| **Redactor** | Crear noticias, gestionar juegos, multimedia, eventos |
+| **Colaborador** | Escribir en el blog de opinión |
+| **Suscriptor** | Comentar en posts, editar perfil |
 
-## Learn More
+## Seguridad Implementada
 
-To learn more about Next.js, take a look at the following resources:
+- Autenticación JWT con NextAuth.js
+- Row Level Security (RLS) en Supabase
+- Validación de formularios con Zod
+- Middleware de protección de rutas por rol
+- Protección contra XSS (escapado automático de React)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Licencia
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Proyecto académico - Ingeniería del Software 2025-2026

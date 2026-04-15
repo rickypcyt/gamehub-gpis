@@ -1,0 +1,79 @@
+{
+  "nav": {
+    "news": "News",
+    "games": "Games",
+    "blog": "Blog",
+    "multimedia": "Multimedia",
+    "events": "Events",
+    "team": "Team",
+    "login": "Sign In",
+    "logout": "Sign Out"
+  },
+  "home": {
+    "hero": {
+      "title": "Your gaming world,",
+      "highlight": "centralized",
+      "description": "News, rankings, events and community. Everything you need to stay up to date in the gaming industry.",
+      "ctaGames": "Explore games",
+      "ctaNews": "Latest news"
+    },
+    "features": {
+      "news": {
+        "title": "Real-time news",
+        "description": "Stay informed with the latest gaming industry updates."
+      },
+      "rankings": {
+        "title": "Game rankings",
+        "description": "The best video games in history according to press and community."
+      },
+      "multimedia": {
+        "title": "Multimedia hub",
+        "description": "Videos, streams and trailers from your favorite games."
+      },
+      "events": {
+        "title": "Events calendar",
+        "description": "Don't miss any release, trade show or convention."
+      },
+      "blog": {
+        "title": "Opinion blog",
+        "description": "Analysis and opinions from prominent industry figures."
+      },
+      "community": {
+        "title": "Community",
+        "description": "Join comments and connect with other gamers."
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "GameHub",
+      "subtitle": "Sign in to your account",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "loading": "Signing in...",
+      "noAccount": "Don't have an account? Contact the administrator",
+      "error": "Invalid credentials"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "stats": {
+      "role": "Role",
+      "email": "Email",
+      "name": "Name",
+      "memberSince": "Member since"
+    },
+    "roles": {
+      "admin": "Administrator",
+      "redactor": "Editor",
+      "colaborador": "Contributor",
+      "suscriptor": "Subscriber"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 GameHub. Academic project.",
+    "contact": "Contact",
+    "team": "Team"
+  }
+}

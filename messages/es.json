@@ -1,0 +1,79 @@
+{
+  "nav": {
+    "news": "Noticias",
+    "games": "Juegos",
+    "blog": "Blog",
+    "multimedia": "Multimedia",
+    "events": "Eventos",
+    "team": "Equipo",
+    "login": "Entrar",
+    "logout": "Salir"
+  },
+  "home": {
+    "hero": {
+      "title": "Tu mundo gaming,",
+      "highlight": "centralizado",
+      "description": "Noticias, rankings, eventos y comunidad. Todo lo que necesitas para estar al día en la industria del videojuego.",
+      "ctaGames": "Explorar juegos",
+      "ctaNews": "Últimas noticias"
+    },
+    "features": {
+      "news": {
+        "title": "Noticias en tiempo real",
+        "description": "Mantente informado con las últimas novedades del sector gaming."
+      },
+      "rankings": {
+        "title": "Rankings de juegos",
+        "description": "Los mejores videojuegos de la historia según prensa y comunidad."
+      },
+      "multimedia": {
+        "title": "Hub multimedia",
+        "description": "Videos, streams y trailers de tus juegos favoritos."
+      },
+      "events": {
+        "title": "Agenda de eventos",
+        "description": "No te pierdas ningún lanzamiento, feria o convención."
+      },
+      "blog": {
+        "title": "Blog de opinión",
+        "description": "Análisis y opiniones de figuras destacadas del sector."
+      },
+      "community": {
+        "title": "Comunidad",
+        "description": "Participa en comentarios y conecta con otros gamers."
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "GameHub",
+      "subtitle": "Inicia sesión en tu cuenta",
+      "email": "Email",
+      "password": "Contraseña",
+      "submit": "Entrar",
+      "loading": "Entrando...",
+      "noAccount": "¿No tienes cuenta? Contacta al administrador",
+      "error": "Credenciales inválidas"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "stats": {
+      "role": "Rol",
+      "email": "Email",
+      "name": "Nombre",
+      "memberSince": "Miembro desde"
+    },
+    "roles": {
+      "admin": "Administrador",
+      "redactor": "Redactor",
+      "colaborador": "Colaborador",
+      "suscriptor": "Suscriptor"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 GameHub. Proyecto académico.",
+    "contact": "Contacto",
+    "team": "Equipo"
+  }
+}
