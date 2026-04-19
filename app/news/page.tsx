@@ -1,16 +1,17 @@
+import { ArrowLeft, Calendar, Eye, Newspaper } from "lucide-react";
+
 import Link from "next/link";
-import { createClientServer } from "@/lib/supabase";
-import { Newspaper, ArrowLeft, Eye, Calendar } from "lucide-react";
-import type { NewsPost } from "@/lib/supabase";
+import type { NewsPost } from "@/lib/neon";
+import { query } from "@/lib/neon";
 
 export default async function NewsPage() {
-  const supabase = await createClientServer();
-
-  const { data: news } = await supabase
-    .from("news_posts")
-    .select("*, author:profiles(name)")
-    .eq("published", true)
-    .order("created_at", { ascending: false });
+  const news = await query<NewsPost & { author_name?: string }>(
+    `SELECT news_posts.*, profiles.name as author_name 
+     FROM news_posts 
+     LEFT JOIN profiles ON news_posts.author_id = profiles.id 
+     WHERE news_posts.published = true 
+     ORDER BY news_posts.created_at DESC`
+  );
 
   const featured = news?.find((n) => n.featured);
   const regular = news?.filter((n) => !n.featured);
@@ -100,7 +101,7 @@ function FeaturedNews({ post }: { post: NewsPost }) {
   );
 }
 
-function NewsCard({ post }: { post: NewsPost }) {
+function NewsCard({ post }: { post: NewsPost & { author_name?: string } }) {
   return (
     <Link
       href={`/news/${post.slug}`}
@@ -127,7 +128,7 @@ function NewsCard({ post }: { post: NewsPost }) {
           {post.excerpt}
         </p>
         <div className="mt-4 flex items-center justify-between text-xs text-zinc-500">
-          <span>{post.author?.name || "Redacción"}</span>
+          <span>{post.author_name || "Redacción"}</span>
           <span>{new Date(post.created_at).toLocaleDateString("es-ES")}</span>
         </div>
       </div>

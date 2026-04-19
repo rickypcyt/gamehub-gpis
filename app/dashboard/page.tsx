@@ -11,8 +11,9 @@ import {
 } from "lucide-react";
 
 import Link from "next/link";
+import type { Profile } from "@/lib/neon";
 import { auth } from "@/auth";
-import { createClientServer } from "@/lib/supabase";
+import { queryOne } from "@/lib/neon";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
@@ -22,14 +23,11 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const supabase = await createClientServer();
-  
   // Obtener perfil completo
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", session.user.id)
-    .single();
+  const profile = await queryOne<Profile>(
+    "SELECT * FROM profiles WHERE id = $1",
+    [session.user.id]
+  );
 
   const role = session.user.role || "suscriptor";
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createClientAdmin } from "@/lib/supabase";
+import { query } from "@/lib/neon";
 import { z } from "zod";
 
 const contactSchema = z.object({
@@ -24,24 +24,12 @@ export async function POST(req: NextRequest) {
 
     const { name, email, subject, message } = parsed.data;
 
-    // Usar cliente admin para insertar mensajes (no requiere autenticación)
-    const supabase = createClientAdmin();
-
-    const { error } = await supabase.from("contact_messages").insert({
-      name,
-      email,
-      subject,
-      message,
-      read: false,
-    });
-
-    if (error) {
-      console.error("Error insertando mensaje:", error);
-      return NextResponse.json(
-        { error: "Error al guardar el mensaje" },
-        { status: 500 }
-      );
-    }
+    // Insertar mensaje en Neon
+    await query(
+      `INSERT INTO contact_messages (name, email, subject, message, read) 
+       VALUES ($1, $2, $3, $4, false)`,
+      [name, email, subject, message]
+    );
 
     return NextResponse.json(
       { success: true, message: "Mensaje enviado correctamente" },

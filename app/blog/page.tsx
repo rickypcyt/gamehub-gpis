@@ -1,16 +1,19 @@
+import { ArrowLeft, MessageSquare, Users } from "lucide-react";
+
+import type { BlogPost } from "@/lib/neon";
 import Link from "next/link";
-import { createClientServer } from "@/lib/supabase";
-import { Users, ArrowLeft, MessageSquare, Calendar } from "lucide-react";
-import type { BlogPost } from "@/lib/supabase";
+import { query } from "@/lib/neon";
 
 export default async function BlogPage() {
-  const supabase = await createClientServer();
-
-  const { data: posts } = await supabase
-    .from("blog_posts")
-    .select("*, author:profiles(name, avatar_url)")
-    .eq("published", true)
-    .order("created_at", { ascending: false });
+  const posts = await query<
+    BlogPost & { author_name?: string; author_avatar_url?: string }
+  >(
+    `SELECT blog_posts.*, profiles.name as author_name, profiles.avatar_url as author_avatar_url 
+     FROM blog_posts 
+     LEFT JOIN profiles ON blog_posts.author_id = profiles.id 
+     WHERE blog_posts.published = true 
+     ORDER BY blog_posts.created_at DESC`
+  );
 
   return (
     <div className="min-h-screen bg-zinc-950">
@@ -53,15 +56,15 @@ export default async function BlogPage() {
   );
 }
 
-function BlogCard({ post }: { post: BlogPost }) {
+function BlogCard({ post }: { post: BlogPost & { author_name?: string; author_avatar_url?: string } }) {
   return (
     <article className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 transition hover:border-violet-500/50">
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-500/10 text-violet-500">
-          {post.author?.avatar_url ? (
+          {post.author_avatar_url ? (
             <img
-              src={post.author.avatar_url}
-              alt={post.author.name || ""}
+              src={post.author_avatar_url}
+              alt={post.author_name || ""}
               className="h-full w-full rounded-full object-cover"
             />
           ) : (
@@ -69,7 +72,7 @@ function BlogCard({ post }: { post: BlogPost }) {
           )}
         </div>
         <div>
-          <p className="font-medium text-white">{post.author?.name || "Colaborador"}</p>
+          <p className="font-medium text-white">{post.author_name || "Colaborador"}</p>
           <p className="text-xs text-zinc-500">
             {new Date(post.created_at).toLocaleDateString("es-ES")}
           </p>

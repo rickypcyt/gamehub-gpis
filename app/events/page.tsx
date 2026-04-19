@@ -1,16 +1,13 @@
+import { ArrowLeft, Calendar, ExternalLink, MapPin } from "lucide-react";
+
+import type { Event } from "@/lib/neon";
 import Link from "next/link";
-import { createClientServer } from "@/lib/supabase";
-import { Calendar, ArrowLeft, MapPin, ExternalLink } from "lucide-react";
-import type { Event } from "@/lib/supabase";
+import { query } from "@/lib/neon";
 
 export default async function EventsPage() {
-  const supabase = await createClientServer();
-
-  const { data: events } = await supabase
-    .from("events")
-    .select("*")
-    .gte("start_date", new Date().toISOString())
-    .order("start_date", { ascending: true });
+  const events = await query<Event>(
+    "SELECT * FROM events WHERE start_date >= NOW() ORDER BY start_date ASC"
+  );
 
   const launches = events?.filter((e) => e.type === "launch");
   const conventions = events?.filter((e) => e.type === "convention");

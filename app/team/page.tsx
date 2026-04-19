@@ -1,17 +1,14 @@
+import { ArrowLeft, Newspaper, Users } from "lucide-react";
+
 import Link from "next/link";
-import { createClientServer } from "@/lib/supabase";
-import { Users, ArrowLeft, Newspaper } from "lucide-react";
-import type { Profile } from "@/lib/supabase";
+import type { Profile } from "@/lib/neon";
+import { query } from "@/lib/neon";
 
 export default async function TeamPage() {
-  const supabase = await createClientServer();
-
   // Obtener redactores y colaboradores
-  const { data: team } = await supabase
-    .from("profiles")
-    .select("*")
-    .in("role", ["redactor", "colaborador"])
-    .order("created_at", { ascending: false });
+  const team = await query<Profile>(
+    "SELECT * FROM profiles WHERE role IN ('redactor', 'colaborador') ORDER BY created_at DESC"
+  );
 
   const redactores = team?.filter((p) => p.role === "redactor");
   const colaboradores = team?.filter((p) => p.role === "colaborador");

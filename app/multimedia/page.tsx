@@ -1,15 +1,13 @@
+import { ArrowLeft, Play, Tv, Video } from "lucide-react";
+
 import Link from "next/link";
-import { createClientServer } from "@/lib/supabase";
-import { Video, ArrowLeft, Play, Youtube, Tv } from "lucide-react";
-import type { Multimedia } from "@/lib/supabase";
+import type { Multimedia } from "@/lib/neon";
+import { query } from "@/lib/neon";
 
 export default async function MultimediaPage() {
-  const supabase = await createClientServer();
-
-  const { data: items } = await supabase
-    .from("multimedia")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const items = await query<Multimedia>(
+    "SELECT * FROM multimedia ORDER BY created_at DESC"
+  );
 
   const videos = items?.filter((i) => i.type === "video");
   const streams = items?.filter((i) => i.type === "stream");
@@ -69,7 +67,7 @@ export default async function MultimediaPage() {
         {videos && videos.length > 0 && (
           <section className="mt-12">
             <h2 className="mb-6 text-xl font-bold text-white flex items-center gap-2">
-              <Youtube className="h-5 w-5 text-red-600" />
+              <Tv className="h-5 w-5 text-red-600" />
               Videos destacados
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

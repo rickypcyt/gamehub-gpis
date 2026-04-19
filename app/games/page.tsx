@@ -1,15 +1,13 @@
+import { ArrowLeft, Calendar, Star, Trophy } from "lucide-react";
+
+import type { Game } from "@/lib/neon";
 import Link from "next/link";
-import { createClientServer } from "@/lib/supabase";
-import { Trophy, Star, Calendar, ArrowLeft } from "lucide-react";
-import type { Game } from "@/lib/supabase";
+import { query } from "@/lib/neon";
 
 export default async function GamesPage() {
-  const supabase = await createClientServer();
-  
-  const { data: games } = await supabase
-    .from("games")
-    .select("*")
-    .order("press_score", { ascending: false });
+  const games = await query<Game>(
+    "SELECT * FROM games ORDER BY press_score DESC NULLS LAST"
+  );
 
   return (
     <div className="min-h-screen bg-zinc-950">

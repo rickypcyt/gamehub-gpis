@@ -14,8 +14,8 @@ GameHub centraliza noticias, rankings de videojuegos, calendario de eventos, con
 | Estilos | Tailwind CSS 4 |
 | UI Components | shadcn/ui + Radix UI |
 | Backend | Next.js API Routes |
-| Base de datos | Supabase (PostgreSQL) |
-| Autenticación | NextAuth.js v5 + Supabase Auth |
+| Base de datos | Neon (PostgreSQL) |
+| Autenticación | NextAuth.js v5 + bcrypt |
 | Validación | Zod |
 | Internacionalización | next-intl |
 
@@ -50,24 +50,22 @@ GameHub centraliza noticias, rankings de videojuegos, calendario de eventos, con
 │   └── page.tsx           # Landing page
 ├── components/ui/         # Componentes reutilizables
 ├── lib/                   # Utilidades y clientes
-│   ├── supabase.ts        # Cliente Supabase + tipos
+│   ├── neon.ts            # Cliente Neon + tipos
 │   └── utils.ts           # Utilidades (cn, etc)
 ├── types/                 # Tipos globales
 ├── messages/              # Traducciones i18n
-├── supabase/              # Schema SQL
+├── neon/                  # Schema SQL
 └── middleware.ts          # Autenticación y roles
 ```
 
-## Configuración de Supabase
+## Configuración de Neon
 
-1. Crear proyecto en [Supabase](https://supabase.com)
-2. Ejecutar el schema SQL en `supabase/schema.sql`
+1. Crear proyecto en [Neon](https://neon.tech)
+2. Ejecutar el schema SQL en `neon/schema.sql`
 3. Configurar variables de entorno:
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=tu_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key
-SUPABASE_SERVICE_ROLE_KEY=tu_service_role_key
+DATABASE_URL=postgresql://user:password@host/database
 NEXTAUTH_SECRET=secreto_random
 NEXTAUTH_URL=http://localhost:3000
 ```
@@ -96,7 +94,7 @@ Abrir [http://localhost:3000](http://localhost:3000).
 ## Seguridad Implementada
 
 - Autenticación JWT con NextAuth.js
-- Row Level Security (RLS) en Supabase
+- Hash de contraseñas con bcrypt
 - Validación de formularios con Zod
 - Middleware de protección de rutas por rol
 - Protección contra XSS (escapado automático de React)

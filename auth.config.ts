@@ -1,8 +1,9 @@
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
-import { createClientAdmin } from "@/lib/supabase";
-import type { Profile } from "@/lib/supabase";
+import bcrypt from "bcryptjs";
+import { queryOne } from "@/lib/neon";
+import type { Profile } from "@/lib/neon";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -17,29 +18,25 @@ export default {
         if (!parsed.success) return null;
 
         const { email, password } = parsed.data;
-        const supabase = createClientAdmin();
 
-        // Sign in with Supabase Auth
-        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+        // Get profile with password hash from Neon
+        const profile = await queryOne<Profile & { password_hash: string }>(
+          "SELECT * FROM profiles WHERE email = $1",
+          [email]
+        );
 
-        if (authError || !authData.user) return null;
+        if (!profile || !profile.password_hash) return null;
 
-        // Get profile with role
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", authData.user.id)
-          .single();
+        // Verify password with bcrypt
+        const isValidPassword = await bcrypt.compare(password, profile.password_hash);
+        if (!isValidPassword) return null;
 
         return {
-          id: authData.user.id,
-          email: authData.user.email!,
-          name: profile?.name || authData.user.user_metadata?.name || null,
-          role: (profile?.role as Profile["role"]) || "suscriptor",
-          image: profile?.avatar_url,
+          id: profile.id,
+          email: profile.email,
+          name: profile.name || null,
+          role: profile.role,
+          image: profile.avatar_url,
         };
       },
     }),
