@@ -1,8 +1,14 @@
-import { Calendar, Gamepad2, Newspaper, Trophy, Users, Video } from "lucide-react";
+import { Calendar, Gamepad2, LayoutDashboard, Newspaper, Trophy, Users, Video } from "lucide-react";
 
 import Link from "next/link";
+import { auth } from "@/auth";
 
-export default function HomePage() {
+export const revalidate = 60;
+
+export default async function HomePage() {
+  const session = await auth();
+  const isLoggedIn = !!session?.user;
+
   return (
     <div className="min-h-screen bg-zinc-950">
       {/* Header */}
@@ -21,12 +27,22 @@ export default function HomePage() {
             <Link href="/team" className="hover:text-white">Equipo</Link>
           </nav>
           <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
-            >
-              Entrar
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
+              >
+                Entrar
+              </Link>
+            )}
           </div>
         </div>
       </header>

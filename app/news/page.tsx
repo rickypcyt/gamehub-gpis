@@ -4,13 +4,17 @@ import Link from "next/link";
 import type { NewsPost } from "@/lib/neon";
 import { query } from "@/lib/neon";
 
+export const revalidate = 60; // Revalidar cada 60 segundos
+export const dynamic = 'force-static'; // Cache en build time cuando sea posible
+
 export default async function NewsPage() {
   const news = await query<NewsPost & { author_name?: string }>(
     `SELECT news_posts.*, profiles.name as author_name 
      FROM news_posts 
      LEFT JOIN profiles ON news_posts.author_id = profiles.id 
      WHERE news_posts.published = true 
-     ORDER BY news_posts.created_at DESC`
+     ORDER BY news_posts.created_at DESC
+     LIMIT 50` // Limitar para no cargar todo
   );
 
   const featured = news?.find((n) => n.featured);
@@ -69,6 +73,8 @@ function FeaturedNews({ post }: { post: NewsPost }) {
             <img
               src={post.cover_image}
               alt={post.title}
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover transition group-hover:scale-105"
             />
           ) : (
@@ -112,6 +118,8 @@ function NewsCard({ post }: { post: NewsPost & { author_name?: string } }) {
           <img
             src={post.cover_image}
             alt={post.title}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition group-hover:scale-105"
           />
         ) : (

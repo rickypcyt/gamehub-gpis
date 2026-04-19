@@ -1,0 +1,164 @@
+Perfiles de usuario (RF-01, RF-08)
+Del documento:
+
+RF-01: "Gestión de identidades con cuatro niveles de acceso: Administrador, Redactor, Colaborador y Suscriptor"
+RF-08: "Equipo de redacción: Página pública con información sobre los redactores"
+En el seed:
+
+1 Admin (Carlos García) - Director editorial
+2 Redactores (María López, Alex Kim) - Especialistas en gaming
+2 Colaboradores (James Wilson, Sofía Martínez) - Streamer y desarrolladora indie
+3 Suscriptores - Usuarios regulares
+Por qué: Cumple RF-01 con los 4 roles exactos especificados y RF-08 con perfiles detallados (bio, location, website).
+
+Videojuegos (RF-03)
+Del documento:
+
+RF-03: "Listado/ranking de los mejores videojuegos de la historia con nombre, nota de prensa, nota de comunidad, imagen y descripción opcional"
+En el seed:
+
+12 juegos reales (Zelda TOTK, Baldur's Gate 3, Elden Ring, etc.)
+Cada uno con: title, description, cover_image, press_score (0-100), user_score (0-10)
+Géneros y plataformas como arrays
+Por qué: Cumple RF-03 con datos reales del sector gaming, con ambos tipos de notas (prensa y comunidad).
+
+Noticias (RF-04)
+Del documento:
+
+RF-04: "Publicación de noticias y artículos sobre videojuegos, avances tecnológicos y tendencias del sector"
+En el seed:
+
+5 noticias sobre actualidad: PS6, Switch 2, Game Pass, indie games, IA en desarrollo
+Campos: title, slug, excerpt, content, cover_image, published, featured, views
+Autoría por redactores
+Por qué: Cubre RF-04 con temas relevantes del sector (hardware, servicios, tendencias, tecnología).
+
+Blog de opinión (RF-05)
+Del documento:
+
+RF-05: "Publicaciones de figuras destacadas del sector. Sistema de comentarios en posts, restringido a suscriptores registrados"
+En el seed:
+
+4 posts de opinión por colaboradores (streamer y desarrolladora)
+5 comentarios de suscriptores
+Temas: Souls-like, juegos AA, streaming, accesibilidad
+Por qué: Cumple RF-05 con figuras destacadas (colaboradores con bio realista) y sistema de comentarios.
+
+Multimedia (RF-06)
+Del documento:
+
+RF-06: "Página de vídeos con contenidos de streamers, gamers influyentes y trailers de lanzamientos (integración de contenido externo)"
+En el seed:
+
+8 elementos: trailers (GTA VI, Starfield), vídeos (gameplay, análisis), streams en vivo
+Tipos: 'trailer', 'video', 'stream'
+Plataformas: YouTube, Twitch
+Por qué: Cumple RF-06 con los 3 tipos especificados (trailers, streamers, contenido externo).
+
+Eventos (RF-07)
+Del documento:
+
+RF-07: "Calendario dinámico con próximos lanzamientos, ferias y convenciones de videojuegos"
+En el seed:
+
+8 eventos: ferias (Gamescom, TGS, GDC, E3), lanzamientos (GTA VI, Metroid Prime 4, Silksong), premios (TGA)
+Tipos: 'convention', 'launch', 'expo'
+Fechas futuras y pasadas
+Por qué: Cumple RF-07 con los 3 tipos de eventos especificados.
+
+Mensajes de contacto (RF-09)
+Del documento:
+
+RF-09: "Canal de comunicación entre usuarios y el equipo editorial para consultas o sugerencias"
+En el seed:
+
+5 mensajes: sugerencias, colaboración, bugs, preguntas, felicitaciones
+Campos: name, email, subject, message, read (boolean)
+Por qué: Cumple RF-09 con variados tipos de comunicación usuario-equipo.
+
+
+---
+
+## Usuario NO Logueado (Invitado)
+
+### Lo que PUEDE hacer:
+- **Ver contenido público**: noticias, ranking de juegos, blog, eventos
+- **Navegar el catálogo** de videojuegos con scores
+- **Leer comentarios** en posts
+- **Contactar** vía formulario de contacto
+- **Crear cuenta** (registro) e iniciar sesión
+
+### Limitaciones:
+- ❌ **No puede comentar** en noticias/blog
+- ❌ **No puede acceder al dashboard** (redirige a login)
+- ❌ **No puede crear contenido** (noticias, posts, juegos)
+- ❌ **No tiene perfil personalizado**
+- ❌ **No puede editar ni borrar nada**
+
+---
+
+## Usuario Logueado (Según Rol)
+
+### **Suscriptor** (Rol por defecto al registrarse)
+**Puede:**
+- ✅ Acceder a su **perfil** y editar datos personales
+- ✅ **Comentar** en noticias y blog
+- ✅ Ver sus comentarios anteriores
+- ✅ Ver todo el contenido público
+
+**No puede:**
+- ❌ Crear noticias ni posts
+- ❌ Acceder a secciones de administración/redactor
+
+---
+
+### **Redactor** (Asignado por admin)
+**Puede:**
+- ✅ Todo lo del suscriptor
+- ✅ **Crear noticias** (`/dashboard/write/news`)
+- ✅ **Editar sus noticias** (`/dashboard/edit/news/[id]`)
+- ✅ **Gestionar juegos** (añadir/editar al catálogo)
+- ✅ **Gestionar multimedia** (videos, streams)
+- ✅ **Gestionar eventos** (calendario)
+
+---
+
+### **Colaborador**
+**Puede:**
+- ✅ Todo lo del suscriptor
+- ✅ **Crear entradas de blog** (opinión)
+- ✅ **Editar sus posts**
+
+**No puede:**
+- ❌ Crear noticias oficiales
+- ❌ Gestionar juegos/multimedia
+
+---
+
+### **Admin**
+**Puede:**
+- ✅ **Todo lo anterior**
+- ✅ **Gestionar usuarios** (cambiar roles)
+- ✅ **Ver mensajes de contacto**
+- ✅ **Editar/eliminar cualquier contenido** (noticias de otros, comentarios)
+- ✅ **Configuración general** de la plataforma
+
+---
+
+## Resumen de Protección
+
+El sistema usa [proxy.ts](cci:7://file:///home/ricky/coding/gamehub-gpis/proxy.ts:0:0-0:0) para forzar estas reglas:
+
+| Ruta | Requiere Auth | Roles Permitidos |
+|------|---------------|------------------|
+| `/login` | No | Todos |
+| [/news](cci:9://file:///home/ricky/coding/gamehub-gpis/app/news:0:0-0:0), `/games` | No | Todos |
+| [/dashboard](cci:9://file:///home/ricky/coding/gamehub-gpis/app/dashboard:0:0-0:0) | Sí | Todos los logueados |
+| `/dashboard/write/news` | Sí | Admin, Redactor |
+| `/dashboard/write/blog` | Sí | Admin, Colaborador |
+| `/admin/*` | Sí | Solo Admin |
+| POST `/api/news` | Sí | Admin, Redactor |
+| POST `/api/comments` | Sí | Todos los logueados |
+
+---
+

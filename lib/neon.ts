@@ -101,12 +101,17 @@ export interface ContactMessage {
   created_at: string;
 }
 
-// Cliente Neon para el servidor
+// Cliente Neon para el servidor - Singleton para reutilizar conexiones
+let client: ReturnType<typeof neon> | null = null;
+
 export function createClient() {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is not set");
   }
-  return neon(process.env.DATABASE_URL);
+  if (!client) {
+    client = neon(process.env.DATABASE_URL);
+  }
+  return client;
 }
 
 // Helper para ejecutar queries con el cliente
