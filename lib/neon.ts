@@ -26,6 +26,7 @@ export interface Game {
   platform: string[] | null;
   press_score: number | null;
   user_score: number | null;
+  category: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -116,9 +117,19 @@ export function createClient() {
 
 // Helper para ejecutar queries con el cliente
 export async function query<T = unknown>(sqlStr: string, params?: unknown[]): Promise<T[]> {
-  const sqlClient = createClient();
-  const result = await sqlClient(sqlStr, params || []);
-  return result as T[];
+  console.log('[Neon Query] Executing SQL:', sqlStr.substring(0, 100) + '...');
+  console.log('[Neon Query] Params:', params);
+
+  try {
+    const sqlClient = createClient();
+    const result = await sqlClient(sqlStr, params || []);
+    const rows = Array.isArray(result) ? result : [];
+    console.log('[Neon Query] Success, rows returned:', rows.length);
+    return rows as T[];
+  } catch (error) {
+    console.error('[Neon Query] Error:', error);
+    throw error;
+  }
 }
 
 // Helper para ejecutar una query que devuelve un solo registro

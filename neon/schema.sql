@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS games (
   platform TEXT[],
   press_score NUMERIC,
   user_score NUMERIC,
+  category TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
