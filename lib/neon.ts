@@ -102,22 +102,22 @@ export interface ContactMessage {
 }
 
 // Cliente Neon para el servidor - Singleton para reutilizar conexiones
-let client: ReturnType<typeof neon> | null = null;
+let sql: ReturnType<typeof neon> | null = null;
 
 export function createClient() {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is not set");
   }
-  if (!client) {
-    client = neon(process.env.DATABASE_URL);
+  if (!sql) {
+    sql = neon(process.env.DATABASE_URL);
   }
-  return client;
+  return sql;
 }
 
 // Helper para ejecutar queries con el cliente
-export async function query<T = unknown>(sql: string, params?: unknown[]): Promise<T[]> {
+export async function query<T = unknown>(sqlStr: string, params?: unknown[]): Promise<T[]> {
   const sqlClient = createClient();
-  const result = await sqlClient(sql, params || []);
+  const result = await sqlClient(sqlStr, params || []);
   return result as T[];
 }
 

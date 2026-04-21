@@ -1,8 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Empty turbopack config to use defaults
-  turbopack: {},
+  // Especificar explícitamente el directorio raíz
 };
 
 export default nextConfig;
