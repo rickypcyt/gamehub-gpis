@@ -1,9 +1,10 @@
 "use client";
 
-import { ArrowLeft, Loader2, Save } from "lucide-react";
+import { ArrowLeft, Loader2, LogOut, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 interface Profile {
@@ -89,6 +90,13 @@ export default function ProfilePage() {
             </Link>
             <h1 className="text-xl font-bold text-white">Editar Perfil</h1>
           </div>
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="flex items-center gap-2 rounded-lg border border-red-500/30 px-3 py-1.5 text-base text-red-400 hover:bg-red-500/10"
+          >
+            <LogOut className="h-4 w-4" />
+            Cerrar sesión
+          </button>
         </div>
       </header>
 
