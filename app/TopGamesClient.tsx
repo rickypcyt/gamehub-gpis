@@ -1,11 +1,10 @@
 'use client';
 
-import { Star } from 'lucide-react';
-import { useState } from 'react';
-import Image from 'next/image';
-
 import type { Game } from '@/lib/neon';
 import { GameModal } from '@/components/GameModal';
+import Image from 'next/image';
+import { Star } from 'lucide-react';
+import { useState } from 'react';
 
 interface TopGamesClientProps {
   games: Game[];
@@ -47,13 +46,13 @@ export default function TopGamesClient({ games }: TopGamesClientProps) {
               </h3>
               <div className="mt-2 flex items-center gap-2">
                 {game.press_score && (
-                  <span className="inline-flex items-center gap-1 rounded bg-yellow-500/10 px-2 py-1 text-xs text-yellow-400">
+                  <span className="inline-flex items-center gap-1 rounded bg-yellow-500/10 px-2 py-1 text-sm text-yellow-400">
                     <Star className="h-3 w-3" />
                     {game.press_score}
                   </span>
                 )}
                 {game.genre && game.genre[0] && (
-                  <span className="text-xs text-zinc-500">{game.genre[0]}</span>
+                  <span className="text-sm text-zinc-500">{game.genre[0]}</span>
                 )}
               </div>
             </div>

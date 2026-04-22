@@ -110,7 +110,7 @@ export default function GamesClient({ games }: GamesClientProps) {
               <SlidersHorizontal className="h-4 w-4" />
               Filtros
               {hasActiveFilters && (
-                <span className="ml-1 rounded-full bg-violet-500 px-2 py-0.5 text-xs text-white">
+                <span className="ml-1 rounded-full bg-violet-500 px-2 py-0.5 text-sm text-white">
                   {[selectedGenre, selectedYear, minScore > 0 ? "score" : null].filter(Boolean).length + (searchQuery ? 1 : 0)}
                 </span>
               )}
@@ -172,7 +172,7 @@ export default function GamesClient({ games }: GamesClientProps) {
                     onChange={(e) => setMinScore(Number(e.target.value))}
                     className="w-full accent-violet-500"
                   />
-                  <div className="flex justify-between text-xs text-zinc-500">
+                  <div className="flex justify-between text-sm text-zinc-500">
                     <span>Todas</span>
                     <span>50</span>
                     <span>100</span>

@@ -113,7 +113,7 @@ export default async function HomePage() {
                     <p className="mt-2 text-sm text-zinc-400 line-clamp-2">
                       {news.excerpt}
                     </p>
-                    <div className="mt-3 flex items-center gap-2 text-xs text-zinc-500">
+                    <div className="mt-3 flex items-center gap-2 text-sm text-zinc-500">
                       <span>{news.author_name || "Redacción"}</span>
                       <span>•</span>
                       <span>{new Date(news.created_at).toLocaleDateString("es-ES")}</span>
@@ -187,21 +187,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t border-zinc-800 px-4 py-12">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="text-base text-zinc-500">
-              © 2025 GameHub. Proyecto académico.
-            </p>
-            <div className="flex gap-6 text-base text-zinc-500">
-              <Link href="/contact" className="hover:text-white">Contacto</Link>
-              <Link href="/team" className="hover:text-white">Equipo</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -114,7 +114,7 @@ export default async function EventsPage() {
                             {new Date(event.start_date).getDate()} de{" "}
                             {new Date(event.start_date).toLocaleDateString("es-ES", { month: "long" })}
                           </span>
-                          <p className="text-xs text-zinc-500">
+                          <p className="text-sm text-zinc-500">
                             {new Date(event.start_date).toLocaleTimeString("es-ES", {
                               hour: "2-digit",
                               minute: "2-digit",
@@ -205,7 +205,7 @@ function EventCard({ event, isPast }: { event: Event; isPast: boolean }) {
 
       <div className="flex items-start justify-between gap-2">
         <div>
-          <span className={`text-xs font-medium uppercase ${
+          <span className={`text-sm font-medium uppercase ${
             isPast ? "text-zinc-500" : "text-zinc-400"
           }`}>
             {typeLabels[event.type]}
@@ -215,7 +215,7 @@ function EventCard({ event, isPast }: { event: Event; isPast: boolean }) {
           </h3>
         </div>
         {event.end_date && event.end_date !== event.start_date && (
-          <span className="text-xs text-zinc-500">
+          <span className="text-sm text-zinc-500">
             Hasta {new Date(event.end_date).getDate()} de{" "}
             {new Date(event.end_date).toLocaleDateString("es-ES", { month: "short" })}
           </span>

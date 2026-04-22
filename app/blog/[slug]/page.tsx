@@ -1,10 +1,11 @@
 "use client";
 
-import { MessageSquare, Send, User, Loader2 } from "lucide-react";
+import { Loader2, MessageSquare, Send, User } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import { useParams } from "next/navigation";
 
 interface BlogPost {
   id: string;
@@ -208,7 +209,7 @@ export default function BlogPostPage() {
                   maxLength={2000}
                 />
                 <div className="mt-3 flex items-center justify-between">
-                  <span className="text-xs text-zinc-500">
+                  <span className="text-sm text-zinc-500">
                     {newComment.length}/2000
                   </span>
                   <button
@@ -260,7 +261,7 @@ export default function BlogPostPage() {
                     <span className="text-sm font-medium text-white">
                       {comment.author_name || "Usuario"}
                     </span>
-                    <span className="text-xs text-zinc-500">
+                    <span className="text-sm text-zinc-500">
                       {new Date(comment.created_at).toLocaleDateString("es-ES")}
                     </span>
                   </div>
