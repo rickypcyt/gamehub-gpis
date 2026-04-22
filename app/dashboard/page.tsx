@@ -3,6 +3,7 @@ import {
   Calendar,
   Gamepad2,
   LayoutGrid,
+  LogOut,
   MessageSquare,
   Newspaper,
   PenLine,
@@ -14,10 +15,10 @@ import {
   Users,
   Video,
 } from "lucide-react";
+import { auth, signOut } from "@/auth";
 
 import Link from "next/link";
 import type { Profile } from "@/lib/neon";
-import { auth } from "@/auth";
 import { queryOne } from "@/lib/neon";
 import { redirect } from "next/navigation";
 
@@ -52,23 +53,41 @@ export default async function DashboardPage() {
             GameHub
           </Link>
           <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="hidden sm:block rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-base font-medium text-zinc-300 hover:bg-zinc-800 hover:text-white"
-            >
-              Volver a inicio
-            </Link>
             <span className="rounded-full bg-zinc-800 px-3 py-1 text-base text-zinc-400">
               {roleLabels[role]}
             </span>
             <span className="hidden sm:block text-base text-zinc-400">
               {session.user.email}
             </span>
+            <form
+              action={async () => {
+                "use server";
+                await signOut({ redirectTo: "/" });
+              }}
+            >
+              <button
+                type="submit"
+                className="flex items-center gap-2 rounded-lg border border-red-500/30 px-3 py-1.5 text-base text-red-400 hover:bg-red-500/10"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Cerrar sesión</span>
+              </button>
+            </form>
           </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-10">
+        {/* Back to home button */}
+        <div className="mb-6">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900 px-4 py-2 text-base font-medium text-zinc-300 hover:bg-zinc-800 hover:text-white"
+          >
+            ← Volver a inicio
+          </Link>
+        </div>
+
         {/* Welcome - Estilo simple */}
         <div className="mb-10">
           <h1 className="text-3xl font-bold text-white">
