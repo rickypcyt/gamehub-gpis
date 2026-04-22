@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { queryOne } from "@/lib/neon";
-import type { Profile } from "@/lib/neon";
+import type { Profile, UserRole } from "@/lib/neon";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -45,7 +45,7 @@ export default {
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
-        token.role = user.role;
+        token.role = user.role as UserRole;
       }
       // Handle session updates
       if (trigger === "update" && session) {
@@ -57,7 +57,7 @@ export default {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
-        session.user.role = token.role as string;
+        session.user.role = token.role as UserRole;
       }
       return session;
     },
