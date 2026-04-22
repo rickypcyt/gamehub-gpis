@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Save } from "lucide-react";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function WriteNewsPage() {
   const router = useRouter();
@@ -69,7 +70,7 @@ export default function WriteNewsPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Título</label>
+              <label className="text-base font-medium text-zinc-300">Título</label>
               <input
                 name="title"
                 type="text"
@@ -80,7 +81,7 @@ export default function WriteNewsPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Slug (URL)</label>
+              <label className="text-base font-medium text-zinc-300">Slug (URL)</label>
               <input
                 name="slug"
                 type="text"
@@ -92,7 +93,7 @@ export default function WriteNewsPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Extracto</label>
+            <label className="text-base font-medium text-zinc-300">Extracto</label>
             <input
               name="excerpt"
               type="text"
@@ -102,7 +103,7 @@ export default function WriteNewsPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">URL de imagen</label>
+            <label className="text-base font-medium text-zinc-300">URL de imagen</label>
             <input
               name="cover_image"
               type="url"
@@ -112,7 +113,7 @@ export default function WriteNewsPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Contenido</label>
+            <label className="text-base font-medium text-zinc-300">Contenido</label>
             <textarea
               name="content"
               required
@@ -129,7 +130,7 @@ export default function WriteNewsPage() {
                 type="checkbox"
                 className="h-4 w-4 rounded border-zinc-700 bg-zinc-800 text-violet-600"
               />
-              <span className="text-sm text-zinc-300">Publicar inmediatamente</span>
+              <span className="text-base text-zinc-300">Publicar inmediatamente</span>
             </label>
 
             <label className="flex items-center gap-2">
@@ -138,7 +139,7 @@ export default function WriteNewsPage() {
                 type="checkbox"
                 className="h-4 w-4 rounded border-zinc-700 bg-zinc-800 text-violet-600"
               />
-              <span className="text-sm text-zinc-300">Destacada</span>
+              <span className="text-base text-zinc-300">Destacada</span>
             </label>
           </div>
 

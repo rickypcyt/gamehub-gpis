@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { ArrowLeft, Calendar, Star, Trophy } from 'lucide-react';
-import Link from 'next/link';
+
 import type { Game } from '@/lib/neon';
 import { GameModal } from '@/components/GameModal';
+import Link from 'next/link';
+import { useState } from 'react';
 
 interface GamesClientProps {
   games: Game[];
@@ -14,7 +15,8 @@ export default function GamesClient({ games }: GamesClientProps) {
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
 
   const topHistoryGames = games?.filter(g => g.category === 'Top de la historia');
-  const otherGames = games?.filter(g => g.category !== 'Top de la historia');
+  const top2020_2025Games = games?.filter(g => g.category === 'Top 2020-2025');
+  const otherGames = games?.filter(g => g.category !== 'Top de la historia' && g.category !== 'Top 2020-2025');
 
   return (
     <div className="min-h-screen bg-zinc-950">
@@ -51,20 +53,22 @@ export default function GamesClient({ games }: GamesClientProps) {
           </div>
         )}
 
-        {/* Other Games Section */}
-        <div>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-white">Mejores videojuegos</h2>
-            <p className="mt-2 text-zinc-400">
-              Los títulos más aclamados por la prensa y la comunidad
-            </p>
+        {/* Top 2020-2025 Section */}
+        {top2020_2025Games && top2020_2025Games.length > 0 && (
+          <div className="mb-12">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-white">Top 2020-2025</h2>
+              <p className="mt-2 text-zinc-400">
+                Los mejores títulos de los últimos años mezclando impacto, calidad y consenso general
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {top2020_2025Games.map((game, index) => (
+                <GameCard key={game.id} game={game} rank={index + 1} onClick={() => setSelectedGame(game)} />
+              ))}
+            </div>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {otherGames?.map((game, index) => (
-              <GameCard key={game.id} game={game} rank={(topHistoryGames?.length || 0) + index + 1} onClick={() => setSelectedGame(game)} />
-            ))}
-          </div>
-        </div>
+        )}
 
         {!games?.length && (
           <div className="text-center py-16">
@@ -117,7 +121,7 @@ function GameCard({ game, rank, onClick }: { game: Game; rank: number; onClick: 
         </div>
 
         {game.release_date && (
-          <p className="mt-1 flex items-center gap-1 text-xs text-zinc-500">
+          <p className="mt-1 flex items-center gap-1 text-base text-zinc-500">
             <Calendar className="h-3 w-3" />
             {new Date(game.release_date).getFullYear()}
           </p>
@@ -127,13 +131,13 @@ function GameCard({ game, rank, onClick }: { game: Game; rank: number; onClick: 
         <div className="mt-3 flex items-center gap-4">
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-            <span className="text-sm font-medium text-white">{pressScore.toFixed(1)}</span>
-            <span className="text-xs text-zinc-500">prensa</span>
+            <span className="text-base font-medium text-white">{pressScore.toFixed(1)}</span>
+            <span className="text-base text-zinc-500">prensa</span>
           </div>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-violet-500 text-violet-500" />
-            <span className="text-sm font-medium text-white">{userScore.toFixed(1)}</span>
-            <span className="text-xs text-zinc-500">users</span>
+            <span className="text-base font-medium text-white">{userScore.toFixed(1)}</span>
+            <span className="text-base text-zinc-500">users</span>
           </div>
         </div>
 
@@ -143,7 +147,7 @@ function GameCard({ game, rank, onClick }: { game: Game; rank: number; onClick: 
             {game.genre.slice(0, 3).map((g) => (
               <span
                 key={g}
-                className="rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400"
+                className="rounded-full bg-zinc-800 px-2 py-0.5 text-base text-zinc-400"
               >
                 {g}
               </span>

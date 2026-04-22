@@ -93,7 +93,7 @@ export default function LoginPage() {
               setError("");
               setSuccess("");
             }}
-            className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
+            className={`flex-1 rounded-md py-2 text-base font-medium transition-colors ${
               !isRegister
                 ? "bg-zinc-700 text-white"
                 : "text-zinc-400 hover:text-zinc-300"
@@ -108,7 +108,7 @@ export default function LoginPage() {
               setError("");
               setSuccess("");
             }}
-            className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
+            className={`flex-1 rounded-md py-2 text-base font-medium transition-colors ${
               isRegister
                 ? "bg-zinc-700 text-white"
                 : "text-zinc-400 hover:text-zinc-300"
@@ -119,8 +119,8 @@ export default function LoginPage() {
         </div>
 
         {/* Messages */}
-        {error && <p className="text-sm text-red-400">{error}</p>}
-        {success && <p className="text-sm text-green-400">{success}</p>}
+        {error && <p className="text-base text-red-400">{error}</p>}
+        {success && <p className="text-base text-green-400">{success}</p>}
 
         {/* Login Form */}
         {!isRegister && (

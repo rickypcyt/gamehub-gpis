@@ -102,7 +102,7 @@ export default function ProfilePage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Nombre</label>
+              <label className="text-base font-medium text-zinc-300">Nombre</label>
               <input
                 name="name"
                 type="text"
@@ -113,19 +113,19 @@ export default function ProfilePage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Email</label>
+              <label className="text-base font-medium text-zinc-300">Email</label>
               <input
                 type="email"
                 value={profile?.email || ""}
                 disabled
                 className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-zinc-500 cursor-not-allowed"
               />
-              <p className="text-xs text-zinc-500">El email no se puede cambiar</p>
+              <p className="text-base text-zinc-500">El email no se puede cambiar</p>
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">URL de foto de perfil</label>
+            <label className="text-base font-medium text-zinc-300">URL de foto de perfil</label>
             <input
               name="avatar_url"
               type="url"
@@ -136,7 +136,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Biografía</label>
+            <label className="text-base font-medium text-zinc-300">Biografía</label>
             <textarea
               name="bio"
               rows={4}
@@ -148,7 +148,7 @@ export default function ProfilePage() {
 
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Ubicación</label>
+              <label className="text-base font-medium text-zinc-300">Ubicación</label>
               <input
                 name="location"
                 type="text"
@@ -159,7 +159,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Website</label>
+              <label className="text-base font-medium text-zinc-300">Website</label>
               <input
                 name="website"
                 type="url"

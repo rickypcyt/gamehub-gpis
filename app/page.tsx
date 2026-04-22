@@ -18,7 +18,7 @@ export default async function HomePage() {
             <Gamepad2 className="h-6 w-6 text-violet-500" />
             GameHub
           </Link>
-          <nav className="hidden items-center gap-6 text-sm text-zinc-400 md:flex">
+          <nav className="hidden items-center gap-6 text-base text-zinc-400 md:flex">
             <Link href="/news" className="hover:text-white">Noticias</Link>
             <Link href="/games" className="hover:text-white">Juegos</Link>
             <Link href="/blog" className="hover:text-white">Blog</Link>
@@ -30,7 +30,7 @@ export default async function HomePage() {
             {isLoggedIn ? (
               <Link
                 href="/dashboard"
-                className="flex items-center gap-2 rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
+                className="flex items-center gap-2 rounded-md bg-violet-600 px-4 py-2 text-base font-medium text-white hover:bg-violet-700"
               >
                 <LayoutDashboard className="h-4 w-4" />
                 Dashboard
@@ -38,7 +38,7 @@ export default async function HomePage() {
             ) : (
               <Link
                 href="/login"
-                className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
+                className="rounded-md bg-violet-600 px-4 py-2 text-base font-medium text-white hover:bg-violet-700"
               >
                 Entrar
               </Link>
@@ -124,10 +124,10 @@ export default async function HomePage() {
       <footer className="border-t border-zinc-800 px-4 py-12">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="text-sm text-zinc-500">
+            <p className="text-base text-zinc-500">
               © 2025 GameHub. Proyecto académico.
             </p>
-            <div className="flex gap-6 text-sm text-zinc-500">
+            <div className="flex gap-6 text-base text-zinc-500">
               <Link href="/contact" className="hover:text-white">Contacto</Link>
               <Link href="/team" className="hover:text-white">Equipo</Link>
             </div>
@@ -160,7 +160,7 @@ function FeatureCard({
       <h3 className="mb-2 text-lg font-semibold text-white group-hover:text-violet-400">
         {title}
       </h3>
-      <p className="text-sm text-zinc-400">{description}</p>
+      <p className="text-base text-zinc-400">{description}</p>
     </Link>
   );
 }

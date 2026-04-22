@@ -93,16 +93,16 @@ function TeamCard({ member }: { member: Profile }) {
         )}
       </div>
       <h4 className="font-semibold text-white">{member.name || "Sin nombre"}</h4>
-      <p className="text-sm text-violet-400 capitalize">{member.role}</p>
+      <p className="text-base text-violet-400 capitalize">{member.role}</p>
       {member.bio && (
-        <p className="mt-3 text-sm text-zinc-400 line-clamp-3">{member.bio}</p>
+        <p className="mt-3 text-base text-zinc-400 line-clamp-3">{member.bio}</p>
       )}
       {member.website && (
         <a
           href={member.website}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 inline-block text-sm text-zinc-500 hover:text-white"
+          className="mt-4 inline-block text-base text-zinc-500 hover:text-white"
         >
           {member.website}
         </a>

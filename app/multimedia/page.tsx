@@ -4,6 +4,18 @@ import Link from "next/link";
 import type { Multimedia } from "@/lib/neon";
 import { query } from "@/lib/neon";
 
+function getVideoEmbedUrl(url: string, platform: string): string {
+  if (platform === "YouTube" || url.includes("youtube.com")) {
+    const videoId = url.match(/(?:v=|\/embed\/)([^&]+)/)?.[1];
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+  }
+  if (platform === "Twitch" || url.includes("twitch.tv")) {
+    const channel = url.split("/").pop();
+    return channel ? `https://player.twitch.tv/?channel=${channel}&parent=localhost&muted=false` : url;
+  }
+  return url;
+}
+
 export default async function MultimediaPage() {
   const items = await query<Multimedia>(
     "SELECT * FROM multimedia ORDER BY created_at DESC"
@@ -90,10 +102,22 @@ export default async function MultimediaPage() {
 }
 
 function FeaturedVideo({ video }: { video: Multimedia }) {
+  const embedUrl = getVideoEmbedUrl(video.url, video.platform || "");
+  const isEmbeddable = video.platform === "YouTube" || video.platform === "Twitch";
+
   return (
     <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
       <div className="aspect-video bg-zinc-800 relative">
-        {video.thumbnail ? (
+        {isEmbeddable ? (
+          <iframe
+            src={embedUrl}
+            title={video.title}
+            className="h-full w-full"
+            allowFullScreen
+            allow="autoplay; encrypted-media"
+            scrolling="no"
+          />
+        ) : video.thumbnail ? (
           <img
             src={video.thumbnail}
             alt={video.title}
@@ -104,22 +128,24 @@ function FeaturedVideo({ video }: { video: Multimedia }) {
             <Video className="h-20 w-20 text-zinc-700" />
           </div>
         )}
-        <a
-          href={video.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition"
-        >
-          <Play className="h-16 w-16 text-white" />
-        </a>
+        {!isEmbeddable && (
+          <a
+            href={video.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition"
+          >
+            <Play className="h-16 w-16 text-white" />
+          </a>
+        )}
       </div>
       <div className="p-6">
-        <span className="text-xs font-medium text-violet-400 uppercase tracking-wider">
+        <span className="text-base font-medium text-violet-400 uppercase tracking-wider">
           {video.type}
         </span>
         <h2 className="mt-2 text-2xl font-bold text-white">{video.title}</h2>
         {video.platform && (
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="mt-2 text-base text-zinc-500">
             Plataforma: {video.platform}
           </p>
         )}
@@ -129,15 +155,22 @@ function FeaturedVideo({ video }: { video: Multimedia }) {
 }
 
 function VideoCard({ video }: { video: Multimedia }) {
+  const embedUrl = getVideoEmbedUrl(video.url, video.platform || "");
+  const isEmbeddable = video.platform === "YouTube" || video.platform === "Twitch";
+
   return (
-    <a
-      href={video.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden transition hover:border-violet-500/50"
-    >
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden transition hover:border-violet-500/50">
       <div className="aspect-video bg-zinc-800 relative">
-        {video.thumbnail ? (
+        {isEmbeddable ? (
+          <iframe
+            src={embedUrl}
+            title={video.title}
+            className="h-full w-full"
+            allowFullScreen
+            allow="autoplay; encrypted-media"
+            scrolling="no"
+          />
+        ) : video.thumbnail ? (
           <img
             src={video.thumbnail}
             alt={video.title}
@@ -148,18 +181,20 @@ function VideoCard({ video }: { video: Multimedia }) {
             <Video className="h-12 w-12 text-zinc-700" />
           </div>
         )}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition">
-          <Play className="h-12 w-12 text-white" />
-        </div>
+        {!isEmbeddable && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition">
+            <Play className="h-12 w-12 text-white" />
+          </div>
+        )}
       </div>
       <div className="p-4">
         <h3 className="font-medium text-white line-clamp-2 group-hover:text-violet-400">
           {video.title}
         </h3>
         {video.platform && (
-          <p className="mt-1 text-xs text-zinc-500">{video.platform}</p>
+          <p className="mt-1 text-base text-zinc-500">{video.platform}</p>
         )}
       </div>
-    </a>
+    </div>
   );
 }

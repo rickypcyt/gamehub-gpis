@@ -54,14 +54,14 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="hidden sm:block rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800 hover:text-white"
+              className="hidden sm:block rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-base font-medium text-zinc-300 hover:bg-zinc-800 hover:text-white"
             >
               Volver a inicio
             </Link>
-            <span className="rounded-full bg-zinc-800 px-3 py-1 text-sm text-zinc-400">
+            <span className="rounded-full bg-zinc-800 px-3 py-1 text-base text-zinc-400">
               {roleLabels[role]}
             </span>
-            <span className="hidden sm:block text-sm text-zinc-400">
+            <span className="hidden sm:block text-base text-zinc-400">
               {session.user.email}
             </span>
           </div>
@@ -244,7 +244,7 @@ function StatCard({ title, value, icon }: {
       <div className="mb-4 inline-flex rounded-lg bg-violet-500/10 p-3 text-violet-500">
         {icon}
       </div>
-      <p className="text-sm text-zinc-500">{title}</p>
+      <p className="text-base text-zinc-500">{title}</p>
       <p className="mt-1 text-lg font-semibold text-white truncate">{value}</p>
     </div>
   );
@@ -272,7 +272,7 @@ function ActionCard({
       <h3 className="mb-2 text-lg font-semibold text-white group-hover:text-violet-400">
         {title}
       </h3>
-      <p className="text-sm text-zinc-400">{description}</p>
+      <p className="text-base text-zinc-400">{description}</p>
     </Link>
   );
 }

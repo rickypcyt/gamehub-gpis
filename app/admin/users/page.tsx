@@ -88,10 +88,10 @@ export default async function AdminUsersPage() {
               >
                 <div className="flex items-center gap-2">
                   {config.icon}
-                  <span className="text-sm font-medium">{config.label}</span>
+                  <span className="text-base font-medium">{config.label}</span>
                 </div>
                 <p className="mt-2 text-2xl font-bold">{count}</p>
-                <p className="text-xs opacity-70">usuarios</p>
+                <p className="text-base opacity-70">usuarios</p>
               </div>
             );
           })}
@@ -103,10 +103,10 @@ export default async function AdminUsersPage() {
             <table className="w-full">
               <thead className="border-b border-zinc-800 bg-zinc-900/50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-zinc-400">Usuario</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-zinc-400">Rol</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-zinc-400">Fecha de registro</th>
-                  <th className="px-6 py-4 text-right text-sm font-medium text-zinc-400">Acciones</th>
+                  <th className="px-6 py-4 text-left text-base font-medium text-zinc-400">Usuario</th>
+                  <th className="px-6 py-4 text-left text-base font-medium text-zinc-400">Rol</th>
+                  <th className="px-6 py-4 text-left text-base font-medium text-zinc-400">Fecha de registro</th>
+                  <th className="px-6 py-4 text-right text-base font-medium text-zinc-400">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800">
@@ -124,10 +124,10 @@ export default async function AdminUsersPage() {
                             <p className="font-medium text-white">
                               {user.name || "Sin nombre"}
                               {isCurrentUser && (
-                                <span className="ml-2 text-xs text-zinc-500">(Tú)</span>
+                                <span className="ml-2 text-base text-zinc-500">(Tú)</span>
                               )}
                             </p>
-                            <p className="text-sm text-zinc-500">{user.email}</p>
+                            <p className="text-base text-zinc-500">{user.email}</p>
                           </div>
                         </div>
                       </td>
@@ -142,7 +142,7 @@ export default async function AdminUsersPage() {
                             defaultValue={user.role}
                             disabled={isCurrentUser}
                             onChange={(e) => e.target.form?.submit()}
-                            className={`rounded-lg border px-3 py-1.5 text-sm font-medium outline-none transition ${
+                            className={`rounded-lg border px-3 py-1.5 text-base font-medium outline-none transition ${
                               isCurrentUser
                                 ? "cursor-not-allowed border-zinc-700 bg-zinc-800 text-zinc-500"
                                 : `cursor-pointer border-zinc-700 bg-zinc-900 hover:border-zinc-600`
@@ -156,7 +156,7 @@ export default async function AdminUsersPage() {
                         </form>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-zinc-400">
+                        <span className="text-base text-zinc-400">
                           {new Date(user.created_at).toLocaleDateString("es-ES", {
                             day: "numeric",
                             month: "long",

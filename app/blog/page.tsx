@@ -73,7 +73,7 @@ function BlogCard({ post }: { post: BlogPost & { author_name?: string; author_av
         </div>
         <div>
           <p className="font-medium text-white">{post.author_name || "Colaborador"}</p>
-          <p className="text-xs text-zinc-500">
+          <p className="text-base text-zinc-500">
             {new Date(post.created_at).toLocaleDateString("es-ES")}
           </p>
         </div>
@@ -92,11 +92,11 @@ function BlogCard({ post }: { post: BlogPost & { author_name?: string; author_av
       <div className="mt-4 flex items-center gap-4">
         <Link
           href={`/blog/${post.slug}`}
-          className="text-sm font-medium text-violet-400 hover:text-violet-300"
+          className="text-base font-medium text-violet-400 hover:text-violet-300"
         >
           Leer más →
         </Link>
-        <span className="flex items-center gap-1 text-xs text-zinc-500">
+        <span className="flex items-center gap-1 text-base text-zinc-500">
           <MessageSquare className="h-3 w-3" />
           Comentarios
         </span>

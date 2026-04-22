@@ -1,8 +1,9 @@
 import { ArrowLeft, Edit, Eye, Trash2 } from "lucide-react";
+
 import Link from "next/link";
+import type { NewsPost } from "@/lib/neon";
 import { auth } from "@/auth";
 import { query } from "@/lib/neon";
-import type { NewsPost } from "@/lib/neon";
 import { redirect } from "next/navigation";
 
 export default async function MyNewsPage() {
@@ -47,7 +48,7 @@ export default async function MyNewsPage() {
 
           <Link
             href="/dashboard/write/news"
-            className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
+            className="rounded-lg bg-violet-600 px-4 py-2 text-base font-medium text-white hover:bg-violet-700"
           >
             + Nueva Noticia
           </Link>
@@ -70,11 +71,11 @@ export default async function MyNewsPage() {
             <table className="w-full">
               <thead className="border-b border-zinc-800 bg-zinc-900">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Título</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Autor</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Estado</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Fecha</th>
-                  <th className="px-4 py-3 text-right text-sm font-medium text-zinc-400">Acciones</th>
+                  <th className="px-4 py-3 text-left text-base font-medium text-zinc-400">Título</th>
+                  <th className="px-4 py-3 text-left text-base font-medium text-zinc-400">Autor</th>
+                  <th className="px-4 py-3 text-left text-base font-medium text-zinc-400">Estado</th>
+                  <th className="px-4 py-3 text-left text-base font-medium text-zinc-400">Fecha</th>
+                  <th className="px-4 py-3 text-right text-base font-medium text-zinc-400">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800">
@@ -82,26 +83,26 @@ export default async function MyNewsPage() {
                   <tr key={item.id} className="hover:bg-zinc-800/50">
                     <td className="px-4 py-3">
                       <div className="font-medium text-white">{item.title}</div>
-                      <div className="text-sm text-zinc-500">/{item.slug}</div>
+                      <div className="text-base text-zinc-500">/{item.slug}</div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-zinc-400">{item.author_name}</td>
+                    <td className="px-4 py-3 text-base text-zinc-400">{item.author_name}</td>
                     <td className="px-4 py-3">
                       {item.published ? (
-                        <span className="inline-flex items-center rounded-full bg-green-500/10 px-2 py-1 text-xs font-medium text-green-400">
+                        <span className="inline-flex items-center rounded-full bg-green-500/10 px-2 py-1 text-base font-medium text-green-400">
                           Publicada
                         </span>
                       ) : (
-                        <span className="inline-flex items-center rounded-full bg-yellow-500/10 px-2 py-1 text-xs font-medium text-yellow-400">
+                        <span className="inline-flex items-center rounded-full bg-yellow-500/10 px-2 py-1 text-base font-medium text-yellow-400">
                           Borrador
                         </span>
                       )}
                       {item.featured && (
-                        <span className="ml-2 inline-flex items-center rounded-full bg-violet-500/10 px-2 py-1 text-xs font-medium text-violet-400">
+                        <span className="ml-2 inline-flex items-center rounded-full bg-violet-500/10 px-2 py-1 text-base font-medium text-violet-400">
                           Destacada
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-sm text-zinc-400">
+                    <td className="px-4 py-3 text-base text-zinc-400">
                       {new Date(item.created_at).toLocaleDateString("es-ES")}
                     </td>
                     <td className="px-4 py-3 text-right">

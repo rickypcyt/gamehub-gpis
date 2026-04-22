@@ -71,7 +71,7 @@ function EventColumn({
 
   return (
     <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-4">
-      <h3 className={`mb-4 rounded-lg border px-3 py-2 text-sm font-medium ${colorClasses[color]}`}>
+      <h3 className={`mb-4 rounded-lg border px-3 py-2 text-base font-medium ${colorClasses[color]}`}>
         {title}
       </h3>
 
@@ -84,14 +84,14 @@ function EventColumn({
             <h4 className="font-medium text-white">{event.title}</h4>
             
             {event.location && (
-              <p className="mt-1 flex items-center gap-1 text-xs text-zinc-500">
+              <p className="mt-1 flex items-center gap-1 text-base text-zinc-500">
                 <MapPin className="h-3 w-3" />
                 {event.location}
               </p>
             )}
 
             <div className="mt-2 flex items-center justify-between">
-              <span className="text-xs text-zinc-400">
+              <span className="text-base text-zinc-400">
                 {new Date(event.start_date).toLocaleDateString("es-ES", {
                   day: "numeric",
                   month: "short",
@@ -104,7 +104,7 @@ function EventColumn({
                   href={event.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300"
+                  className="flex items-center gap-1 text-base text-violet-400 hover:text-violet-300"
                 >
                   <ExternalLink className="h-3 w-3" />
                   Más info
@@ -115,7 +115,7 @@ function EventColumn({
         ))}
 
         {!events.length && (
-          <p className="text-center py-8 text-sm text-zinc-600">
+          <p className="text-center py-8 text-base text-zinc-600">
             No hay {title.toLowerCase()} programados
           </p>
         )}

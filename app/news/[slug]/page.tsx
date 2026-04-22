@@ -60,7 +60,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
             <Link href="/news" className="text-zinc-400 hover:text-white">
               <ArrowLeft className="h-5 w-5" />
             </Link>
-            <span className="text-sm text-zinc-500">Noticia</span>
+            <span className="text-base text-zinc-500">Noticia</span>
           </div>
         </div>
       </header>
@@ -81,7 +81,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white md:text-4xl">{post.title}</h1>
 
-          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-zinc-400">
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-base text-zinc-400">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800">
                 {post.author_avatar ? (

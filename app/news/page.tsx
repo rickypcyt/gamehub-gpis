@@ -65,43 +65,24 @@ function FeaturedNews({ post }: { post: NewsPost }) {
   return (
     <Link
       href={`/news/${post.slug}`}
-      className="group relative block overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50"
+      className="group relative block overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 md:p-8"
     >
-      <div className="grid md:grid-cols-2">
-        <div className="aspect-video bg-zinc-800 md:aspect-auto">
-          {post.cover_image ? (
-            <img
-              src={post.cover_image}
-              alt={post.title}
-              loading="lazy"
-              decoding="async"
-              className="h-full w-full object-cover transition group-hover:scale-105"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center">
-              <Newspaper className="h-20 w-20 text-zinc-700" />
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col justify-center p-6 md:p-8">
-          <span className="mb-2 w-fit rounded-full bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-400">
-            Destacada
-          </span>
-          <h2 className="text-2xl font-bold text-white group-hover:text-violet-400 md:text-3xl">
-            {post.title}
-          </h2>
-          <p className="mt-3 line-clamp-3 text-zinc-400">{post.excerpt}</p>
-          <div className="mt-4 flex items-center gap-4 text-sm text-zinc-500">
-            <span className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" />
-              {new Date(post.created_at).toLocaleDateString("es-ES")}
-            </span>
-            <span className="flex items-center gap-1">
-              <Eye className="h-4 w-4" />
-              {post.views} lecturas
-            </span>
-          </div>
-        </div>
+      <span className=" w-fit rounded-full bg-violet-500/10 px-3 py-1 text-base font-medium text-violet-400">
+        Destacada
+      </span>
+      <h2 className="mt-2 text-2xl font-bold text-white group-hover:text-violet-400 md:text-3xl">
+        {post.title}
+      </h2>
+      <p className="mt-3 line-clamp-3 text-zinc-400">{post.excerpt}</p>
+      <div className="mt-4 flex items-center gap-4 text-base text-zinc-500">
+        <span className="flex items-center gap-1">
+          <Calendar className="h-4 w-4" />
+          {new Date(post.created_at).toLocaleDateString("es-ES")}
+        </span>
+        <span className="flex items-center gap-1">
+          <Eye className="h-4 w-4" />
+          {post.views} lecturas
+        </span>
       </div>
     </Link>
   );
@@ -111,34 +92,17 @@ function NewsCard({ post }: { post: NewsPost & { author_name?: string } }) {
   return (
     <Link
       href={`/news/${post.slug}`}
-      className="group flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden transition hover:border-violet-500/50"
+      className="group flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 transition hover:border-violet-500/50"
     >
-      <div className="aspect-video bg-zinc-800">
-        {post.cover_image ? (
-          <img
-            src={post.cover_image}
-            alt={post.title}
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-cover transition group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <Newspaper className="h-12 w-12 text-zinc-700" />
-          </div>
-        )}
-      </div>
-      <div className="flex flex-1 flex-col p-4">
-        <h3 className="font-semibold text-white group-hover:text-violet-400 line-clamp-2">
-          {post.title}
-        </h3>
-        <p className="mt-2 line-clamp-2 flex-1 text-sm text-zinc-400">
-          {post.excerpt}
-        </p>
-        <div className="mt-4 flex items-center justify-between text-xs text-zinc-500">
-          <span>{post.author_name || "Redacción"}</span>
-          <span>{new Date(post.created_at).toLocaleDateString("es-ES")}</span>
-        </div>
+      <h3 className="font-semibold text-lg text-white group-hover:text-violet-400 line-clamp-2">
+        {post.title}
+      </h3>
+      <p className="mt-2 line-clamp-2 flex-1 text-base text-zinc-400">
+        {post.excerpt}
+      </p>
+      <div className="mt-4 flex items-center justify-between text-base text-zinc-500">
+        <span>{post.author_name || "Redacción"}</span>
+        <span>{new Date(post.created_at).toLocaleDateString("es-ES")}</span>
       </div>
     </Link>
   );

@@ -94,12 +94,12 @@ export default function MyCommentsPage() {
                   <div className="flex-1">
                     <Link
                       href={`/news/${comment.post_slug}`}
-                      className="text-sm font-medium text-violet-400 hover:text-violet-300"
+                      className="text-base font-medium text-violet-400 hover:text-violet-300"
                     >
                       En: {comment.post_title}
                     </Link>
                     <p className="mt-2 text-zinc-300 whitespace-pre-wrap">{comment.content}</p>
-                    <p className="mt-3 text-xs text-zinc-500">
+                    <p className="mt-3 text-base text-zinc-500">
                       {new Date(comment.created_at).toLocaleDateString("es-ES", {
                         day: "numeric",
                         month: "long",
