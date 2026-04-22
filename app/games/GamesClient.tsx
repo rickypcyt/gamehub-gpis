@@ -1,10 +1,9 @@
 'use client';
 
-import { ArrowLeft, Calendar, Star, Trophy } from 'lucide-react';
+import { Calendar, Star, Trophy } from 'lucide-react';
 
 import type { Game } from '@/lib/neon';
 import { GameModal } from '@/components/GameModal';
-import Link from 'next/link';
 import { useState } from 'react';
 
 interface GamesClientProps {
@@ -20,21 +19,6 @@ export default function GamesClient({ games }: GamesClientProps) {
 
   return (
     <div className="min-h-screen bg-zinc-950">
-      {/* Header */}
-      <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-zinc-400 hover:text-white">
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-            <h1 className="flex items-center gap-2 text-xl font-bold text-white">
-              <Trophy className="h-6 w-6 text-violet-500" />
-              Rankings
-            </h1>
-          </div>
-        </div>
-      </header>
-
       <main className="mx-auto max-w-7xl px-4 py-8">
         {/* Top de la historia Section */}
         {topHistoryGames && topHistoryGames.length > 0 && (

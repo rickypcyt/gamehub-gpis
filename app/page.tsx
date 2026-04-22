@@ -1,51 +1,14 @@
-import { Calendar, Gamepad2, LayoutDashboard, Newspaper, Trophy, Users, Video } from "lucide-react";
+import { Calendar, Gamepad2, Newspaper, Trophy, Users, Video } from "lucide-react";
 
 import Link from "next/link";
-import { auth } from "@/auth";
+import Navbar from "@/components/Navbar";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const session = await auth();
-  const isLoggedIn = !!session?.user;
-
   return (
     <div className="min-h-screen bg-zinc-950">
-      {/* Header */}
-      <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2 text-xl font-bold text-white">
-            <Gamepad2 className="h-6 w-6 text-violet-500" />
-            GameHub
-          </Link>
-          <nav className="hidden items-center gap-6 text-base text-zinc-400 md:flex">
-            <Link href="/news" className="hover:text-white">Noticias</Link>
-            <Link href="/games" className="hover:text-white">Juegos</Link>
-            <Link href="/blog" className="hover:text-white">Blog</Link>
-            <Link href="/multimedia" className="hover:text-white">Multimedia</Link>
-            <Link href="/events" className="hover:text-white">Eventos</Link>
-            <Link href="/team" className="hover:text-white">Equipo</Link>
-          </nav>
-          <div className="flex items-center gap-3">
-            {isLoggedIn ? (
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-2 rounded-md bg-violet-600 px-4 py-2 text-base font-medium text-white hover:bg-violet-700"
-              >
-                <LayoutDashboard className="h-4 w-4" />
-                Dashboard
-              </Link>
-            ) : (
-              <Link
-                href="/login"
-                className="rounded-md bg-violet-600 px-4 py-2 text-base font-medium text-white hover:bg-violet-700"
-              >
-                Entrar
-              </Link>
-            )}
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Hero */}
       <section className="relative overflow-hidden px-4 py-24 sm:py-32">

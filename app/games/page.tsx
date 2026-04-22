@@ -1,5 +1,6 @@
 import type { Game } from "@/lib/neon";
 import GamesClient from "./GamesClient";
+import Navbar from "@/components/Navbar";
 import { query } from "@/lib/neon";
 
 export const revalidate = 300; // Cache 5 minutos
@@ -10,5 +11,10 @@ export default async function GamesPage() {
     "SELECT * FROM games ORDER BY press_score DESC NULLS LAST LIMIT 100"
   );
 
-  return <GamesClient games={games} />;
+  return (
+    <div className="min-h-screen bg-zinc-950">
+      <Navbar />
+      <GamesClient games={games} />
+    </div>
+  );
 }

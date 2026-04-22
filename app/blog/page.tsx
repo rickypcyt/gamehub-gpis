@@ -1,35 +1,28 @@
-import { ArrowLeft, MessageSquare, Users } from "lucide-react";
+import { MessageSquare, Users } from "lucide-react";
 
 import type { BlogPost } from "@/lib/neon";
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
 import { query } from "@/lib/neon";
+
+export const revalidate = 60;
 
 export default async function BlogPage() {
   const posts = await query<
-    BlogPost & { author_name?: string; author_avatar_url?: string }
+    BlogPost & { author_name?: string; author_avatar_url?: string; comment_count?: number }
   >(
-    `SELECT blog_posts.*, profiles.name as author_name, profiles.avatar_url as author_avatar_url 
+    `SELECT blog_posts.*, profiles.name as author_name, profiles.avatar_url as author_avatar_url,
+     (SELECT COUNT(*) FROM comments WHERE comments.post_id = blog_posts.id) as comment_count
      FROM blog_posts 
      LEFT JOIN profiles ON blog_posts.author_id = profiles.id 
      WHERE blog_posts.published = true 
-     ORDER BY blog_posts.created_at DESC`
+     ORDER BY blog_posts.created_at DESC
+     LIMIT 50`
   );
 
   return (
     <div className="min-h-screen bg-zinc-950">
-      <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-zinc-400 hover:text-white">
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-            <h1 className="flex items-center gap-2 text-xl font-bold text-white">
-              <Users className="h-6 w-6 text-violet-500" />
-              Blog de Opinión
-            </h1>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       <main className="mx-auto max-w-4xl px-4 py-8">
         <div className="mb-8 text-center">

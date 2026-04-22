@@ -1,8 +1,10 @@
-import { ArrowLeft, Calendar, ExternalLink, MapPin } from "lucide-react";
+import { Calendar, ExternalLink, MapPin } from "lucide-react";
 
 import type { Event } from "@/lib/neon";
-import Link from "next/link";
+import Navbar from "@/components/Navbar";
 import { query } from "@/lib/neon";
+
+export const revalidate = 300;
 
 export default async function EventsPage() {
   const events = await query<Event>(
@@ -15,19 +17,7 @@ export default async function EventsPage() {
 
   return (
     <div className="min-h-screen bg-zinc-950">
-      <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-zinc-400 hover:text-white">
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-            <h1 className="flex items-center gap-2 text-xl font-bold text-white">
-              <Calendar className="h-6 w-6 text-violet-500" />
-              Agenda
-            </h1>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="mb-8">
