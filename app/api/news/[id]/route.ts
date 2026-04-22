@@ -1,7 +1,7 @@
 import { query, queryOne } from "@/lib/neon";
 
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { requireRole } from "@/lib/auth-utils";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -54,13 +54,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const userRole = session.user.role as string;
-    if (!["admin", "redactor"].includes(userRole)) {
+    const session = await requireRole(["admin", "redactor"]);
+    if (!session) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -83,7 +78,7 @@ export async function PUT(
     }
 
     // Only admin or author can edit
-    if (userRole !== "admin" && existing.author_id !== session.user.id) {
+    if (session.user.role !== "admin" && existing.author_id !== session.user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -141,13 +136,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const userRole = session.user.role as string;
-    if (!["admin", "redactor"].includes(userRole)) {
+    const session = await requireRole(["admin", "redactor"]);
+    if (!session) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -170,7 +160,7 @@ export async function DELETE(
     }
 
     // Only admin or author can delete
-    if (userRole !== "admin" && existing.author_id !== session.user.id) {
+    if (session.user.role !== "admin" && existing.author_id !== session.user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

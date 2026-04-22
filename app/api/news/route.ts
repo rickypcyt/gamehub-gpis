@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/auth";
 import { query, queryOne } from "@/lib/neon";
-import { z } from "zod";
+
+import { NextResponse } from "next/server";
+import { requireRole } from "@/lib/auth-utils";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 const newsSchema = z.object({
   title: z.string().min(1, "El título es obligatorio"),
@@ -51,13 +52,8 @@ export async function GET(request: Request) {
 // POST - Crear noticia
 export async function POST(request: Request) {
   try {
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const userRole = session.user.role as string;
-    if (!["admin", "redactor"].includes(userRole)) {
+    const session = await requireRole(["admin", "redactor"]);
+    if (!session) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

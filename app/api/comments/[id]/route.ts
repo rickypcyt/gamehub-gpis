@@ -1,6 +1,7 @@
+import { query, queryOne } from "@/lib/neon";
+
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
-import { queryOne, query } from "@/lib/neon";
+import { getCurrentSession } from "@/lib/auth-utils";
 import { z } from "zod";
 
 const commentUpdateSchema = z.object({
@@ -13,7 +14,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -37,8 +38,7 @@ export async function PUT(
     }
 
     // Solo el autor o admin pueden editar
-    const userRole = session.user.role as string;
-    if (userRole !== "admin" && existing.author_id !== session.user.id) {
+    if (session.user.role !== "admin" && existing.author_id !== session.user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -78,7 +78,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -102,8 +102,7 @@ export async function DELETE(
     }
 
     // Solo el autor o admin pueden eliminar
-    const userRole = session.user.role as string;
-    if (userRole !== "admin" && existing.author_id !== session.user.id) {
+    if (session.user.role !== "admin" && existing.author_id !== session.user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

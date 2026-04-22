@@ -1,16 +1,12 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
 import { query } from "@/lib/neon";
+import { requireRole } from "@/lib/auth-utils";
 
 // GET - Listar todos los usuarios (solo admin)
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    if (session.user.role !== "admin") {
+    const session = await requireRole(["admin"]);
+    if (!session) {
       return NextResponse.json({ error: "Forbidden - Admin only" }, { status: 403 });
     }
 

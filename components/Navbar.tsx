@@ -1,6 +1,6 @@
 'use client';
 
-import { Gamepad2, User } from "lucide-react";
+import { FileText, Gamepad2, Settings, User, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import Link from "next/link";
@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 export default function Navbar() {
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     // Verificar si hay una sesión activa
@@ -17,8 +18,10 @@ export default function Navbar() {
         const response = await fetch('/api/auth/session');
         const data = await response.json();
         setIsLoggedIn(!!data.user);
+        setUserRole(data.user?.role || null);
       } catch {
         setIsLoggedIn(false);
+        setUserRole(null);
       }
     };
     checkSession();
@@ -37,6 +40,32 @@ export default function Navbar() {
     { href: "/events", label: "Eventos" },
     { href: "/team", label: "Equipo" },
   ];
+
+  // Role-based menu items
+  const roleMenuItems: { href: string; label: string; icon: React.ReactNode; allowedRoles: string[] }[] = [
+    {
+      href: "/admin/news",
+      label: "Gestionar Noticias",
+      icon: <FileText className="h-4 w-4" />,
+      allowedRoles: ["admin", "redactor"],
+    },
+    {
+      href: "/admin/users",
+      label: "Gestionar Usuarios",
+      icon: <Users className="h-4 w-4" />,
+      allowedRoles: ["admin"],
+    },
+    {
+      href: "/admin/settings",
+      label: "Configuración",
+      icon: <Settings className="h-4 w-4" />,
+      allowedRoles: ["admin"],
+    },
+  ];
+
+  const visibleRoleItems = roleMenuItems.filter(item => 
+    userRole && item.allowedRoles.includes(userRole)
+  );
 
   return (
     <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
@@ -57,6 +86,20 @@ export default function Navbar() {
               }`}
             >
               {item.label}
+            </Link>
+          ))}
+          {visibleRoleItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-1 hover:text-white ${
+                isActive(item.href)
+                  ? "text-violet-400 underline underline-offset-4"
+                  : ""
+              }`}
+            >
+              {item.icon}
+              <span className="text-base">{item.label}</span>
             </Link>
           ))}
         </nav>

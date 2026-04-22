@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { getCurrentSession, requireRole } from "@/lib/auth-utils";
 import { query, queryOne } from "@/lib/neon";
+
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
 const updateUserSchema = z.object({
@@ -18,7 +19,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -56,7 +57,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -124,12 +125,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    if (session.user.role !== "admin") {
+    const session = await requireRole(["admin"]);
+    if (!session) {
       return NextResponse.json({ error: "Forbidden - Admin only" }, { status: 403 });
     }
 

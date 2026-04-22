@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
 import { queryOne } from "@/lib/neon";
+import { requireRole } from "@/lib/auth-utils";
 import { revalidatePath } from "next/cache";
 
 export async function POST(
@@ -8,8 +8,8 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user || session.user.role !== "admin") {
+    const session = await requireRole(["admin"]);
+    if (!session) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

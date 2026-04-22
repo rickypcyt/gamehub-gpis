@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { canComment, getCurrentSession } from "@/lib/auth-utils";
 import { query, queryOne } from "@/lib/neon";
+
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
 const commentSchema = z.object({
@@ -43,7 +44,15 @@ export async function GET(request: Request) {
 // POST - Crear comentario
 export async function POST(request: Request) {
   try {
-    const session = await auth();
+    const canUserComment = await canComment();
+    if (!canUserComment) {
+      return NextResponse.json(
+        { error: "Debes iniciar sesión para comentar" },
+        { status: 401 }
+      );
+    }
+
+    const session = await getCurrentSession();
     if (!session?.user) {
       return NextResponse.json(
         { error: "Debes iniciar sesión para comentar" },
