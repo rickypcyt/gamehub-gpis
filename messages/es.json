@@ -7,7 +7,8 @@
     "events": "Eventos",
     "team": "Equipo",
     "login": "Entrar",
-    "logout": "Salir"
+    "logout": "Salir",
+    "profile": "Ver Perfil"
   },
   "home": {
     "hero": {

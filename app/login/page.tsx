@@ -35,8 +35,37 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/dashboard");
-    router.refresh();
+    // Obtener sesión para saber el rol y redirigir según corresponda
+    try {
+      const sessionRes = await fetch("/api/auth/session");
+      const session = await sessionRes.json();
+      const role = session?.user?.role;
+
+      // Redirección según rol
+      let redirectUrl = "/dashboard";
+      switch (role) {
+        case "admin":
+          redirectUrl = "/admin";
+          break;
+        case "redactor":
+          redirectUrl = "/admin/news";
+          break;
+        case "colaborador":
+          redirectUrl = "/blog";
+          break;
+        case "suscriptor":
+        default:
+          redirectUrl = "/dashboard";
+          break;
+      }
+
+      router.push(redirectUrl);
+      router.refresh();
+    } catch {
+      // Fallback a dashboard si hay error
+      router.push("/dashboard");
+      router.refresh();
+    }
   }
 
   async function handleRegister(e: React.FormEvent<HTMLFormElement>) {

@@ -45,6 +45,8 @@ export interface NewsPost {
   updated_at: string;
   author_id: string;
   author?: Profile;
+  author_name?: string;
+  author_avatar?: string;
 }
 
 export interface BlogPost {

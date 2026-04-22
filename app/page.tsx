@@ -1,11 +1,47 @@
-import { Calendar, Gamepad2, Newspaper, Trophy, Users, Video } from "lucide-react";
+import { Calendar, Gamepad2, Newspaper, Star, Trophy, Users, Video } from "lucide-react";
+import type { Game, NewsPost } from "@/lib/neon";
 
+import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import { query } from "@/lib/neon";
 
 export const revalidate = 60;
 
+async function getFeaturedNews(): Promise<NewsPost[]> {
+  try {
+    return await query<NewsPost>(
+      `SELECT np.*, p.name as author_name, p.avatar_url as author_avatar 
+       FROM news_posts np 
+       LEFT JOIN profiles p ON np.author_id = p.id 
+       WHERE np.published = true AND np.featured = true 
+       ORDER BY np.created_at DESC 
+       LIMIT 3`
+    );
+  } catch {
+    return [];
+  }
+}
+
+async function getTopGames(): Promise<Game[]> {
+  try {
+    return await query<Game>(
+      `SELECT * FROM games 
+       WHERE press_score IS NOT NULL 
+       ORDER BY press_score DESC 
+       LIMIT 4`
+    );
+  } catch {
+    return [];
+  }
+}
+
 export default async function HomePage() {
+  const [featuredNews, topGames] = await Promise.all([
+    getFeaturedNews(),
+    getTopGames(),
+  ]);
+
   return (
     <div className="min-h-screen bg-zinc-950">
       <Navbar />
@@ -39,8 +75,115 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Featured News */}
+      {featuredNews.length > 0 && (
+        <section className="px-4 py-16 border-t border-zinc-800">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-8 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Newspaper className="h-6 w-6 text-violet-500" />
+                Noticias Destacadas
+              </h2>
+              <Link href="/news" className="text-violet-400 hover:text-violet-300">
+                Ver todas →
+              </Link>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {featuredNews.map((news) => (
+                <Link
+                  key={news.id}
+                  href={`/news/${news.slug}`}
+                  className="group rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden transition hover:border-violet-500/50"
+                >
+                  {news.cover_image && (
+                    <div className="aspect-video relative overflow-hidden">
+                      <Image
+                        src={news.cover_image}
+                        alt={news.title}
+                        fill
+                        className="object-cover transition group-hover:scale-105"
+                      />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <h3 className="font-semibold text-white group-hover:text-violet-400 line-clamp-2">
+                      {news.title}
+                    </h3>
+                    <p className="mt-2 text-sm text-zinc-400 line-clamp-2">
+                      {news.excerpt}
+                    </p>
+                    <div className="mt-3 flex items-center gap-2 text-xs text-zinc-500">
+                      <span>{news.author_name || "Redacción"}</span>
+                      <span>•</span>
+                      <span>{new Date(news.created_at).toLocaleDateString("es-ES")}</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Top Rated Games */}
+      {topGames.length > 0 && (
+        <section className="px-4 py-16 border-t border-zinc-800">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-8 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Trophy className="h-6 w-6 text-violet-500" />
+                Juegos Mejor Valorados
+              </h2>
+              <Link href="/games" className="text-violet-400 hover:text-violet-300">
+                Ver todos →
+              </Link>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {topGames.map((game) => (
+                <Link
+                  key={game.id}
+                  href={`/games/${game.id}`}
+                  className="group rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden transition hover:border-violet-500/50"
+                >
+                  {game.cover_image ? (
+                    <div className="aspect-[3/4] relative overflow-hidden">
+                      <Image
+                        src={game.cover_image}
+                        alt={game.title}
+                        fill
+                        className="object-cover transition group-hover:scale-105"
+                      />
+                    </div>
+                  ) : (
+                    <div className="aspect-[3/4] bg-zinc-800 flex items-center justify-center">
+                      <Gamepad2 className="h-12 w-12 text-zinc-600" />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <h3 className="font-semibold text-white group-hover:text-violet-400 line-clamp-1">
+                      {game.title}
+                    </h3>
+                    <div className="mt-2 flex items-center gap-2">
+                      {game.press_score && (
+                        <span className="inline-flex items-center gap-1 rounded bg-yellow-500/10 px-2 py-1 text-xs text-yellow-400">
+                          <Star className="h-3 w-3" />
+                          {game.press_score}
+                        </span>
+                      )}
+                      {game.genre && game.genre[0] && (
+                        <span className="text-xs text-zinc-500">{game.genre[0]}</span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Features */}
-      <section className="px-4 py-16">
+      <section className="px-4 py-16 border-t border-zinc-800">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <FeatureCard
