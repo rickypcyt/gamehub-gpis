@@ -1,9 +1,10 @@
-import { Calendar, Gamepad2, Newspaper, Star, Trophy, Users, Video } from "lucide-react";
+import { Calendar, Gamepad2, Newspaper, Trophy, Users, Video } from "lucide-react";
 import type { Game, NewsPost } from "@/lib/neon";
 
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import TopGamesClient from "./TopGamesClient";
 import { query } from "@/lib/neon";
 
 export const revalidate = 60;
@@ -138,50 +139,7 @@ export default async function HomePage() {
                 Ver ranking completo →
               </Link>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
-              {topGames.map((game, index) => (
-                <Link
-                  key={game.id}
-                  href={`/games/${game.id}`}
-                  className="group relative rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden transition hover:border-violet-500/50"
-                >
-                  {/* Rank Badge */}
-                  <div className="absolute top-2 left-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-violet-600 font-bold text-white shadow-lg">
-                    {index + 1}
-                  </div>
-                  {game.cover_image ? (
-                    <div className="aspect-[3/4] relative overflow-hidden">
-                      <Image
-                        src={game.cover_image}
-                        alt={game.title}
-                        fill
-                        className="object-cover transition group-hover:scale-105"
-                      />
-                    </div>
-                  ) : (
-                    <div className="aspect-[3/4] bg-zinc-800 flex items-center justify-center">
-                      <Gamepad2 className="h-12 w-12 text-zinc-600" />
-                    </div>
-                  )}
-                  <div className="p-4">
-                    <h3 className="font-semibold text-white group-hover:text-violet-400 line-clamp-1">
-                      {game.title}
-                    </h3>
-                    <div className="mt-2 flex items-center gap-2">
-                      {game.press_score && (
-                        <span className="inline-flex items-center gap-1 rounded bg-yellow-500/10 px-2 py-1 text-xs text-yellow-400">
-                          <Star className="h-3 w-3" />
-                          {game.press_score}
-                        </span>
-                      )}
-                      {game.genre && game.genre[0] && (
-                        <span className="text-xs text-zinc-500">{game.genre[0]}</span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <TopGamesClient games={topGames} />
           </div>
         </section>
       )}

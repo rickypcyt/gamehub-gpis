@@ -283,7 +283,7 @@ function GameCard({ game, rank, onClick }: { game: Game; rank?: number; onClick:
       className="group relative flex w-full rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden transition hover:border-violet-500/50 hover:bg-zinc-900 text-left"
     >
       {/* Cover Image - Left side */}
-      <div className="relative flex-shrink-0 w-32 overflow-hidden bg-zinc-800">
+      <div className="relative aspect-[2/3] w-36 sm:w-44 flex-shrink-0 overflow-hidden bg-zinc-800">
         {game.cover_image ? (
           <img
             src={game.cover_image}
@@ -293,8 +293,14 @@ function GameCard({ game, rank, onClick }: { game: Game; rank?: number; onClick:
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="flex aspect-[3/4] h-full w-full items-center justify-center">
-            <Trophy className="h-16 w-16 text-zinc-700" />
+          <div className="flex h-full w-full items-center justify-center">
+            <Trophy className="h-8 w-8 text-zinc-700" />
+          </div>
+        )}
+        {/* Rank Badge - Overlay */}
+        {rank && (
+          <div className="absolute top-2 left-2 flex h-6 w-6 items-center justify-center rounded-full bg-violet-600 font-bold text-white shadow-lg text-sm">
+            {rank}
           </div>
         )}
       </div>
@@ -303,47 +309,65 @@ function GameCard({ game, rank, onClick }: { game: Game; rank?: number; onClick:
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold text-white line-clamp-1">{game.title}</h3>
-          {/* Rank Badge */}
-          {rank && (
-            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-violet-600 font-bold text-white">
-              {rank}
-            </div>
-          )}
         </div>
 
-        {game.release_date && (
-          <p className="mt-1 flex items-center gap-1 text-base text-zinc-500">
-            <Calendar className="h-3 w-3" />
-            {new Date(game.release_date).getFullYear()}
-          </p>
+        {/* Description */}
+        {game.description && (
+          <p className="mt-3 text-sm text-zinc-400 line-clamp-2">{game.description}</p>
         )}
 
         {/* Scores */}
-        <div className="mt-3 flex items-center gap-4">
+        <div className="mt-4 flex items-center gap-4">
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-            <span className="text-base font-medium text-white">{pressScore.toFixed(1)}</span>
-            <span className="text-base text-zinc-500">prensa</span>
+            <span className="text-sm font-medium text-white">{pressScore.toFixed(1)}</span>
+            <span className="text-sm text-zinc-500">prensa</span>
           </div>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-violet-500 text-violet-500" />
-            <span className="text-base font-medium text-white">{userScore.toFixed(1)}</span>
-            <span className="text-base text-zinc-500">users</span>
+            <span className="text-sm font-medium text-white">{userScore.toFixed(1)}</span>
+            <span className="text-sm text-zinc-500">usuarios</span>
           </div>
         </div>
 
         {/* Genres */}
         {game.genre && game.genre.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1">
-            {game.genre.slice(0, 3).map((g) => (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {game.genre.map((g) => (
               <span
                 key={g}
-                className="rounded-full bg-zinc-800 px-2 py-0.5 text-base text-zinc-400"
+                className="rounded-full bg-zinc-800 px-2.5 py-0.5 text-sm text-zinc-400"
               >
                 {g}
               </span>
             ))}
           </div>
+        )}
+
+        {/* Platforms */}
+        {game.platform && game.platform.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {game.platform.map((p) => (
+              <span
+                key={p}
+                className="rounded bg-zinc-800/60 px-2.5 py-0.5 text-sm text-zinc-500"
+              >
+                {p}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Release Date */}
+        {game.release_date && (
+          <p className="mt-3 flex items-center gap-1 text-sm text-zinc-500">
+            <Calendar className="h-3 w-3" />
+            {new Date(game.release_date).toLocaleDateString('es-ES', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+            })}
+          </p>
         )}
       </div>
     </button>
