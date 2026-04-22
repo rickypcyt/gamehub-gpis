@@ -27,9 +27,9 @@ async function getTopGames(): Promise<Game[]> {
   try {
     return await query<Game>(
       `SELECT * FROM games 
-       WHERE press_score IS NOT NULL 
-       ORDER BY press_score DESC 
-       LIMIT 4`
+       WHERE category = 'Top de la historia'
+       ORDER BY id ASC
+       LIMIT 10`
     );
   } catch {
     return [];
@@ -125,26 +125,30 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Top Rated Games */}
+      {/* Top 10 de la Historia */}
       {topGames.length > 0 && (
         <section className="px-4 py-16 border-t border-zinc-800">
           <div className="mx-auto max-w-7xl">
             <div className="mb-8 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                 <Trophy className="h-6 w-6 text-violet-500" />
-                Juegos Mejor Valorados
+                Top 10 de la Historia
               </h2>
               <Link href="/games" className="text-violet-400 hover:text-violet-300">
-                Ver todos →
+                Ver ranking completo →
               </Link>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {topGames.map((game) => (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+              {topGames.map((game, index) => (
                 <Link
                   key={game.id}
                   href={`/games/${game.id}`}
-                  className="group rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden transition hover:border-violet-500/50"
+                  className="group relative rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden transition hover:border-violet-500/50"
                 >
+                  {/* Rank Badge */}
+                  <div className="absolute top-2 left-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-violet-600 font-bold text-white shadow-lg">
+                    {index + 1}
+                  </div>
                   {game.cover_image ? (
                     <div className="aspect-[3/4] relative overflow-hidden">
                       <Image

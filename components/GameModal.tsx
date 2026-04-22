@@ -27,28 +27,30 @@ export function GameModal({ game, onClose }: GameModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
     >
       <div
-        className="relative max-w-2xl w-full h-[90vh] rounded-2xl border border-zinc-800 shadow-2xl"
+        className="relative max-w-2xl w-full h-[90vh] rounded-2xl border border-zinc-800 shadow-2xl overflow-hidden"
         style={{
           backgroundImage: game.cover_image ? `url(${game.cover_image})` : 'none',
           backgroundSize: 'cover',
-          backgroundPosition: 'top',
+          backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 rounded-2xl bg-black/60 backdrop-blur-md" />
+        {/* Light blur overlay for entire modal */}
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
 
-        {/* Cover Image Banner - No Blur */}
+        {/* Cover Image Banner - No Blur, clear at top */}
         {game.cover_image && (
-          <div className="relative h-64 w-full overflow-hidden rounded-t-2xl">
+          <div className="relative h-56 w-full overflow-hidden z-10">
             <img
               src={game.cover_image}
               alt={game.title}
               className="h-full w-full object-cover object-top"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80" />
           </div>
         )}
 
-        <div className="relative z-10 p-6 overflow-y-auto h-[calc(90vh-16rem)] text-center">
+        {/* Content area - centered info */}
+        <div className="relative z-10 flex-1 overflow-y-auto p-6 text-center">
           {/* Title */}
           <h2 className="text-3xl font-bold text-white mb-2">{game.title}</h2>
 

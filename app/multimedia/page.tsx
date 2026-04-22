@@ -40,7 +40,7 @@ export default async function MultimediaPage() {
               <Play className="h-5 w-5 text-violet-500" />
               Trailers
             </h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {trailers.map((video) => (
                 <VideoCard key={video.id} video={video} />
               ))}
