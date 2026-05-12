@@ -4,8 +4,7 @@ import { FileText, Gamepad2, Menu, Settings, User, Users, X } from "lucide-react
 import { useEffect, useState } from "react";
 
 import LanguageSwitcher from "./LanguageSwitcher";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 
 export default function Navbar() {

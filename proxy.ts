@@ -1,14 +1,36 @@
+import { defaultLocale, locales } from "./i18n/config";
+
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import createMiddleware from "next-intl/middleware";
+
+// Create next-intl middleware
+const intlMiddleware = createMiddleware({
+  locales,
+  defaultLocale,
+  localePrefix: "always"
+});
 
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
   const userRole = req.auth?.user?.role;
 
+  // Apply next-intl middleware first for locale handling
+  const intlResponse = intlMiddleware(req);
+  if (intlResponse) return intlResponse;
+
+  const isPublicRoute = ["/", "/news", "/games", "/blog", "/multimedia", "/events", "/team", "/contact"]
+    .map(p => `/${defaultLocale}${p}`)
+    .concat(["/", "/news", "/games", "/blog", "/multimedia", "/events", "/team", "/contact"])
+    .includes(nextUrl.pathname);
+
+  if (isPublicRoute) {
+    return NextResponse.next();
+  }
+
   const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth");
-  const isPublicRoute = ["/", "/login", "/news", "/games", "/blog", "/multimedia", "/events", "/team", "/contact"].includes(nextUrl.pathname);
-  const isAuthRoute = nextUrl.pathname === "/login";
+  const isAuthRoute = nextUrl.pathname === "/login" || nextUrl.pathname === `/${defaultLocale}/login`;
 
   // Rutas protegidas por rol
   const isAdminRoute = nextUrl.pathname.startsWith("/admin");
@@ -37,18 +59,18 @@ export default auth((req) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      return NextResponse.redirect(new URL("/dashboard", nextUrl));
+      return NextResponse.redirect(new URL(`/${defaultLocale}/dashboard`, nextUrl));
     }
     return NextResponse.next();
   }
 
-  if (!isLoggedIn && !isPublicRoute) {
-    return NextResponse.redirect(new URL("/login", nextUrl));
+  if (!isLoggedIn) {
+    return NextResponse.redirect(new URL(`/${defaultLocale}/login`, nextUrl));
   }
 
   // Verificar roles para rutas protegidas
   if (isAdminRoute && userRole !== "admin") {
-    return NextResponse.redirect(new URL("/dashboard", nextUrl));
+    return NextResponse.redirect(new URL(`/${defaultLocale}/dashboard`, nextUrl));
   }
 
   // Redactor tiene acceso a escribir noticias, juegos, multimedia, eventos
@@ -59,31 +81,18 @@ export default auth((req) => {
       nextUrl.pathname.startsWith("/dashboard/events") ||
       nextUrl.pathname.startsWith("/dashboard/edit/news")) {
     if (!["admin", "redactor"].includes(userRole || "")) {
-      return NextResponse.redirect(new URL("/dashboard", nextUrl));
+      return NextResponse.redirect(new URL(`/${defaultLocale}/dashboard`, nextUrl));
     }
   }
 
   // Colaborador solo blog
   if (isColaboradorRoute && userRole !== "colaborador" && userRole !== "admin") {
-    return NextResponse.redirect(new URL("/dashboard", nextUrl));
+    return NextResponse.redirect(new URL(`/${defaultLocale}/dashboard`, nextUrl));
   }
 
   return NextResponse.next();
 });
 
-// Optimizado: solo procesar rutas que necesitan auth
 export const config = {
-  matcher: [
-    // Rutas protegidas
-    "/dashboard/:path*",
-    "/admin/:path*",
-    "/login",
-    // APIs protegidas
-    "/api/news/:path*",
-    "/api/games/:path*",
-    "/api/comments/:path*",
-    "/api/my-comments",
-    "/api/profile",
-    "/api/users/:path*",
-  ],
+  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"]
 };

@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import { unstable_cache } from "next/cache";
 
 // Tipos de las tablas de GameHub
 export type UserRole = "admin" | "redactor" | "colaborador" | "suscriptor";
@@ -134,8 +135,36 @@ export async function query<T = unknown>(sqlStr: string, params?: unknown[]): Pr
   }
 }
 
+// Helper para ejecutar queries con cache
+export async function cachedQuery<T = unknown>(
+  sqlStr: string,
+  params?: unknown[],
+  revalidateInSeconds: number = 300
+): Promise<T[]> {
+  const cacheKey = `neon:${sqlStr}:${JSON.stringify(params || [])}`;
+  
+  return unstable_cache(
+    async () => query<T>(sqlStr, params),
+    [cacheKey],
+    {
+      revalidate: revalidateInSeconds,
+      tags: ['neon-query']
+    }
+  )();
+}
+
 // Helper para ejecutar una query que devuelve un solo registro
 export async function queryOne<T = unknown>(sql: string, params?: unknown[]): Promise<T | null> {
   const results = await query<T>(sql, params);
+  return results.length > 0 ? results[0] : null;
+}
+
+// Helper para ejecutar una query que devuelve un solo registro con cache
+export async function cachedQueryOne<T = unknown>(
+  sql: string,
+  params?: unknown[],
+  revalidateInSeconds: number = 300
+): Promise<T | null> {
+  const results = await cachedQuery<T>(sql, params, revalidateInSeconds);
   return results.length > 0 ? results[0] : null;
 }
