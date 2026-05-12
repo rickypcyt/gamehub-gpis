@@ -1,10 +1,10 @@
 import { Calendar, Gamepad2, Newspaper, Trophy, Users, Video } from "lucide-react";
 import type { Game, NewsPost } from "@/lib/neon";
+import { cachedQuery, query } from "@/lib/neon";
 
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import TopGamesClient from "./TopGamesClient";
-import { cachedQuery } from "@/lib/neon";
 
 export const revalidate = 300; // Cache 5 minutos
 export const dynamic = 'force-static';
