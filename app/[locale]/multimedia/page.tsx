@@ -31,9 +31,6 @@ export default async function MultimediaPage() {
     <div className="min-h-screen bg-zinc-950">
 
       <main className="mx-auto max-w-7xl px-4 py-8">
-        {/* Featured Video */}
-        {items?.[0] && <FeaturedVideo video={items[0]} />}
-
         {/* Trailers Section */}
         {trailers && trailers.length > 0 && (
           <section className="mt-12">
@@ -43,21 +40,6 @@ export default async function MultimediaPage() {
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {trailers.map((video) => (
-                <VideoCard key={video.id} video={video} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Streams Section */}
-        {streams && streams.length > 0 && (
-          <section className="mt-12">
-            <h2 className="mb-6 text-xl font-bold text-white flex items-center gap-2">
-              <Tv className="h-5 w-5 text-red-500" />
-              Streams en vivo
-            </h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {streams.map((video) => (
                 <VideoCard key={video.id} video={video} />
               ))}
             </div>
@@ -78,6 +60,24 @@ export default async function MultimediaPage() {
             </div>
           </section>
         )}
+
+        {/* Streams Section */}
+        {streams && streams.length > 0 && (
+          <section className="mt-12 mb-12">
+            <h2 className="mb-6 text-xl font-bold text-white flex items-center gap-2">
+              <Tv className="h-5 w-5 text-red-500" />
+              Streams en vivo
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {streams.map((video) => (
+                <VideoCard key={video.id} video={video} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Featured Video - MOVED TO END */}
+        {items?.[0] && <FeaturedVideo video={items[0]} />}
 
         {!items?.length && (
           <div className="py-16 text-center">
