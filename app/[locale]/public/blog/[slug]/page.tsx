@@ -11,6 +11,7 @@ import {
   User,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
 import { Link } from "@/i18n/navigation";
@@ -223,10 +224,13 @@ export default function BlogPostPage() {
           <div className="mb-6 flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-violet-500/10 text-violet-500">
               {post.author_avatar_url ? (
-                <img
+                <Image
                   src={post.author_avatar_url}
-                  alt={post.author_name || ""}
+                  alt={post.author_name || "Avatar"}
+                  width={48}
+                  height={48}
                   className="h-full w-full rounded-full object-cover"
+                  unoptimized
                 />
               ) : (
                 <User className="h-6 w-6" />
@@ -385,10 +389,13 @@ function CommentItem({
       <div className="mb-2 flex items-center gap-2">
         <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-zinc-800 text-zinc-400">
           {comment.author_avatar ? (
-            <img
+            <Image
               src={comment.author_avatar}
-              alt={comment.author_name || ""}
+              alt={comment.author_name || "Avatar"}
+              width={32}
+              height={32}
               className="h-full w-full rounded-full object-cover"
+              unoptimized
             />
           ) : (
             <User className="h-4 w-4" />
@@ -506,10 +513,13 @@ function CommentItem({
               <div className="mb-1 flex items-center gap-2">
                 <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-zinc-800 text-zinc-400">
                   {reply.author_avatar ? (
-                    <img
+                    <Image
                       src={reply.author_avatar}
-                      alt={reply.author_name || ""}
+                      alt={reply.author_name || "Avatar"}
+                      width={24}
+                      height={24}
                       className="h-full w-full rounded-full object-cover"
+                      unoptimized
                     />
                   ) : (
                     <User className="h-3 w-3" />

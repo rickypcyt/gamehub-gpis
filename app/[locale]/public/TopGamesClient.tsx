@@ -1,7 +1,7 @@
 'use client';
 
 import type { Game } from '@/lib/neon';
-import { GameModal } from '@/components/GameModal';
+import { GameModal } from '@/components/features/games/GameModal';
 import Image from 'next/image';
 import { Star } from 'lucide-react';
 import { useState } from 'react';

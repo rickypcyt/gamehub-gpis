@@ -1,16 +1,14 @@
-import { getLocale, getMessages } from "next-intl/server";
-
-import { Footer } from "@/components/Footer";
-import Navbar from "@/components/Navbar";
+import { Footer } from "@/components/common/Footer";
+import Navbar from "@/components/common/Navbar";
 import { NextIntlClientProvider } from "next-intl";
 import { ToastProvider } from "@/components/ui/toast";
+import { getMessages } from "next-intl/server";
 
 export default async function LocaleLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
   const messages = await getMessages();
 
   return (

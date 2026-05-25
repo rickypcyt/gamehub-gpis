@@ -1,10 +1,11 @@
 'use client';
 
 import { Calendar, Filter, Search, SlidersHorizontal, Star, Trophy, X } from 'lucide-react';
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
 
 import type { Game } from '@/lib/neon';
-import { GameModal } from '@/components/GameModal';
+import { GameModal } from '@/components/features/games/GameModal';
 
 interface GamesClientProps {
   games: Game[];
@@ -21,7 +22,7 @@ export default function GamesClient({ games }: GamesClientProps) {
   // Get unique genres and years for filters
   const allGenres = useMemo(() => {
     const genres = new Set<string>();
-    games?.forEach(game => game.genre?.forEach(g => genres.add(g)));
+    games?.forEach((game) => game.genre?.forEach((genre) => genres.add(genre)));
     return Array.from(genres).sort();
   }, [games]);
 
@@ -133,7 +134,7 @@ export default function GamesClient({ games }: GamesClientProps) {
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-white focus:border-violet-500 focus:outline-none"
                   >
                     <option value="all">Todos los géneros</option>
-                    {allGenres.map(genre => (
+                    {allGenres.map((genre) => (
                       <option key={genre} value={genre}>{genre}</option>
                     ))}
                   </select>
@@ -151,7 +152,7 @@ export default function GamesClient({ games }: GamesClientProps) {
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-white focus:border-violet-500 focus:outline-none"
                   >
                     <option value="all">Todos los años</option>
-                    {allYears.map(year => (
+                    {allYears.map((year) => (
                       <option key={year} value={year.toString()}>{year}</option>
                     ))}
                   </select>
@@ -285,12 +286,13 @@ function GameCard({ game, rank, onClick }: { game: Game; rank?: number; onClick:
       {/* Cover Image - Left side */}
       <div className="relative aspect-[2/3] w-36 sm:w-44 flex-shrink-0 overflow-hidden bg-zinc-800">
         {game.cover_image ? (
-          <img
+          <Image
             src={game.cover_image}
             alt={game.title}
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-cover"
+            fill
+            sizes="(max-width: 640px) 9rem, (max-width: 1024px) 11rem, 11rem"
+            className="object-cover"
+            unoptimized
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
@@ -333,12 +335,12 @@ function GameCard({ game, rank, onClick }: { game: Game; rank?: number; onClick:
         {/* Genres */}
         {game.genre && game.genre.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
-            {game.genre.map((g) => (
+            {game.genre.map((genre) => (
               <span
-                key={g}
+                key={genre}
                 className="rounded-full bg-zinc-800 px-2.5 py-0.5 text-sm text-zinc-400"
               >
-                {g}
+                {genre}
               </span>
             ))}
           </div>
@@ -347,12 +349,12 @@ function GameCard({ game, rank, onClick }: { game: Game; rank?: number; onClick:
         {/* Platforms */}
         {game.platform && game.platform.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
-            {game.platform.map((p) => (
+            {game.platform.map((platform) => (
               <span
-                key={p}
+                key={platform}
                 className="rounded bg-zinc-800/60 px-2.5 py-0.5 text-sm text-zinc-500"
               >
-                {p}
+                {platform}
               </span>
             ))}
           </div>

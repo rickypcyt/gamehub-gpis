@@ -1,12 +1,12 @@
 "use client";
 
-import { FormField } from "@/components/auth/FormField";
-import { PasswordStrength } from "@/components/auth/PasswordStrength";
-import { useToast } from "@/components/ui/toast";
+import { FormField } from "@/components/features/auth/FormField";
 import { Gamepad2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { PasswordStrength } from "@/components/features/auth/PasswordStrength";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useToast } from "@/components/ui/toast";
 
 export default function RegisterPage() {
   const router = useRouter();

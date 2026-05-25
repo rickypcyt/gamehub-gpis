@@ -1,7 +1,7 @@
-import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import DashboardSidebar from "@/components/layout/DashboardSidebar";
+import type { Profile } from "@/lib/neon";
 import { auth } from "@/auth";
 import { queryOne } from "@/lib/neon";
-import type { Profile } from "@/lib/neon";
 import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({

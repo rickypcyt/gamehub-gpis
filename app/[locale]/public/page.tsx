@@ -2,12 +2,12 @@ import { Calendar, Gamepad2, Newspaper, Trophy, Users, Video } from "lucide-reac
 import type { Event, Game, NewsPost } from "@/lib/neon";
 import { cachedQuery, query } from "@/lib/neon";
 
-import { EventCard } from "@/components/home/EventCard";
-import { HeroSection } from "@/components/home/HeroSection";
-import { NewsCard } from "@/components/home/NewsCard";
-import { QuickNavCard } from "@/components/home/QuickNavCard";
-import { RankingsPreview } from "@/components/home/RankingsPreview";
-import { SectionHeader } from "@/components/home/SectionHeader";
+import { EventCard } from "@/components/features/home/EventCard";
+import { HeroSection } from "@/components/features/home/HeroSection";
+import { NewsCard } from "@/components/features/home/NewsCard";
+import { QuickNavCard } from "@/components/features/home/QuickNavCard";
+import { RankingsPreview } from "@/components/features/home/RankingsPreview";
+import { SectionHeader } from "@/components/features/home/SectionHeader";
 import { getTranslations } from "next-intl/server";
 
 export const revalidate = 300; // Cache 5 minutos

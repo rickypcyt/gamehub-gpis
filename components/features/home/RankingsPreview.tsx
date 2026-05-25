@@ -1,9 +1,10 @@
 'use client';
 
-import type { Game } from '@/lib/neon';
-import { GameModal } from '@/components/GameModal';
-import Image from 'next/image';
 import { Star, Trophy } from 'lucide-react';
+
+import type { Game } from '@/lib/neon';
+import { GameModal } from '@/components/features/games/GameModal';
+import Image from 'next/image';
 import { useState } from 'react';
 
 interface RankingsPreviewProps {

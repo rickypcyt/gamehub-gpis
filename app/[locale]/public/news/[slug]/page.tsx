@@ -1,4 +1,5 @@
 import { ArrowLeft, Calendar, Eye, MessageSquare, User } from "lucide-react";
+import Image from "next/image";
 import { query, queryOne } from "@/lib/neon";
 
 import { CommentsSection } from "./CommentsSection";
@@ -71,11 +72,15 @@ export default async function NewsDetailPage({ params }: PageProps) {
       <article className="mx-auto max-w-4xl px-4 py-8">
         {/* Cover Image */}
         {post.cover_image && (
-          <div className="mb-8 aspect-video overflow-hidden rounded-2xl bg-zinc-800">
-            <img
+          <div className="mb-8 aspect-video overflow-hidden rounded-2xl bg-zinc-800 relative">
+            <Image
               src={post.cover_image}
               alt={post.title}
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
+              sizes="100vw"
+              priority
+              unoptimized
             />
           </div>
         )}
@@ -88,7 +93,14 @@ export default async function NewsDetailPage({ params }: PageProps) {
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800">
                 {post.author_avatar ? (
-                  <img src={post.author_avatar} alt={post.author_name} className="h-8 w-8 rounded-full" />
+                  <Image
+                    src={post.author_avatar}
+                    alt={post.author_name}
+                    width={32}
+                    height={32}
+                    className="h-8 w-8 rounded-full object-cover"
+                    unoptimized
+                  />
                 ) : (
                   <User className="h-4 w-4" />
                 )}

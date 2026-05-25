@@ -1,6 +1,6 @@
 "use client";
 
-import { FormField } from "@/components/auth/FormField";
+import { FormField } from "@/components/features/auth/FormField";
 import { Gamepad2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { signIn } from "next-auth/react";
