@@ -1,24 +1,27 @@
 'use client';
 
-import { Gamepad2, Globe, Mail, MapPin, Phone, Share2 } from 'lucide-react';
+import { Gamepad2, Mail, MapPin, Phone } from 'lucide-react';
 
 import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const tFooter = useTranslations('footer');
+  const tNav = useTranslations('nav');
 
   const footerLinks = {
-    navegacion: [
-      { label: 'Noticias', href: '/news' },
-      { label: 'Rankings', href: '/games' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'Eventos', href: '/events' },
-      { label: 'Multimedia', href: '/multimedia' },
+    navigation: [
+      { label: tNav('news'), href: '/news' },
+      { label: tNav('games'), href: '/games' },
+      { label: tNav('blog'), href: '/blog' },
+      { label: tNav('events'), href: '/events' },
+      { label: tNav('multimedia'), href: '/multimedia' },
     ],
-    comunidad: [
-      { label: 'Equipo', href: '/team' },
-      { label: 'Contacto', href: '/contact' },
-      { label: 'Login', href: '/login' },
+    community: [
+      { label: tFooter('team'), href: '/team' },
+      { label: tFooter('contact'), href: '/contact' },
+      { label: tFooter('login'), href: '/login' },
     ],
   };
 
@@ -33,35 +36,15 @@ export function Footer() {
               GameHub
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-              Tu destino definitivo para rankings, noticias, eventos y comunidad gaming.
+              {tFooter('tagline')}
             </p>
-            <div className="mt-6 flex items-center gap-3">
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 transition hover:border-violet-500/30 hover:text-violet-400"
-                aria-label="Twitter"
-              >
-                <Globe className="h-4 w-4" />
-              </a>
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 transition hover:border-violet-500/30 hover:text-violet-400"
-                aria-label="GitHub"
-              >
-                <Share2 className="h-4 w-4" />
-              </a>
-            </div>
           </div>
 
           {/* Navigation */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-white">Navegación</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-white">{tFooter('navigationHeading')}</h4>
             <ul className="mt-4 space-y-2.5">
-              {footerLinks.navegacion.map((link) => (
+              {footerLinks.navigation.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -76,9 +59,9 @@ export function Footer() {
 
           {/* Community */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-white">Comunidad</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-white">{tFooter('communityHeading')}</h4>
             <ul className="mt-4 space-y-2.5">
-              {footerLinks.comunidad.map((link) => (
+              {footerLinks.community.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -93,19 +76,19 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-white">Contacto</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-white">{tFooter('contactHeading')}</h4>
             <ul className="mt-4 space-y-3">
               <li className="flex items-start gap-2.5 text-sm text-zinc-400">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-zinc-500" />
-                <span>contacto@gamehub.es</span>
+                <span>{tFooter('contactEmail')}</span>
               </li>
               <li className="flex items-start gap-2.5 text-sm text-zinc-400">
                 <Phone className="mt-0.5 h-4 w-4 shrink-0 text-zinc-500" />
-                <span>+34 900 000 000</span>
+                <span>{tFooter('contactPhone')}</span>
               </li>
               <li className="flex items-start gap-2.5 text-sm text-zinc-400">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-zinc-500" />
-                <span>Madrid, España</span>
+                <span>{tFooter('location')}</span>
               </li>
             </ul>
           </div>
@@ -114,14 +97,14 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-zinc-800 pt-8 sm:flex-row">
           <p className="text-sm text-zinc-500">
-            © {currentYear} GameHub. Proyecto académico GPIS.
+            {tFooter('copyright').replace('2025', currentYear.toString())}
           </p>
           <div className="flex items-center gap-6 text-sm text-zinc-600">
             <Link href="/contact" className="transition hover:text-zinc-400">
-              Contacto
+              {tFooter('contact')}
             </Link>
             <Link href="/team" className="transition hover:text-zinc-400">
-              Equipo
+              {tFooter('team')}
             </Link>
           </div>
         </div>

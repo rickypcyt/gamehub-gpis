@@ -1,7 +1,7 @@
+import { Calendar, User } from "lucide-react";
+
 import { Link } from "@/i18n/navigation";
 import type { NewsPost } from "@/lib/neon";
-import { Calendar, User } from "lucide-react";
-import Image from "next/image";
 
 interface NewsCardProps {
   news: NewsPost;
@@ -11,24 +11,10 @@ export function NewsCard({ news }: NewsCardProps) {
   return (
     <Link
       href={`/news/${news.slug}`}
-      className="group flex flex-col overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/50 transition hover:border-violet-500/40 hover:bg-zinc-900"
+      className="group flex flex-col rounded-lg border border-zinc-800 bg-zinc-900/60 p-5 transition hover:border-violet-500/40 hover:bg-zinc-900"
     >
-      {news.cover_image ? (
-        <div className="relative aspect-video w-full overflow-hidden">
-          <Image
-            src={news.cover_image}
-            alt={news.title}
-            fill
-            className="object-cover transition duration-500 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/60 to-transparent" />
-        </div>
-      ) : (
-        <div className="aspect-video w-full bg-zinc-800 flex items-center justify-center">
-          <span className="text-zinc-600 text-sm">Sin imagen</span>
-        </div>
-      )}
-      <div className="flex flex-1 flex-col p-5">
+
+      <div className="flex flex-1 flex-col">
         <h3 className="text-lg font-semibold text-white transition group-hover:text-violet-400 line-clamp-2">
           {news.title}
         </h3>

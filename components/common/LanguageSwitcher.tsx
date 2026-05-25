@@ -1,43 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Globe } from "lucide-react";
-import { locales, localeLabels, type Locale } from "@/i18n/config";
+import { localeLabels, locales, type Locale } from "@/i18n/config";
+import { useLocale } from "next-intl";
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 export default function LanguageSwitcher() {
-  const [currentLocale, setCurrentLocale] = useState<Locale>("es");
+  const locale = useLocale() as Locale;
+  const router = useRouter();
+  const pathname = usePathname();
+  const [currentLocale, setCurrentLocale] = useState<Locale>(locale);
   const [isOpen, setIsOpen] = useState(false);
+  const [, startTransition] = useTransition();
 
   useEffect(() => {
-    // Get locale from cookie or localStorage
-    const cookieLocale = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("locale="))
-      ?.split("=")[1] as Locale | undefined;
+    setCurrentLocale(locale);
+  }, [locale]);
 
-    const storedLocale = localStorage.getItem("locale") as Locale | undefined;
-    const htmlLang = document.documentElement.lang as Locale;
+  const handleLocaleChange = (nextLocale: Locale) => {
+    setIsOpen(false);
 
-    const detectedLocale =
-      cookieLocale || storedLocale || htmlLang || "es";
+    if (nextLocale === currentLocale) return;
 
-    if (locales.includes(detectedLocale)) {
-      setCurrentLocale(detectedLocale);
-    }
-  }, []);
-
-  const handleLocaleChange = (locale: Locale) => {
-    if (locale === currentLocale) {
-      setIsOpen(false);
-      return;
-    }
-
-    // Set cookie (expires in 1 year)
-    document.cookie = `locale=${locale}; path=/; max-age=${60 * 60 * 24 * 365}`;
-    localStorage.setItem("locale", locale);
-
-    // Reload page to apply new locale
-    window.location.reload();
+    startTransition(() => {
+      document.cookie = `locale=${nextLocale}; path=/; max-age=${60 * 60 * 24 * 365}`;
+      localStorage.setItem("locale", nextLocale);
+      router.replace(pathname, { locale: nextLocale });
+      router.refresh();
+    });
   };
 
   return (

@@ -65,6 +65,7 @@ export default async function HomePage() {
   ]);
 
   const featuredNewsWithImage = featuredNews.filter((news) => Boolean(news.cover_image));
+  const newsCards = featuredNewsWithImage.length > 0 ? featuredNewsWithImage : featuredNews;
 
   return (
     <div className="min-h-screen bg-zinc-950">
@@ -129,15 +130,15 @@ export default async function HomePage() {
               href="/news"
               linkText={t("viewAll")}
             />
-            {featuredNewsWithImage.length > 0 ? (
+            {newsCards.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                {featuredNewsWithImage.map((news) => (
+                {newsCards.map((news) => (
                   <NewsCard key={news.id} news={news} />
                 ))}
               </div>
             ) : (
               <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-8 text-center text-zinc-500">
-                No hay noticias disponibles en este momento.
+                {t("empty.noNews")}
               </div>
             )}
           </section>
@@ -158,7 +159,7 @@ export default async function HomePage() {
               </div>
             ) : (
               <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-8 text-center text-zinc-500">
-                No hay eventos programados próximamente.
+                {t("empty.noEvents")}
               </div>
             )}
           </section>

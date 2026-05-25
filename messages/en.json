@@ -52,7 +52,11 @@
     "quickNav": "Quick Navigation",
     "viewAll": "View all",
     "viewAllEvents": "View all",
-    "viewRanking": "View full ranking"
+    "viewRanking": "View full ranking",
+    "empty": {
+      "noNews": "No news available right now.",
+      "noEvents": "No upcoming events scheduled right now."
+    }
   },
   "auth": {
     "login": {
@@ -98,8 +102,34 @@
     }
   },
   "footer": {
-    "copyright": "© 2025 GameHub. Academic project.",
+    "tagline": "Your destination for rankings, news, events and community.",
+    "navigationHeading": "Navigation",
+    "communityHeading": "Community",
+    "contactHeading": "Contact",
     "contact": "Contact",
-    "team": "Team"
+    "team": "Team",
+    "login": "Sign In",
+    "location": "Madrid, Spain",
+    "contactEmail": "contact@gamehub.es",
+    "contactPhone": "+34 900 000 000",
+    "copyright": "© 2025 GameHub. Academic project."
+  },
+  "contact": {
+    "back": "Back",
+    "title": "Contact",
+    "subtitle": "Send us your questions or suggestions",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "submit": "Send message",
+      "loading": "Sending..."
+    },
+    "success": {
+      "title": "Message sent!",
+      "description": "Thanks for contacting us. We'll get back to you soon.",
+      "action": "Back to home"
+    }
   }
 }

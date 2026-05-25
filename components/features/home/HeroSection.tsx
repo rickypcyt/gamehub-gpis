@@ -1,7 +1,8 @@
 'use client';
 
-import { Link } from '@/i18n/navigation';
 import { ChevronRight, Gamepad2 } from 'lucide-react';
+
+import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 
 export function HeroSection() {
@@ -32,10 +33,7 @@ export function HeroSection() {
       <div className="relative mx-auto max-w-7xl px-4 py-24 sm:py-32 lg:py-40">
         <div className="mx-auto max-w-4xl text-center">
           {/* Badge */}
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/5 px-4 py-1.5 text-sm font-medium text-violet-400">
-            <Gamepad2 className="h-4 w-4" />
-            <span>GameHub</span>
-          </div>
+
 
           <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
             {t('title')}
