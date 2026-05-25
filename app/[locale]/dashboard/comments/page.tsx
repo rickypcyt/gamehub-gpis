@@ -11,6 +11,7 @@ interface Comment {
   created_at: string;
   post_title: string;
   post_slug: string;
+  post_type: "news" | "blog";
 }
 
 export default function MyCommentsPage() {
@@ -93,7 +94,7 @@ export default function MyCommentsPage() {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <Link
-                      href={`/news/${comment.post_slug}`}
+                      href={`/${comment.post_type === "news" ? "news" : "blog"}/${comment.post_slug}`}
                       className="text-base font-medium text-violet-400 hover:text-violet-300"
                     >
                       En: {comment.post_title}

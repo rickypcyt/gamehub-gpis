@@ -1,10 +1,14 @@
 import { Calendar, Gamepad2, Newspaper, Trophy, Users, Video } from "lucide-react";
-import type { Game, NewsPost } from "@/lib/neon";
+import type { Event, Game, NewsPost } from "@/lib/neon";
 import { cachedQuery, query } from "@/lib/neon";
 
-import Image from "next/image";
-import { Link } from "@/i18n/navigation";
-import TopGamesClient from "./TopGamesClient";
+import { EventCard } from "@/components/home/EventCard";
+import { HeroSection } from "@/components/home/HeroSection";
+import { NewsCard } from "@/components/home/NewsCard";
+import { QuickNavCard } from "@/components/home/QuickNavCard";
+import { RankingsPreview } from "@/components/home/RankingsPreview";
+import { SectionHeader } from "@/components/home/SectionHeader";
+import { getTranslations } from "next-intl/server";
 
 export const revalidate = 300; // Cache 5 minutos
 export const dynamic = 'force-static';
@@ -17,7 +21,7 @@ async function getFeaturedNews(): Promise<NewsPost[]> {
        LEFT JOIN profiles p ON np.author_id = p.id 
        WHERE np.published = true 
        ORDER BY np.created_at DESC 
-       LIMIT 3`
+       LIMIT 4`
     );
   } catch {
     return [];
@@ -37,194 +41,142 @@ async function getTopGames(): Promise<Game[]> {
   }
 }
 
+async function getUpcomingEvents(): Promise<Event[]> {
+  try {
+    return await cachedQuery<Event>(
+      `SELECT * FROM events 
+       WHERE start_date >= NOW() 
+       ORDER BY start_date ASC 
+       LIMIT 4`
+    );
+  } catch {
+    return [];
+  }
+}
+
 export default async function HomePage() {
-  const [featuredNews, topGames] = await Promise.all([
+  const t = await getTranslations("home");
+  const tNav = await getTranslations("nav");
+
+  const [featuredNews, topGames, upcomingEvents] = await Promise.all([
     getFeaturedNews(),
     getTopGames(),
+    getUpcomingEvents(),
   ]);
 
+  const featuredNewsWithImage = featuredNews.filter((news) => Boolean(news.cover_image));
+
   return (
-    <div className="min-h-screen bg-zinc-950 relative">
-      {/* Animated Background */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,119,198,0.3),transparent)]" />
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-purple-500/10 animate-gradient-shift" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '0s' }} />
-        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
-      </div>
-
-
+    <div className="min-h-screen bg-zinc-950">
       {/* Hero */}
-      <section className="relative overflow-hidden px-4 py-24 sm:py-32">
-        <div className="relative mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-            Tu mundo gaming,
-            <br />
-            <span className="text-violet-500">centralizado</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-zinc-400">
-            Descubre los mejores rankings de videojuegos, mantente al día con noticias en tiempo real, accede a contenido multimedia exclusivo, participa en eventos de la industria y conecta con una comunidad apasionada. GameHub es tu destino definitivo para todo lo relacionado con el mundo de los videojuegos.
-          </p>
-          <div className="mt-10 flex justify-center gap-4">
-            <Link
-              href="/games"
-              className="rounded-md bg-violet-600 px-6 py-3 font-medium text-white hover:bg-violet-700"
-            >
-              Explorar juegos
-            </Link>
-            <Link
-              href="/news"
-              className="rounded-md border border-zinc-700 bg-zinc-900 px-6 py-3 font-medium text-white hover:bg-zinc-800"
-            >
-              Últimas noticias
-            </Link>
-          </div>
-        </div>
-      </section>
+      <HeroSection />
 
-      {/* Features - Navegación Rápida */}
-      <section className="px-4 py-16">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-white">Navegación Rápida</h2>
-          </div>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <FeatureCard
-              icon={<Newspaper className="h-6 w-6" />}
-              title="Noticias en tiempo real"
-              description="Mantente informado con las últimas novedades del sector gaming."
+      {/* Main Content - Grid 12 columns */}
+      <div className="mx-auto max-w-7xl px-4 py-12">
+        {/* Quick Navigation */}
+        <section className="mb-16">
+          <SectionHeader
+            icon={Gamepad2}
+            title={t("quickNav")}
+          />
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <QuickNavCard
+              icon={Newspaper}
+              title={tNav("news")}
+              description={t("features.news.description")}
               href="/news"
             />
-            <FeatureCard
-              icon={<Trophy className="h-6 w-6" />}
-              title="Rankings de juegos"
-              description="Los mejores videojuegos de la historia según prensa y comunidad."
+            <QuickNavCard
+              icon={Trophy}
+              title={tNav("games")}
+              description={t("features.rankings.description")}
               href="/games"
             />
-            <FeatureCard
-              icon={<Video className="h-6 w-6" />}
-              title="Hub multimedia"
-              description="Videos, streams y trailers de tus juegos favoritos."
+            <QuickNavCard
+              icon={Video}
+              title={tNav("multimedia")}
+              description={t("features.multimedia.description")}
               href="/multimedia"
             />
-            <FeatureCard
-              icon={<Calendar className="h-6 w-6" />}
-              title="Agenda de eventos"
-              description="No te pierdas ningún lanzamiento, feria o convención."
+            <QuickNavCard
+              icon={Calendar}
+              title={tNav("events")}
+              description={t("features.events.description")}
               href="/events"
             />
-            <FeatureCard
-              icon={<Users className="h-6 w-6" />}
-              title="Blog de opinión"
-              description="Análisis y opiniones de figuras destacadas del sector."
+            <QuickNavCard
+              icon={Users}
+              title={tNav("blog")}
+              description={t("features.blog.description")}
               href="/blog"
             />
-            <FeatureCard
-              icon={<Gamepad2 className="h-6 w-6" />}
-              title="Comunidad"
-              description="Participa en comentarios y conecta con otros gamers."
+            <QuickNavCard
+              icon={Gamepad2}
+              title={t("features.community.title")}
+              description={t("features.community.description")}
               href="/login"
             />
           </div>
+        </section>
+
+        {/* Two Column Layout: News + Events */}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+          {/* Latest News - 8 columns */}
+          <section className="lg:col-span-8">
+            <SectionHeader
+              icon={Newspaper}
+              title={t("latestNews")}
+              href="/news"
+              linkText={t("viewAll")}
+            />
+            {featuredNewsWithImage.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                {featuredNewsWithImage.map((news) => (
+                  <NewsCard key={news.id} news={news} />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-8 text-center text-zinc-500">
+                No hay noticias disponibles en este momento.
+              </div>
+            )}
+          </section>
+
+          {/* Upcoming Events - 4 columns */}
+          <section className="lg:col-span-4">
+            <SectionHeader
+              icon={Calendar}
+              title={t("upcomingEvents")}
+              href="/events"
+              linkText={t("viewAllEvents")}
+            />
+            {upcomingEvents.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                {upcomingEvents.map((event) => (
+                  <EventCard key={event.id} event={event} />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-8 text-center text-zinc-500">
+                No hay eventos programados próximamente.
+              </div>
+            )}
+          </section>
         </div>
-      </section>
 
-      {/* Featured News */}
-      {featuredNews.length > 0 && (
-        <section className="px-4 py-16">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-8 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                <Newspaper className="h-6 w-6 text-violet-500" />
-                Noticias Destacadas
-              </h2>
-              <Link href="/news" className="text-violet-400 hover:text-violet-300">
-                Ver todas →
-              </Link>
-            </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {featuredNews.map((news) => (
-                <Link
-                  key={news.id}
-                  href={`/news/${news.slug}`}
-                  className="group rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden transition hover:border-violet-500/50"
-                >
-                  {news.cover_image && (
-                    <div className="aspect-video relative overflow-hidden">
-                      <Image
-                        src={news.cover_image}
-                        alt={news.title}
-                        fill
-                        className="object-cover transition group-hover:scale-105"
-                      />
-                    </div>
-                  )}
-                  <div className="p-4">
-                    <h3 className="font-semibold text-white group-hover:text-violet-400 line-clamp-2">
-                      {news.title}
-                    </h3>
-                    <p className="mt-2 text-sm text-zinc-400 line-clamp-2">
-                      {news.excerpt}
-                    </p>
-                    <div className="mt-3 flex items-center gap-2 text-sm text-zinc-500">
-                      <span>{news.author_name || "Redacción"}</span>
-                      <span>•</span>
-                      <span>{new Date(news.created_at).toLocaleDateString("es-ES")}</span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Top 10 de la Historia */}
-      {topGames.length > 0 && (
-        <section className="px-4 py-16">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-8 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                <Trophy className="h-6 w-6 text-violet-500" />
-                Top 10 de la Historia
-              </h2>
-              <Link href="/games" className="text-violet-400 hover:text-violet-300">
-                Ver ranking completo →
-              </Link>
-            </div>
-            <TopGamesClient games={topGames} />
-          </div>
-        </section>
-      )}
+        {/* Top Videojuegos - Full Width */}
+        {topGames.length > 0 && (
+          <section className="mt-16">
+            <SectionHeader
+              icon={Trophy}
+              title={t("topGames")}
+              href="/games"
+              linkText={t("viewRanking")}
+            />
+            <RankingsPreview games={topGames} />
+          </section>
+        )}
+      </div>
     </div>
   );
 }
-
-function FeatureCard({
-  icon,
-  title,
-  description,
-  href,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  href: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="group rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 transition hover:border-violet-500/50 hover:bg-zinc-900"
-    >
-      <div className="mb-4 inline-flex rounded-lg bg-violet-500/10 p-3 text-violet-500">
-        {icon}
-      </div>
-      <h3 className="mb-2 text-lg font-semibold text-white group-hover:text-violet-400">
-        {title}
-      </h3>
-      <p className="text-base text-zinc-400">{description}</p>
-    </Link>
-  );
-}
-

@@ -67,7 +67,9 @@ CREATE TABLE IF NOT EXISTS comments (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   author_id TEXT REFERENCES profiles(id) ON DELETE CASCADE,
-  post_id TEXT REFERENCES blog_posts(id) ON DELETE CASCADE
+  post_id TEXT NOT NULL,
+  post_type TEXT NOT NULL DEFAULT 'blog',
+  parent_id TEXT REFERENCES comments(id) ON DELETE CASCADE
 );
 
 -- Tabla de multimedia
@@ -113,6 +115,8 @@ CREATE INDEX IF NOT EXISTS idx_blog_posts_published ON blog_posts(published);
 CREATE INDEX IF NOT EXISTS idx_blog_posts_author ON blog_posts(author_id);
 CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id);
 CREATE INDEX IF NOT EXISTS idx_comments_author ON comments(author_id);
+CREATE INDEX IF NOT EXISTS idx_comments_post_type ON comments(post_type);
+CREATE INDEX IF NOT EXISTS idx_comments_parent ON comments(parent_id);
 CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
 CREATE INDEX IF NOT EXISTS idx_profiles_role ON profiles(role);
 CREATE INDEX IF NOT EXISTS idx_events_start_date ON events(start_date);

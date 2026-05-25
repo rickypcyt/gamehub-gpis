@@ -1,7 +1,8 @@
 "use client";
 
-import { Loader2, Send, Trash2, User } from "lucide-react";
+import { Loader2, Send, Trash2, User, X } from "lucide-react";
 
+import { Link } from "@/i18n/navigation";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -25,6 +26,7 @@ export function CommentsSection({ postId, comments, isAuthenticated }: CommentsS
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,12 +40,22 @@ export function CommentsSection({ postId, comments, isAuthenticated }: CommentsS
         body: JSON.stringify({ content, post_id: postId }),
       });
 
-      if (!response.ok) throw new Error("Error al enviar comentario");
+      if (!response.ok) {
+        if (response.status === 401) {
+          setShowLoginModal(true);
+          return;
+        }
+        throw new Error("Error al enviar comentario");
+      }
 
       setContent("");
       router.refresh();
-    } catch {
-      alert("Error al enviar el comentario");
+    } catch (error) {
+      if ((error as Error)?.message !== "Error al enviar comentario") {
+        alert("Error al enviar el comentario");
+      } else {
+        alert("Error al enviar el comentario");
+      }
     } finally {
       setLoading(false);
     }
@@ -96,7 +108,7 @@ export function CommentsSection({ postId, comments, isAuthenticated }: CommentsS
       ) : (
         <div className="rounded-lg bg-zinc-900/50 p-4 text-center">
           <p className="text-zinc-400">
-            <a href="/login" className="text-violet-400 hover:text-violet-300">Inicia sesión</a>{" "}
+            <Link href="/login" className="text-violet-400 hover:text-violet-300">Inicia sesión</Link>{" "}
             para dejar un comentario
           </p>
         </div>
@@ -145,6 +157,46 @@ export function CommentsSection({ postId, comments, isAuthenticated }: CommentsS
           ))
         )}
       </div>
+
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/70" onClick={() => setShowLoginModal(false)} />
+          <div className="relative z-10 w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-xl">
+            <button
+              onClick={() => setShowLoginModal(false)}
+              className="absolute right-4 top-4 text-zinc-500 hover:text-white"
+              aria-label="Cerrar"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="space-y-4 text-center">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/10 text-violet-400">
+                <User className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-white">Inicia sesión para comentar</h3>
+                <p className="mt-2 text-sm text-zinc-400">
+                  Debes iniciar sesión para participar en la conversación.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/login"
+                  className="flex-1 rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700 text-center"
+                >
+                  Ir a iniciar sesión
+                </Link>
+                <Link
+                  href="/register"
+                  className="flex-1 rounded-lg border border-zinc-700 px-4 py-2 text-sm font-semibold text-white hover:border-violet-500/60 hover:text-violet-300 text-center"
+                >
+                  Crear cuenta
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

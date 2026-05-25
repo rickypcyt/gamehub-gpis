@@ -1,27 +1,35 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FormField } from "@/components/auth/FormField";
+import { Gamepad2 } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [touched, setTouched] = useState({ email: false, password: false });
+  const [fields, setFields] = useState({ email: "", password: "" });
 
-  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+  const fieldErrors = {
+    email: fields.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)
+      ? "Introduce un email válido"
+      : undefined,
+    password: fields.password && fields.password.length < 6
+      ? "Mínimo 6 caracteres"
+      : undefined,
+  };
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    const email = fields.email;
+    const password = fields.password;
 
     const result = await signIn("credentials", {
       email,
@@ -30,18 +38,16 @@ export default function LoginPage() {
     });
 
     if (result?.error) {
-      setError("Credenciales inválidas");
+      setError("Credenciales inválidas. Verifica tu email y contraseña.");
       setLoading(false);
       return;
     }
 
-    // Obtener sesión para saber el rol y redirigir según corresponda
     try {
       const sessionRes = await fetch("/api/auth/session");
       const session = await sessionRes.json();
       const role = session?.user?.role;
 
-      // Redirección según rol
       let redirectUrl = "/dashboard";
       switch (role) {
         case "admin":
@@ -53,200 +59,120 @@ export default function LoginPage() {
         case "colaborador":
           redirectUrl = "/blog";
           break;
-        case "suscriptor":
-        default:
-          redirectUrl = "/dashboard";
-          break;
       }
 
       router.push(redirectUrl);
       router.refresh();
     } catch {
-      // Fallback a dashboard si hay error
       router.push("/dashboard");
       router.refresh();
     }
   }
 
-  async function handleRegister(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-    setLoading(true);
-
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const name = formData.get("name") as string;
-
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Error al crear la cuenta");
-        setLoading(false);
-        return;
-      }
-
-      setSuccess("Cuenta creada exitosamente. Ahora puedes iniciar sesión.");
-      setIsRegister(false);
-      setLoading(false);
-    } catch {
-      setError("Error al crear la cuenta");
-      setLoading(false);
-    }
-  }
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-950 px-4">
-      <div className="w-full max-w-md space-y-6 rounded-xl bg-zinc-900 p-8 shadow-xl">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white">GameHub</h1>
-          <p className="mt-2 text-zinc-400">
-            {isRegister ? "Crea tu cuenta" : "Inicia sesión en tu cuenta"}
-          </p>
-        </div>
+    <div className="flex min-h-screen items-center justify-center bg-zinc-950 px-4 py-12">
+      <div className="w-full max-w-md">
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-8 shadow-xl backdrop-blur">
+          {/* Header */}
+          <div className="text-center">
+            <div className="mx-auto mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-violet-500/10 text-violet-500">
+              <Gamepad2 className="h-6 w-6" />
+            </div>
+            <h1 className="text-2xl font-bold text-white">Iniciar sesión</h1>
+            <p className="mt-2 text-sm text-zinc-400">
+              Accede a tu cuenta de GameHub
+            </p>
+          </div>
 
-        {/* Tabs */}
-        <div className="flex rounded-lg bg-zinc-800 p-1">
-          <button
-            type="button"
-            onClick={() => {
-              setIsRegister(false);
-              setError("");
-              setSuccess("");
-            }}
-            className={`flex-1 rounded-md py-2 text-base font-medium transition-colors ${
-              !isRegister
-                ? "bg-zinc-700 text-white"
-                : "text-zinc-400 hover:text-zinc-300"
-            }`}
-          >
-            Iniciar sesión
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setIsRegister(true);
-              setError("");
-              setSuccess("");
-            }}
-            className={`flex-1 rounded-md py-2 text-base font-medium transition-colors ${
-              isRegister
-                ? "bg-zinc-700 text-white"
-                : "text-zinc-400 hover:text-zinc-300"
-            }`}
-          >
-            Crear cuenta
-          </button>
-        </div>
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            <FormField
+              id="email"
+              label="Email"
+              type="email"
+              placeholder="tu@email.com"
+              autoComplete="email"
+              value={fields.email}
+              onChange={(e) => {
+                setFields((f) => ({ ...f, email: e.target.value }));
+                if (touched.email) setError("");
+              }}
+              onBlur={() => setTouched((t) => ({ ...t, email: true }))}
+              error={fieldErrors.email}
+              touched={touched.email}
+              isValid={!!fields.email && !fieldErrors.email}
+            />
 
-        {/* Messages */}
-        {error && <p className="text-base text-red-400">{error}</p>}
-        {success && <p className="text-base text-green-400">{success}</p>}
+            <FormField
+              id="password"
+              label="Contraseña"
+              type="password"
+              placeholder="••••••••"
+              autoComplete="current-password"
+              value={fields.password}
+              onChange={(e) => {
+                setFields((f) => ({ ...f, password: e.target.value }));
+                if (touched.password) setError("");
+              }}
+              onBlur={() => setTouched((t) => ({ ...t, password: true }))}
+              error={fieldErrors.password}
+              touched={touched.password}
+              isValid={!!fields.password && !fieldErrors.password}
+            />
 
-        {/* Login Form */}
-        {!isRegister && (
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-zinc-300">
-                Email
-              </Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                required
-                placeholder="tu@email.com"
-                className="border-zinc-700 bg-zinc-800 text-white placeholder:text-zinc-500"
-              />
+            {/* Options */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="remember"
+                  className="h-4 w-4 rounded border-zinc-700 bg-zinc-800 text-violet-600 focus:ring-violet-500/20"
+                />
+                <span className="text-sm text-zinc-400">Recordarme</span>
+              </label>
+              <Link
+                href="/forgot-password"
+                className="text-sm text-violet-400 hover:text-violet-300 transition"
+              >
+                ¿Olvidaste contraseña?
+              </Link>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-zinc-300">
-                Contraseña
-              </Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                required
-                placeholder="••••••••"
-                className="border-zinc-700 bg-zinc-800 text-white placeholder:text-zinc-500"
-              />
-            </div>
+            {/* Global Error */}
+            {error && (
+              <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+                {error}
+              </div>
+            )}
 
-            <Button
+            {/* Submit */}
+            <button
               type="submit"
-              className="w-full bg-violet-600 hover:bg-violet-700"
               disabled={loading}
+              className="w-full rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:bg-violet-700 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {loading ? "Entrando..." : "Entrar"}
-            </Button>
+            </button>
           </form>
-        )}
 
-        {/* Register Form */}
-        {isRegister && (
-          <form onSubmit={handleRegister} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-zinc-300">
-                Nombre
-              </Label>
-              <Input
-                id="name"
-                name="name"
-                type="text"
-                required
-                placeholder="Tu nombre"
-                className="border-zinc-700 bg-zinc-800 text-white placeholder:text-zinc-500"
-              />
-            </div>
+          {/* Divider */}
+          <div className="my-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-zinc-800" />
+            <span className="text-xs text-zinc-500">o</span>
+            <div className="h-px flex-1 bg-zinc-800" />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-zinc-300">
-                Email
-              </Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                required
-                placeholder="tu@email.com"
-                className="border-zinc-700 bg-zinc-800 text-white placeholder:text-zinc-500"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-zinc-300">
-                Contraseña
-              </Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                required
-                minLength={6}
-                placeholder="Mínimo 6 caracteres"
-                className="border-zinc-700 bg-zinc-800 text-white placeholder:text-zinc-500"
-              />
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full bg-violet-600 hover:bg-violet-700"
-              disabled={loading}
+          {/* Register link */}
+          <p className="text-center text-sm text-zinc-400">
+            ¿No tienes cuenta?{" "}
+            <Link
+              href="/register"
+              className="font-semibold text-violet-400 hover:text-violet-300 transition"
             >
-              {loading ? "Creando cuenta..." : "Crear cuenta"}
-            </Button>
-          </form>
-        )}
+              Regístrate
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { CommentsSection } from "./CommentsSection";
 import { Link } from "@/i18n/navigation";
 import type { NewsPost } from "@/lib/neon";
 import { auth } from "@/auth";
+import { ensureCommentsSchema } from "@/lib/comments";
 import { notFound } from "next/navigation";
 
 export const revalidate = 60; // ISR cada 60 segundos
@@ -41,12 +42,14 @@ export default async function NewsDetailPage({ params }: PageProps) {
   // Increment views
   await query("UPDATE news_posts SET views = views + 1 WHERE id = $1", [post.id]);
 
+  await ensureCommentsSchema();
+
   // Get comments (limitado a 50 para performance)
   const comments = await query<Comment>(
     `SELECT c.*, p.name as author_name, p.avatar_url as author_avatar
      FROM comments c
      LEFT JOIN profiles p ON c.author_id = p.id
-     WHERE c.post_id = $1
+     WHERE c.post_id = $1 AND c.post_type = 'news'
      ORDER BY c.created_at DESC
      LIMIT 50`,
     [post.id]

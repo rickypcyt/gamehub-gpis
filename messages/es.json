@@ -7,6 +7,7 @@
     "events": "Eventos",
     "team": "Equipo",
     "login": "Entrar",
+    "register": "Registro",
     "logout": "Salir",
     "profile": "Ver Perfil"
   },
@@ -16,6 +17,7 @@
       "highlight": "centralizado",
       "description": "Noticias, rankings, eventos y comunidad. Todo lo que necesitas para estar al día en la industria del videojuego.",
       "ctaGames": "Explorar juegos",
+      "ctaRankings": "Explorar rankings",
       "ctaNews": "Últimas noticias"
     },
     "features": {
@@ -43,7 +45,14 @@
         "title": "Comunidad",
         "description": "Participa en comentarios y conecta con otros gamers."
       }
-    }
+    },
+    "latestNews": "Últimas Noticias",
+    "upcomingEvents": "Próximos Eventos",
+    "topGames": "Top Videojuegos",
+    "quickNav": "Navegación Rápida",
+    "viewAll": "Ver todas",
+    "viewAllEvents": "Ver todos",
+    "viewRanking": "Ver ranking completo"
   },
   "auth": {
     "login": {
@@ -53,8 +62,24 @@
       "password": "Contraseña",
       "submit": "Entrar",
       "loading": "Entrando...",
-      "noAccount": "¿No tienes cuenta? Contacta al administrador",
-      "error": "Credenciales inválidas"
+      "noAccount": "¿No tienes cuenta?",
+      "error": "Credenciales inválidas",
+      "remember": "Recordarme",
+      "forgotPassword": "¿Olvidaste contraseña?"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "subtitle": "Únete a la comunidad GameHub",
+      "username": "Nombre de usuario",
+      "email": "Email",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "terms": "Acepto los términos y condiciones",
+      "submit": "Crear cuenta",
+      "loading": "Creando cuenta...",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "emailExists": "Ya existe una cuenta con este email",
+      "passwordsMatch": "Las contraseñas no coinciden"
     }
   },
   "dashboard": {

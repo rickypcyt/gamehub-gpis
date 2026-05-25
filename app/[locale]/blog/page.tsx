@@ -48,49 +48,59 @@ export default async function BlogPage() {
   );
 }
 
-function BlogCard({ post }: { post: BlogPost & { author_name?: string; author_avatar_url?: string } }) {
+function BlogCard({ post }: { post: BlogPost & { author_name?: string; author_avatar_url?: string; comment_count?: number } }) {
   return (
     <article className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 transition hover:border-violet-500/50">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-500/10 text-violet-500">
-          {post.author_avatar_url ? (
-            <img
-              src={post.author_avatar_url}
-              alt={post.author_name || ""}
-              className="h-full w-full rounded-full object-cover"
-            />
-          ) : (
-            <Users className="h-5 w-5" />
-          )}
+      {/* Top meta */}
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-violet-500/10 text-violet-500">
+            {post.author_avatar_url ? (
+              <img
+                src={post.author_avatar_url}
+                alt={post.author_name || ""}
+                className="h-full w-full rounded-full object-cover"
+              />
+            ) : (
+              <Users className="h-5 w-5" />
+            )}
+          </div>
+          <div>
+            <p className="text-sm font-medium text-white">{post.author_name || "Colaborador"}</p>
+            <p className="text-xs text-zinc-500">
+              {new Date(post.created_at).toLocaleDateString("es-ES", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </p>
+          </div>
         </div>
-        <div>
-          <p className="font-medium text-white">{post.author_name || "Colaborador"}</p>
-          <p className="text-base text-zinc-500">
-            {new Date(post.created_at).toLocaleDateString("es-ES")}
-          </p>
-        </div>
+        <span className="rounded-full bg-zinc-800 px-3 py-1 text-xs font-medium text-violet-400">
+          Opinión
+        </span>
       </div>
 
       <Link href={`/blog/${post.slug}`}>
-        <h3 className="mt-4 text-xl font-semibold text-white hover:text-violet-400">
+        <h3 className="text-xl font-semibold text-white hover:text-violet-400 transition">
           {post.title}
         </h3>
       </Link>
 
-      <p className="mt-3 text-zinc-400 line-clamp-3">
+      <p className="mt-3 text-sm text-zinc-400 line-clamp-3">
         {post.content.substring(0, 200)}...
       </p>
 
       <div className="mt-4 flex items-center gap-4">
         <Link
           href={`/blog/${post.slug}`}
-          className="text-base font-medium text-violet-400 hover:text-violet-300"
+          className="text-sm font-medium text-violet-400 hover:text-violet-300"
         >
           Leer más →
         </Link>
-        <span className="flex items-center gap-1 text-base text-zinc-500">
-          <MessageSquare className="h-3 w-3" />
-          Comentarios
+        <span className="flex items-center gap-1.5 text-sm text-zinc-500">
+          <MessageSquare className="h-4 w-4" />
+          {post.comment_count ?? 0} comentario{post.comment_count !== 1 ? 's' : ''}
         </span>
       </div>
     </article>
