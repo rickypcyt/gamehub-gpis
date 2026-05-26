@@ -462,3 +462,138 @@ Zod se usa activamente en:
 - **Mensajes de error personalizados**: `z.string().min(2, "Mensaje custom")`
 - **Validación robusta**: Email, regex, longitud, enums, etc.
 - **safeParse**: No lanza excepciones, ideal para APIs
+
+## Testing
+
+El proyecto utiliza **Vitest** como framework de testing, configurado para probar esquemas de Zod y componentes de React.
+
+### Configuración
+
+- **Framework**: Vitest
+- **Environment**: jsdom (para componentes React)
+- **Testing Library**: @testing-library/react + @testing-library/jest-dom
+- **Configuración**: `vitest.config.ts`
+
+### Scripts Disponibles
+
+```bash
+# Ejecutar tests en modo watch
+npm run test
+
+# Ejecutar tests con UI visual
+npm run test:ui
+
+# Ejecutar tests una sola vez (CI)
+npm run test:run
+```
+
+### Estructura de Tests
+
+Los tests se encuentran en el directorio `test/`:
+
+```
+test/
+├── setup.ts           # Configuración global de tests
+└── schemas.test.ts    # Tests de esquemas Zod
+```
+
+### Testing de Esquemas Zod
+
+El proyecto incluye tests unitarios para validar los esquemas de Zod utilizados en las APIs:
+
+- **credentialsSchema**: Validación de login (email, password)
+- **registerSchema**: Validación de registro (email, password, name)
+- **contactSchema**: Validación de formulario de contacto
+- **newsSchema**: Validación de noticias (title, slug, content, etc.)
+
+Ejemplo de test:
+
+```typescript
+describe('Contact Schema', () => {
+  it('debe validar datos correctos', () => {
+    const result = contactSchema.safeParse({
+      name: 'John Doe',
+      email: 'test@example.com',
+      subject: 'Hello',
+      message: 'This is a test message with enough characters',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('debe rechazar email inválido', () => {
+    const result = contactSchema.safeParse({
+      name: 'John Doe',
+      email: 'invalid-email',
+      subject: 'Hello',
+      message: 'This is a test message with enough characters',
+    });
+    expect(result.success).toBe(false);
+  });
+});
+```
+
+### Ejecutar Tests Específicos
+
+```bash
+# Ejecutar solo un archivo de test
+npm run test schemas.test.ts
+
+# Ejecutar tests que coincidan con un patrón
+npm run test -- --grep "Contact Schema"
+```
+
+### Ejemplo de Salida
+
+Al ejecutar `npm run test`, verás un output similar a:
+
+```
+DEV  v4.1.7 /home/ricky/coding/codeouni/gamehub-gpis
+
+✓ test/schemas.test.ts (18 tests) 30ms
+  ✓ Credentials Schema (4)
+    ✓ debe validar datos correctos 7ms
+    ✓ debe rechazar email inválido 2ms
+    ✓ debe rechazar password muy corto 1ms
+    ✓ debe rechazar datos faltantes 1ms
+  ✓ Register Schema (3)
+    ✓ debe validar datos correctos 2ms
+    ✓ debe rechazar nombre muy corto 1ms
+    ✓ debe rechazar email inválido 1ms
+  ✓ Contact Schema (5)
+    ✓ debe validar datos correctos 1ms
+    ✓ debe rechazar nombre muy corto 2ms
+    ✓ debe rechazar email inválido 1ms
+    ✓ debe rechazar asunto muy corto 1ms
+    ✓ debe rechazar mensaje muy corto 1ms
+  ✓ News Schema (6)
+    ✓ debe validar datos correctos 2ms
+    ✓ debe validar con campos opcionales 1ms
+    ✓ debe rechazar título vacío 0ms
+    ✓ debe rechazar slug vacío 0ms
+    ✓ debe rechazar contenido vacío 0ms
+    ✓ debe aceptar excerpt y cover_image opcionales 0ms
+
+Test Files  1 passed (1)
+     Tests  18 passed (18)
+  Start at  16:54:36
+  Duration  2.74s (transform 102ms, setup 182ms, import 155ms, tests 30ms, environment 1.96s)
+
+PASS  Waiting for file changes...
+      press h to show help, press q to quit
+```
+
+**Desglose de tiempos:**
+- **transform**: Tiempo de transpilación TypeScript/JSX
+- **setup**: Configuración inicial (test/setup.ts)
+- **import**: Carga de módulos
+- **tests**: Ejecución de los tests
+- **environment**: Inicialización de jsdom
+
+El modo watch detecta cambios automáticamente y re-ejecuta los tests. Presiona `q` para salir.
+
+### Buenas Prácticas
+
+- **Testea casos válidos e inválidos**: Verifica que los esquemas acepten datos correctos y rechacen incorrectos
+- **Valida mensajes de error**: Asegúrate de que los mensajes de error sean claros
+- **Usa safeParse**: Prefiere `safeParse` sobre `parse` para evitar excepciones en tests
+- **Mantén tests independientes**: Cada test debe poder ejecutarse de forma aislada
