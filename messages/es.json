@@ -9,7 +9,18 @@
     "login": "Entrar",
     "register": "Registro",
     "logout": "Salir",
-    "profile": "Ver Perfil"
+    "profile": "Ver Perfil",
+    "admin": "Admin",
+    "manageNews": "Gestionar Noticias",
+    "manageUsers": "Gestionar Usuarios",
+    "settings": "Configuración"
+  },
+  "news": {
+    "featured": "Destacada",
+    "latestNews": "Últimas noticias",
+    "views": "lecturas",
+    "authorFallback": "Redacción",
+    "noNews": "No hay noticias publicadas"
   },
   "home": {
     "hero": {
@@ -58,6 +69,107 @@
       "noEvents": "No hay eventos programados próximamente."
     }
   },
+  "games": {
+    "catalogTitle": "Catálogo de Juegos",
+    "searchPlaceholder": "Buscar juegos...",
+    "filters": {
+      "toggle": "Filtros",
+      "genre": "Género",
+      "genreAll": "Todos los géneros",
+      "year": "Año",
+      "yearAll": "Todos los años",
+      "scoreLabel": "Nota mínima: {value}",
+      "scoreAny": "Todas",
+      "clear": "Limpiar filtros"
+    },
+    "resultsCount": "{count, plural, one {# juego encontrado} other {# juegos encontrados}}",
+    "sections": {
+      "topHistory": {
+        "title": "Top de la historia",
+        "description": "Los mejores juegos de todos los tiempos según críticos y jugadores."
+      },
+      "topRecent": {
+        "title": "Top 2020-2025",
+        "description": "Los títulos más destacados de los últimos años."
+      },
+      "others": {
+        "title": "Más juegos",
+        "description": "Otros lanzamientos recomendados por la comunidad."
+      }
+    },
+    "scores": {
+      "press": "Crítica profesional",
+      "users": "Jugadores"
+    },
+    "empty": {
+      "noMatches": "No hay juegos que coincidan con los filtros.",
+      "noGames": "Todavía no hay juegos registrados."
+    },
+    "modal": {
+      "about": "Sobre el juego",
+      "scores": "Puntuaciones",
+      "press": "Crítica profesional",
+      "users": "Valoración de usuarios",
+      "releaseDate": "Fecha de lanzamiento",
+      "genres": "Géneros",
+      "platforms": "Plataformas disponibles"
+    }
+  },
+  "blog": {
+    "list": {
+      "title": "Análisis y Opiniones",
+      "subtitle": "Perspectivas de figuras destacadas del sector gaming",
+      "badge": "Opinión",
+      "readMore": "Leer más →",
+      "comments": "{count, plural, one {# comentario} other {# comentarios}}",
+      "authorFallback": "Colaborador",
+      "empty": "No hay publicaciones aún"
+    }
+  },
+  "multimedia": {
+    "sections": {
+      "trailers": "Trailers",
+      "videos": "Videos destacados",
+      "streams": "Streams en vivo"
+    },
+    "platform": "Disponible en {platform}",
+    "empty": "No hay contenido multimedia disponible"
+  },
+  "events": {
+    "title": "Calendario de Eventos",
+    "subtitle": "Lanzamientos, ferias y convenciones del mundo gaming",
+    "nextEvent": {
+      "label": "Próximo evento",
+      "locationFallback": "Ubicación por confirmar",
+      "countdown": "{count, plural, one {{count} día para el evento} other {{count} días para el evento}}",
+      "moreInfo": "Más información"
+    },
+    "timeline": {
+      "until": "Hasta {date}"
+    },
+    "card": {
+      "moreInfo": "Más info"
+    },
+    "types": {
+      "launch": "Lanzamiento",
+      "convention": "Convención",
+      "expo": "Expo",
+      "tournament": "Torneo",
+      "other": "Evento"
+    },
+    "cta": {
+      "backHome": "← Volver al inicio"
+    },
+    "empty": "No hay eventos programados"
+  },
+  "team": {
+    "title": "Nuestro Equipo",
+    "subtitle": "Las personas detrás de GameHub",
+    "editors": "Redacción",
+    "contributors": "Colaboradores",
+    "noName": "Sin nombre",
+    "empty": "El equipo se está formando..."
+  },
   "auth": {
     "login": {
       "title": "GameHub",
@@ -87,18 +199,170 @@
     }
   },
   "dashboard": {
-    "title": "Dashboard",
-    "stats": {
-      "role": "Rol",
-      "email": "Email",
-      "name": "Nombre",
-      "memberSince": "Miembro desde"
+    "sidebar": {
+      "sections": {
+        "general": "General",
+        "management": "Gestión",
+        "system": "Sistema",
+        "content": "Contenido",
+        "myAccount": "Mi Cuenta"
+      },
+      "items": {
+        "dashboard": "Dashboard",
+        "users": "Usuarios",
+        "news": "Noticias",
+        "moderation": "Moderación",
+        "stats": "Estadísticas",
+        "settings": "Configuración",
+        "createNews": "Crear Noticia",
+        "myNews": "Mis Noticias",
+        "drafts": "Borradores",
+        "schedule": "Programar",
+        "profile": "Perfil",
+        "comments": "Comentarios",
+        "favorites": "Favoritos",
+        "history": "Historial"
+      },
+      "backToHome": "Volver a inicio",
+      "userFallback": "Usuario"
     },
-    "roles": {
-      "admin": "Administrador",
-      "redactor": "Redactor",
-      "colaborador": "Colaborador",
-      "suscriptor": "Suscriptor"
+    "greeting": "¡Hola, {name}!",
+    "fallbacks": {
+      "user": "Usuario",
+      "post": "Publicación",
+      "location": "No especificada",
+      "website": "-"
+    },
+    "taglines": {
+      "admin": "Panel de control total de la plataforma",
+      "redactor": "Crea y gestiona contenido editorial",
+      "suscriptor": "Participa en la comunidad gaming"
+    },
+    "statusLabels": {
+      "published": "Publicada",
+      "draft": "Borrador",
+      "review": "Revisión",
+      "scheduled": "Programada",
+      "pending": "Pendiente"
+    },
+    "contentTypes": {
+      "news": "Noticia",
+      "blog": "Blog"
+    },
+    "common": {
+      "viewAll": "Ver todos",
+      "viewAllFeminine": "Ver todas",
+      "viewAllSingular": "Ver todo",
+      "editProfile": "Editar perfil",
+      "continue": "Continuar",
+      "calendar": "Calendario",
+      "linkLabelNews": "noticias",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "continueDraft": "Continuar"
+    },
+    "admin": {
+      "stats": {
+        "users": { "title": "Usuarios", "trend": "+12%" },
+        "news": { "title": "Noticias", "trend": "+5" },
+        "comments": { "title": "Comentarios", "trend": "+24%" },
+        "thisWeek": { "title": "Esta semana", "trend": "nuevo" }
+      },
+      "moderation": {
+        "title": "Moderación de comentarios",
+        "viewAll": "Ver todos",
+        "empty": "No hay comentarios recientes para moderar.",
+        "postLabel": "en {post}"
+      },
+      "quickActions": {
+        "title": "Acciones rápidas",
+        "manageUsers": "Gestionar usuarios",
+        "createNews": "Crear noticia",
+        "viewStats": "Ver estadísticas",
+        "editNews": "Editar noticias"
+      },
+      "news": {
+        "title": "Gestión de noticias",
+        "viewAll": "Ver todas",
+        "headers": {
+          "title": "Título",
+          "author": "Autor",
+          "status": "Estado",
+          "date": "Fecha"
+        },
+        "empty": "No hay noticias registradas todavía."
+      }
+    },
+    "redactor": {
+      "quickActions": {
+        "createNews": {
+          "title": "Nueva Noticia",
+          "description": "Crea contenido editorial"
+        },
+        "drafts": {
+          "title": "Borradores",
+          "description": "Continúa tus borradores"
+        },
+        "schedule": {
+          "title": "Programar",
+          "description": "Planifica publicaciones"
+        },
+        "myNews": {
+          "title": "Mis Noticias",
+          "description": "Gestiona tus artículos"
+        }
+      },
+      "drafts": {
+        "title": "Mis borradores",
+        "viewAll": "Ver todos",
+        "empty": "No tienes borradores guardados."
+      },
+      "published": {
+        "title": "Publicaciones recientes",
+        "viewAll": "Ver todas",
+        "empty": "Aún no has publicado noticias."
+      },
+      "table": {
+        "title": "Publicaciones recientes",
+        "viewAll": "Ver todas",
+        "headers": {
+          "title": "Título",
+          "status": "Estado",
+          "views": "Vistas",
+          "date": "Fecha"
+        },
+        "empty": "No has creado noticias todavía."
+      }
+    },
+    "subscriber": {
+      "stats": {
+        "comments": "Comentarios",
+        "posts": "Publicaciones comentadas",
+        "lastComment": "Último comentario",
+        "memberSince": "Miembro desde"
+      },
+      "profile": {
+        "role": "Rol",
+        "location": "Ubicación",
+        "website": "Website"
+      },
+      "comments": {
+        "title": "Mis comentarios recientes",
+        "viewAll": "Ver todos",
+        "empty": "Aún no has dejado comentarios."
+      },
+      "favorites": {
+        "title": "Favoritos",
+        "viewAll": "Ver todos",
+        "empty": "Aún no has guardado publicaciones."
+      },
+      "history": {
+        "title": "Historial de lectura",
+        "viewAll": "Ver todo",
+        "emptyPrefix": "Aún no hay historial. Empieza a explorar las ",
+        "emptyLinkLabel": "noticias",
+        "emptySuffix": "."
+      }
     }
   },
   "footer": {
@@ -109,7 +373,7 @@
     "contact": "Contacto",
     "team": "Equipo",
     "login": "Entrar",
-    "location": "Madrid, España",
+    "location": "Elche, España",
     "contactEmail": "contacto@gamehub.es",
     "contactPhone": "+34 900 000 000",
     "copyright": "© 2025 GameHub. Proyecto académico."

@@ -1,11 +1,25 @@
 import type { Game } from "@/lib/neon";
 import GamesClient from "./GamesClient";
 import { cachedQuery } from "@/lib/neon";
+import { getLocale, setRequestLocale } from "next-intl/server";
+import { locales, defaultLocale, type Locale } from "@/i18n/config";
 
 export const revalidate = 3600; // Cache 1 hora (los juegos no cambian frecuentemente)
 export const dynamic = 'force-static';
 
-export default async function GamesPage() {
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+
+interface GamesPageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function GamesPage({ params }: GamesPageProps) {
+  const resolvedParams = await params;
+  const locale = (resolvedParams?.locale ?? defaultLocale) as Locale;
+  setRequestLocale(locale);
+
   // Ordenar: 1) Top de la historia por ID (ranking 1-10)
   //          2) Top 2020-2025 por ID (ranking 1-10)
   //          3) Resto por press_score

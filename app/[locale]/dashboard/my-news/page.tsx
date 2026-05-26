@@ -1,5 +1,6 @@
-import { ArrowLeft, Edit, Eye, Trash2 } from "lucide-react";
+import { ArrowLeft, Edit, Eye } from "lucide-react";
 
+import { DeleteButton } from "@/components/admin/DeleteButton";
 import { Link } from "@/i18n/navigation";
 import type { NewsPost } from "@/lib/neon";
 import { auth } from "@/auth";
@@ -122,24 +123,10 @@ export default async function MyNewsPage() {
                         >
                           <Edit className="h-4 w-4" />
                         </Link>
-                        <form
+                        <DeleteButton
                           action={`/api/news/${item.id}/delete`}
-                          method="POST"
-                          className="inline"
-                        >
-                          <button
-                            type="submit"
-                            className="rounded-lg p-2 text-zinc-400 hover:bg-red-500/10 hover:text-red-400"
-                            title="Eliminar"
-                            onClick={(e) => {
-                              if (!confirm("¿Eliminar esta noticia?")) {
-                                e.preventDefault();
-                              }
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </form>
+                          confirmMessage="¿Eliminar esta noticia?"
+                        />
                       </div>
                     </td>
                   </tr>

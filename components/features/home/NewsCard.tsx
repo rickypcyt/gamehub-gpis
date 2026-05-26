@@ -1,13 +1,18 @@
 import { Calendar, User } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/config";
 import type { NewsPost } from "@/lib/neon";
 
 interface NewsCardProps {
   news: NewsPost;
+  locale: Locale;
 }
 
-export function NewsCard({ news }: NewsCardProps) {
+export function NewsCard({ news, locale }: NewsCardProps) {
+  const localeTag = locale === "en" ? "en-US" : "es-ES";
+  const authorFallback = locale === "en" ? "Editorial" : "Redacción";
+
   return (
     <Link
       href={`/news/${news.slug}`}
@@ -26,11 +31,11 @@ export function NewsCard({ news }: NewsCardProps) {
         <div className="mt-auto flex items-center gap-3 pt-4 text-xs text-zinc-500">
           <span className="inline-flex items-center gap-1.5">
             <User className="h-3.5 w-3.5" />
-            {news.author_name || "Redacción"}
+            {news.author_name || authorFallback}
           </span>
           <span className="inline-flex items-center gap-1.5">
             <Calendar className="h-3.5 w-3.5" />
-            {new Date(news.created_at).toLocaleDateString("es-ES", {
+            {new Date(news.created_at).toLocaleDateString(localeTag, {
               day: "numeric",
               month: "short",
               year: "numeric",

@@ -20,10 +20,11 @@ import {
 
 import { Link } from "@/i18n/navigation";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface NavItem {
   href: string;
-  label: string;
+  labelKey: string;
   icon: React.ReactNode;
 }
 
@@ -32,61 +33,61 @@ interface DashboardSidebarProps {
   userName?: string | null;
 }
 
-const navItemsByRole: Record<string, { section: string; items: NavItem[] }[]> = {
+const navItemsByRole: Record<string, { sectionKey: string; items: NavItem[] }[]> = {
   admin: [
     {
-      section: "General",
+      sectionKey: "general",
       items: [
-        { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
+        { href: "/dashboard", labelKey: "dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
       ],
     },
     {
-      section: "Gestión",
+      sectionKey: "management",
       items: [
-        { href: "/admin/users", label: "Usuarios", icon: <Users className="h-5 w-5" /> },
-        { href: "/dashboard/my-news", label: "Noticias", icon: <Newspaper className="h-5 w-5" /> },
-        { href: "/dashboard/comments", label: "Moderación", icon: <ShieldAlert className="h-5 w-5" /> },
+        { href: "/admin/users", labelKey: "users", icon: <Users className="h-5 w-5" /> },
+        { href: "/dashboard/my-news", labelKey: "news", icon: <Newspaper className="h-5 w-5" /> },
+        { href: "/dashboard/comments", labelKey: "moderation", icon: <ShieldAlert className="h-5 w-5" /> },
       ],
     },
     {
-      section: "Sistema",
+      sectionKey: "system",
       items: [
-        { href: "/dashboard/stats", label: "Estadísticas", icon: <BarChart3 className="h-5 w-5" /> },
-        { href: "/admin/settings", label: "Configuración", icon: <Settings className="h-5 w-5" /> },
+        { href: "/dashboard/stats", labelKey: "stats", icon: <BarChart3 className="h-5 w-5" /> },
+        { href: "/admin/settings", labelKey: "settings", icon: <Settings className="h-5 w-5" /> },
       ],
     },
   ],
   redactor: [
     {
-      section: "General",
+      sectionKey: "general",
       items: [
-        { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
+        { href: "/dashboard", labelKey: "dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
       ],
     },
     {
-      section: "Contenido",
+      sectionKey: "content",
       items: [
-        { href: "/dashboard/write/news", label: "Crear Noticia", icon: <PenLine className="h-5 w-5" /> },
-        { href: "/dashboard/my-news", label: "Mis Noticias", icon: <Newspaper className="h-5 w-5" /> },
-        { href: "/dashboard/drafts", label: "Borradores", icon: <ClipboardList className="h-5 w-5" /> },
-        { href: "/dashboard/schedule", label: "Programar", icon: <CalendarClock className="h-5 w-5" /> },
+        { href: "/dashboard/write/news", labelKey: "createNews", icon: <PenLine className="h-5 w-5" /> },
+        { href: "/dashboard/my-news", labelKey: "myNews", icon: <Newspaper className="h-5 w-5" /> },
+        { href: "/dashboard/drafts", labelKey: "drafts", icon: <ClipboardList className="h-5 w-5" /> },
+        { href: "/dashboard/schedule", labelKey: "schedule", icon: <CalendarClock className="h-5 w-5" /> },
       ],
     },
   ],
   suscriptor: [
     {
-      section: "General",
+      sectionKey: "general",
       items: [
-        { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
+        { href: "/dashboard", labelKey: "dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
       ],
     },
     {
-      section: "Mi Cuenta",
+      sectionKey: "myAccount",
       items: [
-        { href: "/dashboard/profile", label: "Perfil", icon: <User className="h-5 w-5" /> },
-        { href: "/dashboard/comments", label: "Comentarios", icon: <MessageSquare className="h-5 w-5" /> },
-        { href: "/dashboard/favorites", label: "Favoritos", icon: <Heart className="h-5 w-5" /> },
-        { href: "/dashboard/history", label: "Historial", icon: <BookOpen className="h-5 w-5" /> },
+        { href: "/dashboard/profile", labelKey: "profile", icon: <User className="h-5 w-5" /> },
+        { href: "/dashboard/comments", labelKey: "comments", icon: <MessageSquare className="h-5 w-5" /> },
+        { href: "/dashboard/favorites", labelKey: "favorites", icon: <Heart className="h-5 w-5" /> },
+        { href: "/dashboard/history", labelKey: "history", icon: <BookOpen className="h-5 w-5" /> },
       ],
     },
   ],
@@ -94,6 +95,7 @@ const navItemsByRole: Record<string, { section: string; items: NavItem[] }[]> = 
 
 export default function DashboardSidebar({ role, userName }: DashboardSidebarProps) {
   const pathname = usePathname();
+  const t = useTranslations("dashboard.sidebar");
   const sections = navItemsByRole[role] || navItemsByRole.suscriptor;
 
   const isActive = (href: string) => {
@@ -111,16 +113,16 @@ export default function DashboardSidebar({ role, userName }: DashboardSidebarPro
 
       {/* User */}
       <div className="border-b border-zinc-800 px-6 py-4">
-        <p className="text-sm font-medium text-white truncate">{userName || "Usuario"}</p>
+        <p className="text-sm font-medium text-white truncate">{userName || t("userFallback")}</p>
         <p className="mt-0.5 text-xs text-zinc-500 capitalize">{role}</p>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-4 py-4">
         {sections.map((section) => (
-          <div key={section.section} className="mb-6">
+          <div key={section.sectionKey} className="mb-6">
             <h3 className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-              {section.section}
+              {t(`sections.${section.sectionKey}`)}
             </h3>
             <ul className="space-y-0.5">
               {section.items.map((item) => (
@@ -134,7 +136,7 @@ export default function DashboardSidebar({ role, userName }: DashboardSidebarPro
                     }`}
                   >
                     {item.icon}
-                    {item.label}
+                    {t(`items.${item.labelKey}`)}
                   </Link>
                 </li>
               ))}
@@ -150,7 +152,7 @@ export default function DashboardSidebar({ role, userName }: DashboardSidebarPro
           className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-400 transition hover:bg-zinc-900 hover:text-white"
         >
           <Home className="h-4 w-4" />
-          Volver a inicio
+          {t("backToHome")}
         </Link>
       </div>
     </aside>

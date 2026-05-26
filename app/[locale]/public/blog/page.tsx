@@ -1,13 +1,31 @@
 import { MessageSquare, Users } from "lucide-react";
+import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
+import Image from "next/image";
 
 import type { BlogPost } from "@/lib/neon";
 import { Link } from "@/i18n/navigation";
 import { cachedQuery } from "@/lib/neon";
+import { locales, defaultLocale, type Locale } from "@/i18n/config";
 
 export const revalidate = 300; // Cache 5 minutos
 export const dynamic = 'force-static';
 
-export default async function BlogPage() {
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+
+interface BlogPageProps {
+  params: Promise<{ locale: string }>;
+}
+
+type TranslateFn = (key: string, values?: Record<string, unknown>) => string;
+
+export default async function BlogPage({ params }: BlogPageProps) {
+  const resolvedParams = await params;
+  const locale = (resolvedParams?.locale ?? defaultLocale) as Locale;
+  setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: "blog.list" });
   const posts = await cachedQuery<
     BlogPost & { author_name?: string; author_avatar_url?: string; comment_count?: number }
   >(
@@ -25,22 +43,20 @@ export default async function BlogPage() {
 
       <main className="mx-auto max-w-4xl px-4 py-8">
         <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold text-white">Análisis y Opiniones</h2>
-          <p className="mt-2 text-zinc-400">
-            Perspectivas de figuras destacadas del sector gaming
-          </p>
+          <h2 className="text-2xl font-bold text-white">{t("title")}</h2>
+          <p className="mt-2 text-zinc-400">{t("subtitle")}</p>
         </div>
 
         <div className="space-y-6">
           {posts?.map((post) => (
-            <BlogCard key={post.id} post={post} />
+            <BlogCard key={post.id} post={post} locale={locale} t={t} />
           ))}
         </div>
 
         {!posts?.length && (
           <div className="py-16 text-center">
             <Users className="mx-auto h-12 w-12 text-zinc-600" />
-            <p className="mt-4 text-zinc-500">No hay publicaciones aún</p>
+            <p className="mt-4 text-zinc-500">{t("empty")}</p>
           </div>
         )}
       </main>
@@ -48,7 +64,18 @@ export default async function BlogPage() {
   );
 }
 
-function BlogCard({ post }: { post: BlogPost & { author_name?: string; author_avatar_url?: string; comment_count?: number } }) {
+function BlogCard({
+  post,
+  locale,
+  t,
+}: {
+  post: BlogPost & { author_name?: string; author_avatar_url?: string; comment_count?: number };
+  locale: Locale;
+  t: TranslateFn;
+}) {
+  const commentCount = post.comment_count ?? 0;
+  const dateLocale = locale === "en" ? "en-US" : "es-ES";
+
   return (
     <article className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 transition hover:border-violet-500/50">
       {/* Top meta */}
@@ -56,9 +83,11 @@ function BlogCard({ post }: { post: BlogPost & { author_name?: string; author_av
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-violet-500/10 text-violet-500">
             {post.author_avatar_url ? (
-              <img
+              <Image
                 src={post.author_avatar_url}
                 alt={post.author_name || ""}
+                width={40}
+                height={40}
                 className="h-full w-full rounded-full object-cover"
               />
             ) : (
@@ -66,9 +95,9 @@ function BlogCard({ post }: { post: BlogPost & { author_name?: string; author_av
             )}
           </div>
           <div>
-            <p className="text-sm font-medium text-white">{post.author_name || "Colaborador"}</p>
+            <p className="text-sm font-medium text-white">{post.author_name || t("authorFallback")}</p>
             <p className="text-xs text-zinc-500">
-              {new Date(post.created_at).toLocaleDateString("es-ES", {
+              {new Date(post.created_at).toLocaleDateString(dateLocale, {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
@@ -77,7 +106,7 @@ function BlogCard({ post }: { post: BlogPost & { author_name?: string; author_av
           </div>
         </div>
         <span className="rounded-full bg-zinc-800 px-3 py-1 text-xs font-medium text-violet-400">
-          Opinión
+          {t("badge")}
         </span>
       </div>
 
@@ -96,11 +125,11 @@ function BlogCard({ post }: { post: BlogPost & { author_name?: string; author_av
           href={`/blog/${post.slug}`}
           className="text-sm font-medium text-violet-400 hover:text-violet-300"
         >
-          Leer más →
+          {t("readMore")}
         </Link>
         <span className="flex items-center gap-1.5 text-sm text-zinc-500">
           <MessageSquare className="h-4 w-4" />
-          {post.comment_count ?? 0} comentario{post.comment_count !== 1 ? 's' : ''}
+          {t("comments", { count: commentCount })}
         </span>
       </div>
     </article>

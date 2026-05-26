@@ -8,10 +8,15 @@ import { NewsCard } from "@/components/features/home/NewsCard";
 import { QuickNavCard } from "@/components/features/home/QuickNavCard";
 import { RankingsPreview } from "@/components/features/home/RankingsPreview";
 import { SectionHeader } from "@/components/features/home/SectionHeader";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { locales, defaultLocale, type Locale } from "@/i18n/config";
 
 export const revalidate = 300; // Cache 5 minutos
 export const dynamic = 'force-static';
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 async function getFeaturedNews(): Promise<NewsPost[]> {
   try {
@@ -54,9 +59,18 @@ async function getUpcomingEvents(): Promise<Event[]> {
   }
 }
 
-export default async function HomePage() {
-  const t = await getTranslations("home");
-  const tNav = await getTranslations("nav");
+interface HomePageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function HomePage({ params }: HomePageProps) {
+  const resolvedParams = await params;
+  const locale = (resolvedParams?.locale ?? defaultLocale) as Locale;
+  setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: "home" });
+  const tNav = await getTranslations({ locale, namespace: "nav" });
+  const tEvents = await getTranslations({ locale, namespace: "events" });
 
   const [featuredNews, topGames, upcomingEvents] = await Promise.all([
     getFeaturedNews(),
@@ -133,7 +147,7 @@ export default async function HomePage() {
             {newsCards.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 {newsCards.map((news) => (
-                  <NewsCard key={news.id} news={news} />
+                  <NewsCard key={news.id} news={news} locale={locale} />
                 ))}
               </div>
             ) : (
@@ -154,7 +168,18 @@ export default async function HomePage() {
             {upcomingEvents.length > 0 ? (
               <div className="flex flex-col gap-4">
                 {upcomingEvents.map((event) => (
-                  <EventCard key={event.id} event={event} />
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    locale={locale}
+                    typeLabels={{
+                      launch: tEvents("types.launch"),
+                      convention: tEvents("types.convention"),
+                      expo: tEvents("types.expo"),
+                      tournament: tEvents("types.tournament"),
+                      other: tEvents("types.other"),
+                    }}
+                  />
                 ))}
               </div>
             ) : (

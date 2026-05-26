@@ -56,6 +56,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "4kwallpapers.com",
       },
+      {
+        protocol: "https",
+        hostname: "api.dicebear.com",
+      },
     ],
   },
 };

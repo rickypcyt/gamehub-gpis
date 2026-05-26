@@ -1,6 +1,7 @@
 'use client';
 
 import { Calendar, Star, X } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 
 import type { Game } from '@/lib/neon';
 
@@ -10,6 +11,9 @@ interface GameModalProps {
 }
 
 export function GameModal({ game, onClose }: GameModalProps) {
+  const t = useTranslations('games.modal');
+  const locale = useLocale();
+
   if (!game) return null;
 
   const pressScore = Number(game.press_score) || 0;
@@ -66,21 +70,21 @@ export function GameModal({ game, onClose }: GameModalProps) {
             {/* Description Card */}
             {game.description && (
               <div className="rounded-xl bg-zinc-800/50 p-5 border border-zinc-700/50">
-                <h3 className="text-sm font-semibold text-zinc-400 mb-2">Sobre el juego</h3>
+                <h3 className="text-sm font-semibold text-zinc-400 mb-2">{t('about')}</h3>
                 <p className="text-zinc-200 leading-relaxed">{game.description}</p>
               </div>
             )}
 
             {/* Scores Card */}
             <div className="rounded-xl bg-zinc-800/50 p-5 border border-zinc-700/50">
-              <h3 className="text-sm font-semibold text-zinc-400 mb-3 text-center">Puntuaciones</h3>
+              <h3 className="text-sm font-semibold text-zinc-400 mb-3 text-center">{t('scores')}</h3>
               <div className="flex items-center justify-around">
                 <div className="flex flex-col items-center gap-1">
                   <div className="flex items-center gap-2">
                     <Star className="h-6 w-6 fill-yellow-500 text-yellow-500" />
                     <span className="text-2xl font-bold text-white">{pressScore.toFixed(1)}</span>
                   </div>
-                  <span className="text-sm text-zinc-400">Crítica profesional</span>
+                  <span className="text-sm text-zinc-400">{t('press')}</span>
                 </div>
                 <div className="h-10 w-px bg-zinc-700"></div>
                 <div className="flex flex-col items-center gap-1">
@@ -88,7 +92,7 @@ export function GameModal({ game, onClose }: GameModalProps) {
                     <Star className="h-6 w-6 fill-violet-500 text-violet-500" />
                     <span className="text-2xl font-bold text-white">{userScore.toFixed(1)}</span>
                   </div>
-                  <span className="text-sm text-zinc-400">Valoración de usuarios</span>
+                  <span className="text-sm text-zinc-400">{t('users')}</span>
                 </div>
               </div>
             </div>
@@ -96,10 +100,10 @@ export function GameModal({ game, onClose }: GameModalProps) {
             {/* Release Date Card */}
             {game.release_date && (
               <div className="rounded-xl bg-zinc-800/50 p-5 border border-zinc-700/50">
-                <h3 className="text-sm font-semibold text-zinc-400 mb-2">Fecha de lanzamiento</h3>
+                <h3 className="text-sm font-semibold text-zinc-400 mb-2">{t('releaseDate')}</h3>
                 <div className="flex items-center gap-2 text-zinc-300">
                   <Calendar className="h-5 w-5 text-violet-400" />
-                  <span className="text-base">{new Date(game.release_date).toLocaleDateString('es-ES', {
+                  <span className="text-base">{new Date(game.release_date).toLocaleDateString(locale === 'en' ? 'en-US' : 'es-ES', {
                     day: 'numeric',
                     month: 'long',
                     year: 'numeric',
@@ -111,7 +115,7 @@ export function GameModal({ game, onClose }: GameModalProps) {
             {/* Genres Card */}
             {game.genre && game.genre.length > 0 && (
               <div className="rounded-xl bg-zinc-800/50 p-5 border border-zinc-700/50">
-                <h3 className="text-sm font-semibold text-zinc-400 mb-2">Géneros</h3>
+                <h3 className="text-sm font-semibold text-zinc-400 mb-2">{t('genres')}</h3>
                 <div className="flex flex-wrap gap-2">
                   {game.genre.map((g) => (
                     <span
@@ -128,7 +132,7 @@ export function GameModal({ game, onClose }: GameModalProps) {
             {/* Platforms Card */}
             {game.platform && game.platform.length > 0 && (
               <div className="rounded-xl bg-zinc-800/50 p-5 border border-zinc-700/50">
-                <h3 className="text-sm font-semibold text-zinc-400 mb-2">Plataformas disponibles</h3>
+                <h3 className="text-sm font-semibold text-zinc-400 mb-2">{t('platforms')}</h3>
                 <div className="flex flex-wrap gap-2">
                   {game.platform.map((p) => (
                     <span

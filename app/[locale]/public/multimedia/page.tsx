@@ -1,10 +1,17 @@
 import { Play, Tv, Video } from "lucide-react";
+import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
+import Image from "next/image";
 
 import type { Multimedia } from "@/lib/neon";
 import { cachedQuery } from "@/lib/neon";
+import { locales, defaultLocale, type Locale } from "@/i18n/config";
 
 export const revalidate = 300; // Cache 5 minutos
 export const dynamic = 'force-static';
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 function getVideoEmbedUrl(url: string, platform: string): string {
   if (platform === "YouTube" || url.includes("youtube.com")) {
@@ -18,7 +25,18 @@ function getVideoEmbedUrl(url: string, platform: string): string {
   return url;
 }
 
-export default async function MultimediaPage() {
+type TranslateFn = (key: string, values?: Record<string, unknown>) => string;
+
+interface MultimediaPageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function MultimediaPage({ params }: MultimediaPageProps) {
+  const resolvedParams = await params;
+  const locale = (resolvedParams?.locale ?? defaultLocale) as Locale;
+  setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: "multimedia" });
   const items = await cachedQuery<Multimedia>(
     "SELECT * FROM multimedia ORDER BY created_at DESC"
   );
@@ -36,11 +54,11 @@ export default async function MultimediaPage() {
           <section className="mt-12">
             <h2 className="mb-6 text-xl font-bold text-white flex items-center gap-2">
               <Play className="h-5 w-5 text-violet-500" />
-              Trailers
+              {t("sections.trailers")}
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {trailers.map((video) => (
-                <VideoCard key={video.id} video={video} />
+                <VideoCard key={video.id} video={video} t={t} />
               ))}
             </div>
           </section>
@@ -51,11 +69,11 @@ export default async function MultimediaPage() {
           <section className="mt-12">
             <h2 className="mb-6 text-xl font-bold text-white flex items-center gap-2">
               <Tv className="h-5 w-5 text-red-600" />
-              Videos destacados
+              {t("sections.videos")}
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {videos.map((video) => (
-                <VideoCard key={video.id} video={video} />
+                <VideoCard key={video.id} video={video} t={t} />
               ))}
             </div>
           </section>
@@ -66,23 +84,23 @@ export default async function MultimediaPage() {
           <section className="mt-12 mb-12">
             <h2 className="mb-6 text-xl font-bold text-white flex items-center gap-2">
               <Tv className="h-5 w-5 text-red-500" />
-              Streams en vivo
+              {t("sections.streams")}
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {streams.map((video) => (
-                <VideoCard key={video.id} video={video} />
+                <VideoCard key={video.id} video={video} t={t} />
               ))}
             </div>
           </section>
         )}
 
         {/* Featured Video - MOVED TO END */}
-        {items?.[0] && <FeaturedVideo video={items[0]} />}
+        {items?.[0] && <FeaturedVideo video={items[0]} t={t} />}
 
         {!items?.length && (
           <div className="py-16 text-center">
             <Video className="mx-auto h-12 w-12 text-zinc-600" />
-            <p className="mt-4 text-zinc-500">No hay contenido multimedia</p>
+            <p className="mt-4 text-zinc-500">{t("empty")}</p>
           </div>
         )}
       </main>
@@ -90,7 +108,13 @@ export default async function MultimediaPage() {
   );
 }
 
-function FeaturedVideo({ video }: { video: Multimedia }) {
+function FeaturedVideo({
+  video,
+  t,
+}: {
+  video: Multimedia;
+  t: TranslateFn;
+}) {
   const embedUrl = getVideoEmbedUrl(video.url, video.platform || "");
   const isEmbeddable = video.platform === "YouTube" || video.platform === "Twitch";
 
@@ -107,10 +131,12 @@ function FeaturedVideo({ video }: { video: Multimedia }) {
             scrolling="no"
           />
         ) : video.thumbnail ? (
-          <img
+          <Image
             src={video.thumbnail}
             alt={video.title}
-            className="h-full w-full object-cover"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -135,7 +161,7 @@ function FeaturedVideo({ video }: { video: Multimedia }) {
         <h2 className="mt-2 text-2xl font-bold text-white">{video.title}</h2>
         {video.platform && (
           <p className="mt-2 text-base text-zinc-500">
-            Plataforma: {video.platform}
+            {t("platform", { platform: video.platform })}
           </p>
         )}
       </div>
@@ -143,7 +169,7 @@ function FeaturedVideo({ video }: { video: Multimedia }) {
   );
 }
 
-function VideoCard({ video }: { video: Multimedia }) {
+function VideoCard({ video, t }: { video: Multimedia; t: TranslateFn }) {
   const embedUrl = getVideoEmbedUrl(video.url, video.platform || "");
   const isEmbeddable = video.platform === "YouTube" || video.platform === "Twitch";
 
@@ -160,10 +186,12 @@ function VideoCard({ video }: { video: Multimedia }) {
             scrolling="no"
           />
         ) : video.thumbnail ? (
-          <img
+          <Image
             src={video.thumbnail}
             alt={video.title}
-            className="h-full w-full object-cover transition group-hover:scale-105"
+            fill
+            className="object-cover transition group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, 33vw"
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -181,7 +209,7 @@ function VideoCard({ video }: { video: Multimedia }) {
           {video.title}
         </h3>
         {video.platform && (
-          <p className="mt-1 text-base text-zinc-500">{video.platform}</p>
+          <p className="mt-1 text-base text-zinc-500">{t("platform", { platform: video.platform })}</p>
         )}
       </div>
     </div>

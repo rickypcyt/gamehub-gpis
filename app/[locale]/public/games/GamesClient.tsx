@@ -1,11 +1,12 @@
 'use client';
 
 import { Calendar, Filter, Search, SlidersHorizontal, Star, Trophy, X } from 'lucide-react';
-import Image from 'next/image';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 import type { Game } from '@/lib/neon';
 import { GameModal } from '@/components/features/games/GameModal';
+import Image from 'next/image';
 
 interface GamesClientProps {
   games: Game[];
@@ -18,6 +19,8 @@ export default function GamesClient({ games }: GamesClientProps) {
   const [selectedYear, setSelectedYear] = useState<string>("all");
   const [minScore, setMinScore] = useState<number>(0);
   const [showFilters, setShowFilters] = useState(false);
+  const t = useTranslations('games');
+  const locale = useLocale();
 
   // Get unique genres and years for filters
   const allGenres = useMemo(() => {
@@ -78,7 +81,7 @@ export default function GamesClient({ games }: GamesClientProps) {
       <main className="mx-auto max-w-7xl px-4 py-8">
         {/* Header with Search and Filters */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-4">Catálogo de Juegos</h1>
+          <h1 className="text-3xl font-bold text-white mb-4">{t('catalogTitle')}</h1>
           
           {/* Search and Filter Toggle */}
           <div className="flex flex-col sm:flex-row gap-3 mb-4">
@@ -86,7 +89,7 @@ export default function GamesClient({ games }: GamesClientProps) {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
               <input
                 type="text"
-                placeholder="Buscar juegos..."
+                placeholder={t('searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full rounded-lg border border-zinc-700 bg-zinc-800 pl-10 pr-4 py-2 text-white placeholder:text-zinc-500 focus:border-violet-500 focus:outline-none"
@@ -109,7 +112,7 @@ export default function GamesClient({ games }: GamesClientProps) {
               }`}
             >
               <SlidersHorizontal className="h-4 w-4" />
-              Filtros
+              {t('filters.toggle')}
               {hasActiveFilters && (
                 <span className="ml-1 rounded-full bg-violet-500 px-2 py-0.5 text-sm text-white">
                   {[selectedGenre, selectedYear, minScore > 0 ? "score" : null].filter(Boolean).length + (searchQuery ? 1 : 0)}
@@ -126,14 +129,14 @@ export default function GamesClient({ games }: GamesClientProps) {
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-400">
                     <Filter className="inline h-3 w-3 mr-1" />
-                    Género
+                    {t('filters.genre')}
                   </label>
                   <select
                     value={selectedGenre}
                     onChange={(e) => setSelectedGenre(e.target.value)}
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-white focus:border-violet-500 focus:outline-none"
                   >
-                    <option value="all">Todos los géneros</option>
+                    <option value="all">{t('filters.genreAll')}</option>
                     {allGenres.map((genre) => (
                       <option key={genre} value={genre}>{genre}</option>
                     ))}
@@ -144,14 +147,14 @@ export default function GamesClient({ games }: GamesClientProps) {
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-400">
                     <Calendar className="inline h-3 w-3 mr-1" />
-                    Año
+                    {t('filters.year')}
                   </label>
                   <select
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-white focus:border-violet-500 focus:outline-none"
                   >
-                    <option value="all">Todos los años</option>
+                    <option value="all">{t('filters.yearAll')}</option>
                     {allYears.map((year) => (
                       <option key={year} value={year.toString()}>{year}</option>
                     ))}
@@ -162,7 +165,7 @@ export default function GamesClient({ games }: GamesClientProps) {
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-400">
                     <Star className="inline h-3 w-3 mr-1" />
-                    Nota mínima: {minScore > 0 ? minScore : "Todas"}
+                    {t('filters.scoreLabel', { value: minScore > 0 ? minScore : t('filters.scoreAny') })}
                   </label>
                   <input
                     type="range"
@@ -174,7 +177,7 @@ export default function GamesClient({ games }: GamesClientProps) {
                     className="w-full accent-violet-500"
                   />
                   <div className="flex justify-between text-sm text-zinc-500">
-                    <span>Todas</span>
+                    <span>{t('filters.scoreAny')}</span>
                     <span>50</span>
                     <span>100</span>
                   </div>
@@ -187,7 +190,7 @@ export default function GamesClient({ games }: GamesClientProps) {
                   className="mt-4 flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300"
                 >
                   <X className="h-3 w-3" />
-                  Limpiar filtros
+                  {t('filters.clear')}
                 </button>
               )}
             </div>
@@ -195,7 +198,7 @@ export default function GamesClient({ games }: GamesClientProps) {
 
           {/* Results count */}
           <p className="mt-4 text-sm text-zinc-500">
-            {filteredGames.length} juego{filteredGames.length !== 1 ? 's' : ''} encontrado{filteredGames.length !== 1 ? 's' : ''}
+            {t('resultsCount', { count: filteredGames.length })}
           </p>
         </div>
 
@@ -203,14 +206,22 @@ export default function GamesClient({ games }: GamesClientProps) {
         {topHistoryGames && topHistoryGames.length > 0 && (
           <div className="mb-12">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-white">Top de la historia</h2>
+              <h2 className="text-2xl font-bold text-white">{t('sections.topHistory.title')}</h2>
               <p className="mt-2 text-zinc-400">
-                Los mejores juegos de todos los tiempos según críticos y jugadores
+                {t('sections.topHistory.description')}
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {topHistoryGames.map((game, index) => (
-                <GameCard key={game.id} game={game} rank={index + 1} onClick={() => setSelectedGame(game)} />
+                <GameCard
+                  key={game.id}
+                  game={game}
+                  rank={index + 1}
+                  onClick={() => setSelectedGame(game)}
+                  locale={locale}
+                  pressLabel={t('scores.press')}
+                  usersLabel={t('scores.users')}
+                />
               ))}
             </div>
           </div>
@@ -220,14 +231,22 @@ export default function GamesClient({ games }: GamesClientProps) {
         {top2020_2025Games && top2020_2025Games.length > 0 && (
           <div className="mb-12">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-white">Top 2020-2025</h2>
+              <h2 className="text-2xl font-bold text-white">{t('sections.topRecent.title')}</h2>
               <p className="mt-2 text-zinc-400">
-                Los mejores títulos de los últimos años mezclando impacto, calidad y consenso general
+                {t('sections.topRecent.description')}
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {top2020_2025Games.map((game, index) => (
-                <GameCard key={game.id} game={game} rank={index + 1} onClick={() => setSelectedGame(game)} />
+                <GameCard
+                  key={game.id}
+                  game={game}
+                  rank={index + 1}
+                  onClick={() => setSelectedGame(game)}
+                  locale={locale}
+                  pressLabel={t('scores.press')}
+                  usersLabel={t('scores.users')}
+                />
               ))}
             </div>
           </div>
@@ -237,14 +256,21 @@ export default function GamesClient({ games }: GamesClientProps) {
         {otherGames && otherGames.length > 0 && (
           <div className="mb-12">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-white">Más Juegos</h2>
+              <h2 className="text-2xl font-bold text-white">{t('sections.others.title')}</h2>
               <p className="mt-2 text-zinc-400">
-                Otros títulos destacados
+                {t('sections.others.description')}
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {otherGames.map((game) => (
-                <GameCard key={game.id} game={game} onClick={() => setSelectedGame(game)} />
+                <GameCard
+                  key={game.id}
+                  game={game}
+                  onClick={() => setSelectedGame(game)}
+                  locale={locale}
+                  pressLabel={t('scores.press')}
+                  usersLabel={t('scores.users')}
+                />
               ))}
             </div>
           </div>
@@ -254,14 +280,14 @@ export default function GamesClient({ games }: GamesClientProps) {
           <div className="text-center py-16">
             <Trophy className="mx-auto h-12 w-12 text-zinc-600" />
             <p className="mt-4 text-zinc-500">
-              {hasActiveFilters ? "No hay juegos que coincidan con los filtros" : "No hay juegos registrados aún"}
+              {hasActiveFilters ? t('empty.noMatches') : t('empty.noGames')}
             </p>
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
                 className="mt-4 text-violet-400 hover:text-violet-300"
               >
-                Limpiar filtros
+                {t('filters.clear')}
               </button>
             )}
           </div>
@@ -274,9 +300,24 @@ export default function GamesClient({ games }: GamesClientProps) {
   );
 }
 
-function GameCard({ game, rank, onClick }: { game: Game; rank?: number; onClick: () => void }) {
+function GameCard({
+  game,
+  rank,
+  onClick,
+  locale,
+  pressLabel,
+  usersLabel,
+}: {
+  game: Game;
+  rank?: number;
+  onClick: () => void;
+  locale: string;
+  pressLabel: string;
+  usersLabel: string;
+}) {
   const pressScore = Number(game.press_score) || 0;
   const userScore = Number(game.user_score) || 0;
+  const dateLocale = locale === 'en' ? 'en-US' : 'es-ES';
 
   return (
     <button
@@ -323,12 +364,12 @@ function GameCard({ game, rank, onClick }: { game: Game; rank?: number; onClick:
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
             <span className="text-sm font-medium text-white">{pressScore.toFixed(1)}</span>
-            <span className="text-sm text-zinc-500">prensa</span>
+            <span className="text-sm text-zinc-500">{pressLabel}</span>
           </div>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-violet-500 text-violet-500" />
             <span className="text-sm font-medium text-white">{userScore.toFixed(1)}</span>
-            <span className="text-sm text-zinc-500">usuarios</span>
+            <span className="text-sm text-zinc-500">{usersLabel}</span>
           </div>
         </div>
 
@@ -364,7 +405,7 @@ function GameCard({ game, rank, onClick }: { game: Game; rank?: number; onClick:
         {game.release_date && (
           <p className="mt-3 flex items-center gap-1 text-sm text-zinc-500">
             <Calendar className="h-3 w-3" />
-            {new Date(game.release_date).toLocaleDateString('es-ES', {
+            {new Date(game.release_date).toLocaleDateString(dateLocale, {
               day: 'numeric',
               month: 'short',
               year: 'numeric',

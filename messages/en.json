@@ -9,7 +9,18 @@
     "login": "Sign In",
     "register": "Register",
     "logout": "Sign Out",
-    "profile": "View Profile"
+    "profile": "View Profile",
+    "admin": "Admin",
+    "manageNews": "Manage News",
+    "manageUsers": "Manage Users",
+    "settings": "Settings"
+  },
+  "news": {
+    "featured": "Featured",
+    "latestNews": "Latest News",
+    "views": "views",
+    "authorFallback": "Editorial",
+    "noNews": "No news published yet"
   },
   "home": {
     "hero": {
@@ -58,6 +69,107 @@
       "noEvents": "No upcoming events scheduled right now."
     }
   },
+  "games": {
+    "catalogTitle": "Game Catalog",
+    "searchPlaceholder": "Search games...",
+    "filters": {
+      "toggle": "Filters",
+      "genre": "Genre",
+      "genreAll": "All genres",
+      "year": "Year",
+      "yearAll": "All years",
+      "scoreLabel": "Minimum score: {value}",
+      "scoreAny": "Any",
+      "clear": "Clear filters"
+    },
+    "resultsCount": "{count, plural, one {# game found} other {# games found}}",
+    "sections": {
+      "topHistory": {
+        "title": "Top of all time",
+        "description": "The most acclaimed games ever according to critics and players."
+      },
+      "topRecent": {
+        "title": "Top 2020-2025",
+        "description": "The standout releases from the last few years."
+      },
+      "others": {
+        "title": "More games",
+        "description": "Additional community-recommended titles."
+      }
+    },
+    "scores": {
+      "press": "Press",
+      "users": "Players"
+    },
+    "empty": {
+      "noMatches": "No games match the current filters.",
+      "noGames": "No games have been added yet."
+    },
+    "modal": {
+      "about": "About the game",
+      "scores": "Scores",
+      "press": "Press",
+      "users": "Players",
+      "releaseDate": "Release date",
+      "genres": "Genres",
+      "platforms": "Available platforms"
+    }
+  },
+  "blog": {
+    "list": {
+      "title": "Insights & Opinions",
+      "subtitle": "Perspectives from leading voices in the gaming industry",
+      "badge": "Opinion",
+      "readMore": "Read more →",
+      "comments": "{count, plural, one {# comment} other {# comments}}",
+      "authorFallback": "Contributor",
+      "empty": "No blog posts have been published yet"
+    }
+  },
+  "multimedia": {
+    "sections": {
+      "trailers": "Trailers",
+      "videos": "Featured Videos",
+      "streams": "Live streams"
+    },
+    "platform": "Available on {platform}",
+    "empty": "No multimedia content available"
+  },
+  "events": {
+    "title": "Event Calendar",
+    "subtitle": "Launches, trade shows and conventions across the gaming world",
+    "nextEvent": {
+      "label": "Next event",
+      "locationFallback": "Location to be announced",
+      "countdown": "{count, plural, one {{count} day until the event} other {{count} days until the event}}",
+      "moreInfo": "More information"
+    },
+    "timeline": {
+      "until": "Until {date}"
+    },
+    "card": {
+      "moreInfo": "More info"
+    },
+    "types": {
+      "launch": "Launch",
+      "convention": "Convention",
+      "expo": "Expo",
+      "tournament": "Tournament",
+      "other": "Event"
+    },
+    "cta": {
+      "backHome": "← Back to home"
+    },
+    "empty": "No events scheduled"
+  },
+  "team": {
+    "title": "Our Team",
+    "subtitle": "The people behind GameHub",
+    "editors": "Editors",
+    "contributors": "Contributors",
+    "noName": "No name",
+    "empty": "The team is forming..."
+  },
   "auth": {
     "login": {
       "title": "GameHub",
@@ -87,18 +199,170 @@
     }
   },
   "dashboard": {
-    "title": "Dashboard",
-    "stats": {
-      "role": "Role",
-      "email": "Email",
-      "name": "Name",
-      "memberSince": "Member since"
+    "sidebar": {
+      "sections": {
+        "general": "General",
+        "management": "Management",
+        "system": "System",
+        "content": "Content",
+        "myAccount": "My Account"
+      },
+      "items": {
+        "dashboard": "Dashboard",
+        "users": "Users",
+        "news": "News",
+        "moderation": "Moderation",
+        "stats": "Statistics",
+        "settings": "Settings",
+        "createNews": "Create News",
+        "myNews": "My News",
+        "drafts": "Drafts",
+        "schedule": "Schedule",
+        "profile": "Profile",
+        "comments": "Comments",
+        "favorites": "Favorites",
+        "history": "History"
+      },
+      "backToHome": "Back to home",
+      "userFallback": "User"
     },
-    "roles": {
-      "admin": "Administrator",
-      "redactor": "Editor",
-      "colaborador": "Contributor",
-      "suscriptor": "Subscriber"
+    "greeting": "Hi, {name}!",
+    "fallbacks": {
+      "user": "User",
+      "post": "Post",
+      "location": "Not specified",
+      "website": "-"
+    },
+    "taglines": {
+      "admin": "Full control of the platform",
+      "redactor": "Create and manage editorial content",
+      "suscriptor": "Join the gaming community"
+    },
+    "statusLabels": {
+      "published": "Published",
+      "draft": "Draft",
+      "review": "Review",
+      "scheduled": "Scheduled",
+      "pending": "Pending"
+    },
+    "contentTypes": {
+      "news": "News",
+      "blog": "Blog"
+    },
+    "common": {
+      "viewAll": "View all",
+      "viewAllFeminine": "View all",
+      "viewAllSingular": "View all",
+      "editProfile": "Edit profile",
+      "continue": "Continue",
+      "calendar": "Calendar",
+      "linkLabelNews": "news",
+      "approve": "Approve",
+      "reject": "Reject",
+      "continueDraft": "Continue"
+    },
+    "admin": {
+      "stats": {
+        "users": { "title": "Users", "trend": "+12%" },
+        "news": { "title": "News", "trend": "+5" },
+        "comments": { "title": "Comments", "trend": "+24%" },
+        "thisWeek": { "title": "This week", "trend": "new" }
+      },
+      "moderation": {
+        "title": "Comment moderation",
+        "viewAll": "View all",
+        "empty": "No recent comments to moderate.",
+        "postLabel": "in {post}"
+      },
+      "quickActions": {
+        "title": "Quick actions",
+        "manageUsers": "Manage users",
+        "createNews": "Create news",
+        "viewStats": "View stats",
+        "editNews": "Edit news"
+      },
+      "news": {
+        "title": "News management",
+        "viewAll": "View all",
+        "headers": {
+          "title": "Title",
+          "author": "Author",
+          "status": "Status",
+          "date": "Date"
+        },
+        "empty": "No news have been created yet."
+      }
+    },
+    "redactor": {
+      "quickActions": {
+        "createNews": {
+          "title": "New article",
+          "description": "Create editorial content"
+        },
+        "drafts": {
+          "title": "Drafts",
+          "description": "Continue your drafts"
+        },
+        "schedule": {
+          "title": "Schedule",
+          "description": "Plan publications"
+        },
+        "myNews": {
+          "title": "My articles",
+          "description": "Manage your posts"
+        }
+      },
+      "drafts": {
+        "title": "My drafts",
+        "viewAll": "View all",
+        "empty": "You have no drafts saved."
+      },
+      "published": {
+        "title": "Recent publications",
+        "viewAll": "View all",
+        "empty": "You haven't published news yet."
+      },
+      "table": {
+        "title": "Recent publications",
+        "viewAll": "View all",
+        "headers": {
+          "title": "Title",
+          "status": "Status",
+          "views": "Views",
+          "date": "Date"
+        },
+        "empty": "You haven't created news yet."
+      }
+    },
+    "subscriber": {
+      "stats": {
+        "comments": "Comments",
+        "posts": "Commented posts",
+        "lastComment": "Last comment",
+        "memberSince": "Member since"
+      },
+      "profile": {
+        "role": "Role",
+        "location": "Location",
+        "website": "Website"
+      },
+      "comments": {
+        "title": "My recent comments",
+        "viewAll": "View all",
+        "empty": "You haven't posted comments yet."
+      },
+      "favorites": {
+        "title": "Favorites",
+        "viewAll": "View all",
+        "empty": "You don't have saved posts yet."
+      },
+      "history": {
+        "title": "Reading history",
+        "viewAll": "View all",
+        "emptyPrefix": "No history yet. Start exploring ",
+        "emptyLinkLabel": "news",
+        "emptySuffix": "."
+      }
     }
   },
   "footer": {
@@ -109,7 +373,7 @@
     "contact": "Contact",
     "team": "Team",
     "login": "Sign In",
-    "location": "Madrid, Spain",
+    "location": "Elche, Spain",
     "contactEmail": "contact@gamehub.es",
     "contactPhone": "+34 900 000 000",
     "copyright": "© 2025 GameHub. Academic project."

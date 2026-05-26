@@ -1,13 +1,31 @@
 import { Calendar, Clock, ExternalLink, MapPin } from "lucide-react";
+import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 
 import type { Event } from "@/lib/neon";
 import { Link } from "@/i18n/navigation";
 import { cachedQuery } from "@/lib/neon";
+import { locales, defaultLocale, type Locale } from "@/i18n/config";
 
 export const revalidate = 300; // Cache 5 minutos
 export const dynamic = 'force-static';
 
-export default async function EventsPage() {
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+
+type TranslateFn = (key: string, values?: Record<string, unknown>) => string;
+
+interface EventsPageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function EventsPage({ params }: EventsPageProps) {
+  const resolvedParams = await params;
+  const locale = (resolvedParams?.locale ?? defaultLocale) as Locale;
+  setRequestLocale(locale);
+
+  const t = (await getTranslations({ locale, namespace: "events" })) as TranslateFn;
+  const localeTag = locale === "en" ? "en-US" : "es-ES";
   // Get events from today onwards and past events from last 30 days
   const events = await cachedQuery<Event>(
     `SELECT * FROM events 
@@ -16,7 +34,7 @@ export default async function EventsPage() {
   );
 
   // Group events by month for timeline
-  const eventsByMonth = groupEventsByMonth(events || []);
+  const eventsByMonth = groupEventsByMonth(events || [], localeTag);
 
   // Get upcoming events for the "next" highlight
   const upcomingEvents = events?.filter(e => new Date(e.start_date) >= new Date()) || [];
@@ -28,10 +46,8 @@ export default async function EventsPage() {
       <main className="mx-auto max-w-6xl px-4 py-8">
         {/* Header */}
         <div className="mb-10">
-          <h1 className="text-3xl font-bold text-white">Calendario de Eventos</h1>
-          <p className="mt-2 text-zinc-400">
-            Lanzamientos, ferias y convenciones del mundo gaming
-          </p>
+          <h1 className="text-3xl font-bold text-white">{t("title")}</h1>
+          <p className="mt-2 text-zinc-400">{t("subtitle")}</p>
         </div>
 
         {/* Next Event Highlight */}
@@ -41,10 +57,10 @@ export default async function EventsPage() {
               <div>
                 <span className="inline-flex items-center gap-1 rounded-full bg-violet-500/20 px-3 py-1 text-sm font-medium text-violet-400">
                   <Clock className="h-3 w-3" />
-                  Próximo evento
+                  {t("nextEvent.label")}
                 </span>
                 <h2 className="mt-3 text-2xl font-bold text-white">{nextEvent.title}</h2>
-                <p className="mt-1 text-zinc-400">{nextEvent.location || "Ubicación por confirmar"}</p>
+                <p className="mt-1 text-zinc-400">{nextEvent.location || t("nextEvent.locationFallback")}</p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-right">
@@ -52,14 +68,13 @@ export default async function EventsPage() {
                     {new Date(nextEvent.start_date).getDate()}
                   </p>
                   <p className="text-sm text-violet-400">
-                    {new Date(nextEvent.start_date).toLocaleDateString("es-ES", { month: "long" })}
+                    {new Date(nextEvent.start_date).toLocaleDateString(localeTag, { month: "long" })}
                   </p>
                 </div>
                 <div className="h-12 w-px bg-violet-500/30" />
-                <div className="text-sm text-zinc-400">
-                  <p>{getDaysUntil(nextEvent.start_date)} días</p>
-                  <p>para el evento</p>
-                </div>
+                <p className="text-sm text-zinc-400">
+                  {t("nextEvent.countdown", { count: getDaysUntil(nextEvent.start_date) })}
+                </p>
               </div>
             </div>
             {nextEvent.url && (
@@ -70,7 +85,7 @@ export default async function EventsPage() {
                 className="mt-4 inline-flex items-center gap-1 text-violet-400 hover:text-violet-300"
               >
                 <ExternalLink className="h-4 w-4" />
-                Más información
+                {t("nextEvent.moreInfo")}
               </a>
             )}
           </div>
@@ -110,11 +125,13 @@ export default async function EventsPage() {
                         {/* Date - left on desktop when isLeft, right when not */}
                         <div className={`hidden md:block md:w-1/2 ${isLeft ? "text-right pr-8" : "text-left pl-8"}`}>
                           <span className={`text-sm font-medium ${isPast ? "text-zinc-500" : "text-violet-400"}`}>
-                            {new Date(event.start_date).getDate()} de{" "}
-                            {new Date(event.start_date).toLocaleDateString("es-ES", { month: "long" })}
+                            {new Date(event.start_date).toLocaleDateString(localeTag, {
+                              day: "numeric",
+                              month: "long",
+                            })}
                           </span>
                           <p className="text-sm text-zinc-500">
-                            {new Date(event.start_date).toLocaleTimeString("es-ES", {
+                            {new Date(event.start_date).toLocaleTimeString(localeTag, {
                               hour: "2-digit",
                               minute: "2-digit",
                             })}
@@ -123,7 +140,7 @@ export default async function EventsPage() {
 
                         {/* Event Card */}
                         <div className={`ml-10 md:ml-0 md:w-1/2 ${isLeft ? "md:pl-8" : "md:pr-8"}`}>
-                          <EventCard event={event} isPast={isPast} />
+                          <EventCard event={event} isPast={isPast} localeTag={localeTag} t={t} />
                         </div>
                       </div>
                     );
@@ -137,9 +154,9 @@ export default async function EventsPage() {
         {!events?.length && (
           <div className="py-16 text-center">
             <Calendar className="mx-auto h-12 w-12 text-zinc-600" />
-            <p className="mt-4 text-zinc-500">No hay eventos programados</p>
+            <p className="mt-4 text-zinc-500">{t("empty")}</p>
             <Link href="/" className="mt-4 inline-block text-violet-400 hover:text-violet-300">
-              ← Volver a inicio
+              {t("cta.backHome")}
             </Link>
           </div>
         )}
@@ -148,12 +165,12 @@ export default async function EventsPage() {
   );
 }
 
-function groupEventsByMonth(events: Event[]): Record<string, Event[]> {
+function groupEventsByMonth(events: Event[], localeTag: string): Record<string, Event[]> {
   const grouped: Record<string, Event[]> = {};
   
   events.forEach(event => {
     const date = new Date(event.start_date);
-    const monthKey = date.toLocaleDateString("es-ES", { month: "long", year: "numeric" });
+    const monthKey = date.toLocaleDateString(localeTag, { month: "long", year: "numeric" });
     
     if (!grouped[monthKey]) {
       grouped[monthKey] = [];
@@ -171,21 +188,23 @@ function getDaysUntil(dateString: string): number {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
-function EventCard({ event, isPast }: { event: Event; isPast: boolean }) {
+function EventCard({
+  event,
+  isPast,
+  localeTag,
+  t,
+}: {
+  event: Event;
+  isPast: boolean;
+  localeTag: string;
+  t: TranslateFn;
+}) {
   const typeColors = {
     launch: "border-green-500/30 bg-green-500/5",
     convention: "border-blue-500/30 bg-blue-500/5",
     expo: "border-violet-500/30 bg-violet-500/5",
     tournament: "border-orange-500/30 bg-orange-500/5",
     other: "border-zinc-700 bg-zinc-900/50",
-  };
-
-  const typeLabels = {
-    launch: "Lanzamiento",
-    convention: "Convención",
-    expo: "Expo",
-    tournament: "Torneo",
-    other: "Evento",
   };
 
   return (
@@ -197,8 +216,10 @@ function EventCard({ event, isPast }: { event: Event; isPast: boolean }) {
       {/* Mobile date */}
       <div className="mb-2 md:hidden">
         <span className={`text-sm font-medium ${isPast ? "text-zinc-500" : "text-violet-400"}`}>
-          {new Date(event.start_date).getDate()} de{" "}
-          {new Date(event.start_date).toLocaleDateString("es-ES", { month: "long" })}
+          {new Date(event.start_date).toLocaleDateString(localeTag, {
+            day: "numeric",
+            month: "long",
+          })}
         </span>
       </div>
 
@@ -207,7 +228,7 @@ function EventCard({ event, isPast }: { event: Event; isPast: boolean }) {
           <span className={`text-sm font-medium uppercase ${
             isPast ? "text-zinc-500" : "text-zinc-400"
           }`}>
-            {typeLabels[event.type]}
+            {t(`types.${event.type}`)}
           </span>
           <h3 className={`font-semibold ${isPast ? "text-zinc-500" : "text-white"}`}>
             {event.title}
@@ -215,8 +236,12 @@ function EventCard({ event, isPast }: { event: Event; isPast: boolean }) {
         </div>
         {event.end_date && event.end_date !== event.start_date && (
           <span className="text-sm text-zinc-500">
-            Hasta {new Date(event.end_date).getDate()} de{" "}
-            {new Date(event.end_date).toLocaleDateString("es-ES", { month: "short" })}
+            {t("timeline.until", {
+              date: new Date(event.end_date).toLocaleDateString(localeTag, {
+                day: "numeric",
+                month: "short",
+              }),
+            })}
           </span>
         )}
       </div>
@@ -240,7 +265,7 @@ function EventCard({ event, isPast }: { event: Event; isPast: boolean }) {
           className="mt-3 inline-flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300"
         >
           <ExternalLink className="h-3 w-3" />
-          Más info
+          {t("card.moreInfo")}
         </a>
       )}
     </div>

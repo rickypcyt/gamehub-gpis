@@ -1,5 +1,6 @@
-import { ArrowLeft, Crown, Edit3, Shield, Trash2, User, UserCog } from "lucide-react";
+import { ArrowLeft, Crown, Edit3, Shield, User, UserCog } from "lucide-react";
 
+import { DeleteButton } from "@/components/admin/DeleteButton";
 import { Link } from "@/i18n/navigation";
 import { auth } from "@/auth";
 import { query } from "@/lib/neon";
@@ -174,24 +175,10 @@ export default async function AdminUsersPage() {
                             <Edit3 className="h-4 w-4" />
                           </Link>
                           {!isCurrentUser && (
-                            <form
+                            <DeleteButton
                               action={`/api/users/${user.id}/delete`}
-                              method="POST"
-                              className="inline"
-                              onSubmit={(e) => {
-                                if (!confirm("¿Eliminar este usuario permanentemente?")) {
-                                  e.preventDefault();
-                                }
-                              }}
-                            >
-                              <button
-                                type="submit"
-                                className="rounded-lg p-2 text-zinc-400 hover:bg-red-500/10 hover:text-red-400"
-                                title="Eliminar"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </form>
+                              confirmMessage="¿Eliminar este usuario permanentemente?"
+                            />
                           )}
                         </div>
                       </td>

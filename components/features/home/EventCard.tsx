@@ -1,26 +1,24 @@
 import type { Event } from "@/lib/neon";
+import type { Locale } from "@/i18n/config";
 import { MapPin } from "lucide-react";
 
 interface EventCardProps {
   event: Event;
+  locale: Locale;
+  typeLabels: Record<string, string>;
 }
 
-export function EventCard({ event }: EventCardProps) {
+export function EventCard({ event, locale, typeLabels }: EventCardProps) {
   const startDate = new Date(event.start_date);
+  const localeTag = locale === "en" ? "en-US" : "es-ES";
 
-  const month = startDate.toLocaleDateString("es-ES", { month: "short" }).toUpperCase();
+  const month = startDate.toLocaleDateString(localeTag, { month: "short" }).toUpperCase();
   const day = startDate.getDate();
 
   const typeColors: Record<string, string> = {
     launch: "border-emerald-500/30 bg-emerald-500/5 text-emerald-400",
     convention: "border-blue-500/30 bg-blue-500/5 text-blue-400",
     expo: "border-amber-500/30 bg-amber-500/5 text-amber-400",
-  };
-
-  const typeLabels: Record<string, string> = {
-    launch: "Lanzamiento",
-    convention: "Convención",
-    expo: "Expo",
   };
 
   return (

@@ -51,7 +51,7 @@ export default function LoginPage() {
       let redirectUrl = "/dashboard";
       switch (role) {
         case "admin":
-          redirectUrl = "/admin";
+          redirectUrl = "/dashboard";
           break;
         case "redactor":
           redirectUrl = "/admin/news";

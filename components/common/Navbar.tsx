@@ -1,8 +1,8 @@
 'use client';
 
-import { FileText, Gamepad2, Menu, Settings, User, Users, X } from "lucide-react";
+import { ChevronDown, FileText, Gamepad2, Menu, Settings, User, Users, X } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslations } from "next-intl";
@@ -13,6 +13,8 @@ export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const hideNavbar = pathname?.split("/").includes("dashboard");
 
@@ -32,6 +34,23 @@ export default function Navbar() {
     checkSession();
   }, []);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setAdminDropdownOpen(false);
+      }
+    };
+
+    if (adminDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [adminDropdownOpen]);
+
   const isActive = (path: string) => {
     if (path === "/") return pathname === "/";
     return pathname.startsWith(path);
@@ -50,19 +69,19 @@ export default function Navbar() {
   const roleMenuItems: { href: string; label: string; icon: React.ReactNode; allowedRoles: string[] }[] = [
     {
       href: "/admin/news",
-      label: "Gestionar Noticias",
+      label: t("manageNews"),
       icon: <FileText className="h-4 w-4" />,
       allowedRoles: ["admin", "redactor"],
     },
     {
       href: "/admin/users",
-      label: "Gestionar Usuarios",
+      label: t("manageUsers"),
       icon: <Users className="h-4 w-4" />,
       allowedRoles: ["admin"],
     },
     {
       href: "/admin/settings",
-      label: "Configuración",
+      label: t("settings"),
       icon: <Settings className="h-4 w-4" />,
       allowedRoles: ["admin"],
     },
@@ -99,20 +118,40 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
-          {visibleRoleItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-1 hover:text-white ${
-                isActive(item.href)
-                  ? "text-violet-400 underline underline-offset-4"
-                  : ""
-              }`}
-            >
-              {item.icon}
-              <span className="text-base">{item.label}</span>
-            </Link>
-          ))}
+          
+          {/* Admin Dropdown */}
+          {visibleRoleItems.length > 0 && (
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setAdminDropdownOpen(!adminDropdownOpen)}
+                className="flex items-center gap-1 hover:text-white text-zinc-400"
+              >
+                <Settings className="h-4 w-4" />
+                <span className="text-base">{t("admin")}</span>
+                <ChevronDown className={`h-4 w-4 transition-transform ${adminDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {adminDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 rounded-lg border border-zinc-800 bg-zinc-900/95 backdrop-blur shadow-xl">
+                  <div className="py-1">
+                    {visibleRoleItems.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setAdminDropdownOpen(false)}
+                        className={`flex items-center gap-2 px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white ${
+                          isActive(item.href) ? "bg-zinc-800 text-violet-400" : ""
+                        }`}
+                      >
+                        {item.icon}
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </nav>
 
         <div className="flex items-center gap-3">

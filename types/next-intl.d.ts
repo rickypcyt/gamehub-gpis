@@ -3,7 +3,14 @@ declare module "next-intl/server" {
 
   export function getLocale(): Promise<string>;
   export function getMessages<Namespace extends Messages = Messages>(): Promise<Namespace>;
-  export function getTranslations(namespace?: string): Promise<(key: string) => string>;
+  export function getTranslations(
+    namespaceOrOptions?:
+      | string
+      | {
+          locale?: string;
+          namespace?: string;
+        }
+  ): Promise<(key: string) => string>;
   export function getRequestConfig(
     callback: () => Promise<{
       locale: string;
