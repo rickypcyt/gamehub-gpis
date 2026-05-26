@@ -1,5 +1,55 @@
 # GameHub & Services Ecosystem
 
+- **Repositorio**: https://github.com/rickypcyt/gamehub-gpis
+- **Web**: https://gamehub-gpis-exc1.vercel.app/es/public
+
+## Getting Started
+
+### Requisitos
+
+- [Bun](https://bun.sh) (recomendado) o Node.js 20+
+- Cuenta en [Neon](https://neon.tech) para la base de datos
+
+### Instalación
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/rickypcyt/gamehub-gpis.git
+cd gamehub-gpis
+
+# 2. Instalar dependencias
+bun install
+# o si prefieres npm:
+# npm install
+
+# 3. Configurar variables de entorno
+cp .env.example .env.local
+# Edita .env.local con las credenciales (ver sección Variables de Entorno)
+
+# 4. Iniciar el servidor de desarrollo
+bun dev
+# o: npm run dev
+```
+
+La aplicación estará disponible en `http://localhost:3000`.
+
+## Funcionalidades
+
+GameHub es una plataforma web para el seguimiento y valoración de videojuegos que ofrece:
+
+- **Catálogo de juegos**: Explora un catálogo de videojuegos con rankings de prensa y comunidad.
+- **Noticias**: Publicación y lectura de noticias del sector, con soporte para destacadas y borradores.
+- **Blog**: Artículos de opinión y posts de la comunidad.
+- **Valoraciones**: Sistema de puntuación de juegos por parte de los usuarios.
+- **Comentarios**: Sistema de comentarios anidados en posts del blog y noticias.
+- **Hub Multimedia**: Videos, streams y trailers de juegos.
+- **Eventos**: Calendario de lanzamientos, convenciones y exposiciones.
+- **Contacto**: Formulario de contacto para consultas.
+- **Panel de Administración**: Gestión de usuarios, roles y contenido (admin exclusivo).
+- **Roles de usuario**: Admin, Redactor, Colaborador y Suscriptor, cada uno con permisos diferenciados.
+- **Internacionalización**: Soporte multilingüe (español e inglés).
+- **Autenticación**: Login con email y contraseña, gestión de sesiones JWT y control de roles.
+
 ## Stack Tecnológico
 
 | Capa | Tecnología |
@@ -12,6 +62,24 @@
 | Autenticación | NextAuth.js v5 + bcrypt |
 | Validación | Zod |
 | Internacionalización | next-intl |
+
+## Variables de Entorno
+
+Crea un archivo `.env.local` en la raíz del proyecto con las siguientes variables:
+
+```bash
+# Conexión a la base de datos Neon (PostgreSQL)
+DATABASE_URL=postgresql://user:password@host.neon.tech/dbname?sslmode=require
+
+# Configuración de NextAuth.js v5
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=una_clave_secreta_larga_y_aleatoria
+```
+
+**Obtener las variables:**
+
+- **DATABASE_URL**: Desde el dashboard de [Neon](https://neon.tech), copia la connection string de tu proyecto.
+- **NEXTAUTH_SECRET**: Genera una clave segura con `openssl rand -base64 32`.
 
 ## Neon (PostgreSQL Serverless)
 
@@ -454,7 +522,7 @@ Zod se usa activamente en:
 - **api/news/route.ts**: Valida noticias
 - **api/games/route.ts**: Valida juegos
 - **api/profile/route.ts**: Valida perfil
-- **api/users/[id]/route.ts**: Valida actualización de usuarios
+- **api/admin/usuarios/[id]/route.ts**: Valida actualización de usuarios
 
 ### Ventajas de Zod
 
@@ -489,97 +557,83 @@ npm run test:run
 
 ### Estructura de Tests
 
-Los tests se encuentran en el directorio `test/`:
+El proyecto cuenta con **tests unitarios** y **tests de integración de API**:
 
 ```
 test/
-├── setup.ts           # Configuración global de tests
-└── schemas.test.ts    # Tests de esquemas Zod
+├── setup.ts                              # Configuración global de tests
+├── schemas.test.ts                       # Tests unitarios de esquemas Zod
+├── api-test-helper.ts                    # Helper de peticiones HTTP para tests
+└── integration/
+    ├── admin-usuarios-api.test.ts        # PATCH /api/admin/usuarios/[id]
+    ├── catalogo-api.test.ts              # GET /api/catalogo
+    ├── contact-api.test.ts               # POST /api/contact
+    ├── news-api.test.ts                  # GET / POST /api/news
+    ├── register-api.test.ts              # POST /api/register
+    └── valoraciones-api.test.ts          # POST /api/valoraciones
 ```
 
-### Testing de Esquemas Zod
+### Tipos de Tests
 
-El proyecto incluye tests unitarios para validar los esquemas de Zod utilizados en las APIs:
+- **Unitarios**: Validación de esquemas Zod (`credentialsSchema`, `registerSchema`, `contactSchema`, `newsSchema`) sin dependencias externas.
+- **Integración**: Invocación directa de los handlers de Next.js App Router, mockeando la base de datos (`@/lib/neon`) y la autenticación (`@/lib/auth-utils`). Cubren validación de datos y códigos de respuesta HTTP.
 
-- **credentialsSchema**: Validación de login (email, password)
-- **registerSchema**: Validación de registro (email, password, name)
-- **contactSchema**: Validación de formulario de contacto
-- **newsSchema**: Validación de noticias (title, slug, content, etc.)
-
-Ejemplo de test:
+Ejemplo de test de integración:
 
 ```typescript
-describe('Contact Schema', () => {
-  it('debe validar datos correctos', () => {
-    const result = contactSchema.safeParse({
-      name: 'John Doe',
-      email: 'test@example.com',
-      subject: 'Hello',
-      message: 'This is a test message with enough characters',
-    });
-    expect(result.success).toBe(true);
-  });
+import { POST } from '@/app/api/contact/route';
+import { NextRequest } from 'next/server';
 
-  it('debe rechazar email inválido', () => {
-    const result = contactSchema.safeParse({
-      name: 'John Doe',
-      email: 'invalid-email',
-      subject: 'Hello',
-      message: 'This is a test message with enough characters',
-    });
-    expect(result.success).toBe(false);
+it('debe validar formulario de contacto', async () => {
+  const request = new NextRequest('http://localhost/api/contact', {
+    method: 'POST',
+    body: JSON.stringify({
+      name: 'Juan',
+      email: 'juan@test.com',
+      subject: 'Hola',
+      message: 'Mensaje de prueba suficientemente largo',
+    }),
   });
+  const response = await POST(request);
+  expect(response.status).toBe(201);
 });
 ```
 
 ### Ejecutar Tests Específicos
 
 ```bash
-# Ejecutar solo un archivo de test
-npm run test schemas.test.ts
+# Ejecutar solo tests unitarios de schemas
+bun test schemas.test.ts
+
+# Ejecutar solo tests de integración
+bun test integration/
 
 # Ejecutar tests que coincidan con un patrón
-npm run test -- --grep "Contact Schema"
+bun test -- --grep "Contact"
 ```
 
 ### Ejemplo de Salida
 
-Al ejecutar `npm run test`, verás un output similar a:
+Al ejecutar `bun test`, verás un output similar a:
 
 ```
 DEV  v4.1.7 /home/ricky/coding/codeouni/gamehub-gpis
 
-✓ test/schemas.test.ts (18 tests) 30ms
-  ✓ Credentials Schema (4)
-    ✓ debe validar datos correctos 7ms
-    ✓ debe rechazar email inválido 2ms
-    ✓ debe rechazar password muy corto 1ms
-    ✓ debe rechazar datos faltantes 1ms
-  ✓ Register Schema (3)
-    ✓ debe validar datos correctos 2ms
-    ✓ debe rechazar nombre muy corto 1ms
-    ✓ debe rechazar email inválido 1ms
-  ✓ Contact Schema (5)
-    ✓ debe validar datos correctos 1ms
-    ✓ debe rechazar nombre muy corto 2ms
-    ✓ debe rechazar email inválido 1ms
-    ✓ debe rechazar asunto muy corto 1ms
-    ✓ debe rechazar mensaje muy corto 1ms
-  ✓ News Schema (6)
-    ✓ debe validar datos correctos 2ms
-    ✓ debe validar con campos opcionales 1ms
-    ✓ debe rechazar título vacío 0ms
-    ✓ debe rechazar slug vacío 0ms
-    ✓ debe rechazar contenido vacío 0ms
-    ✓ debe aceptar excerpt y cover_image opcionales 0ms
+✓ test/schemas.test.ts (20 tests) 30ms
+✓ test/integration/contact-api.test.ts (4 tests) 15ms
+✓ test/integration/register-api.test.ts (3 tests) 12ms
+✓ test/integration/news-api.test.ts (3 tests) 10ms
+✓ test/integration/admin-usuarios-api.test.ts (3 tests) 8ms
+✓ test/integration/valoraciones-api.test.ts (3 tests) 7ms
+✓ test/integration/catalogo-api.test.ts (1 test) 5ms
 
-Test Files  1 passed (1)
-     Tests  18 passed (18)
+Test Files  7 passed (7)
+     Tests  37 passed (37)
   Start at  16:54:36
-  Duration  2.74s (transform 102ms, setup 182ms, import 155ms, tests 30ms, environment 1.96s)
+  Duration  3.5s
 
 PASS  Waiting for file changes...
-      press h to show help, press q to quit
+      press q to quit
 ```
 
 **Desglose de tiempos:**
