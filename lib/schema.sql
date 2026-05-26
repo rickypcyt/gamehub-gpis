@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   email TEXT UNIQUE NOT NULL,
   name TEXT,
   role TEXT NOT NULL DEFAULT 'suscriptor' CHECK (role IN ('admin', 'redactor', 'colaborador', 'suscriptor')),
+  active BOOLEAN NOT NULL DEFAULT true,
   bio TEXT,
   location TEXT,
   website TEXT,
@@ -14,6 +15,17 @@ CREATE TABLE IF NOT EXISTS profiles (
   password_hash TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Tabla de valoraciones de juegos
+CREATE TABLE IF NOT EXISTS valoraciones (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id_usuario TEXT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  id_juego TEXT NOT NULL REFERENCES games(id) ON DELETE CASCADE,
+  nota NUMERIC NOT NULL CHECK (nota >= 0 AND nota <= 10),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE (id_usuario, id_juego)
 );
 
 -- Tabla de videojuegos
@@ -119,4 +131,6 @@ CREATE INDEX IF NOT EXISTS idx_comments_post_type ON comments(post_type);
 CREATE INDEX IF NOT EXISTS idx_comments_parent ON comments(parent_id);
 CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
 CREATE INDEX IF NOT EXISTS idx_profiles_role ON profiles(role);
+CREATE INDEX IF NOT EXISTS idx_valoraciones_juego ON valoraciones(id_juego);
+CREATE INDEX IF NOT EXISTS idx_valoraciones_usuario ON valoraciones(id_usuario);
 CREATE INDEX IF NOT EXISTS idx_events_start_date ON events(start_date);

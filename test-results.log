@@ -1,0 +1,17 @@
+$ vitest run
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.7 [39m[90m/home/ricky/coding/codeouni/gamehub-gpis[39m
+
+ [32m✓[39m test/schemas.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 93[2mms[22m[39m
+ [32m✓[39m test/integration/valoraciones-api.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 84[2mms[22m[39m
+ [32m✓[39m test/integration/catalogo-api.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 39[2mms[22m[39m
+ [32m✓[39m test/integration/register-api.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 45[2mms[22m[39m
+ [32m✓[39m test/integration/admin-usuarios-api.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 54[2mms[22m[39m
+ [32m✓[39m test/integration/news-api.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+ [32m✓[39m test/integration/contact-api.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 42[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+[2m      Tests [22m [1m[32m35 passed[39m[22m[90m (35)[39m
+[2m   Start at [22m 20:33:17
+[2m   Duration [22m 5.85s[2m (transform 955ms, setup 2.69s, import 3.05s, tests 396ms, environment 28.95s)[22m
+
