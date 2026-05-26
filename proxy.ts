@@ -29,7 +29,7 @@ export default auth((req) => {
     return NextResponse.next();
   }
 
-  const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth");
+  const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth") || nextUrl.pathname.startsWith("/api/register");
   const isAuthRoute = nextUrl.pathname === "/login" || nextUrl.pathname === `/${defaultLocale}/login`;
 
   // Rutas protegidas por rol

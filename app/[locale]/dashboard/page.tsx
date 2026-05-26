@@ -24,6 +24,7 @@ import { auth } from "@/auth";
 import { ensureCommentsSchema } from "@/lib/comments";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
+import { capitalizeMonth } from "@/lib/date-utils";
 
 type RecentComment = {
   id: string;
@@ -794,11 +795,12 @@ function HistoryRow({ title, type, date, href }: { title: string; type: string; 
 function formatDate(date: string, locale: string, options?: Intl.DateTimeFormatOptions) {
   try {
     const fullLocale = locale === "es" ? "es-ES" : "en-US";
-    return new Date(date).toLocaleDateString(fullLocale, options ?? {
+    const dateString = new Date(date).toLocaleDateString(fullLocale, options ?? {
       day: "numeric",
       month: "short",
       year: "numeric",
     });
+    return capitalizeMonth(dateString, fullLocale);
   } catch {
     return date;
   }
@@ -807,13 +809,14 @@ function formatDate(date: string, locale: string, options?: Intl.DateTimeFormatO
 function formatDateWithTime(date: string, locale: string) {
   try {
     const fullLocale = locale === "es" ? "es-ES" : "en-US";
-    return new Date(date).toLocaleString(fullLocale, {
+    const dateString = new Date(date).toLocaleString(fullLocale, {
       day: "2-digit",
       month: "short",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
     });
+    return capitalizeMonth(dateString, fullLocale);
   } catch {
     return date;
   }
@@ -822,7 +825,8 @@ function formatDateWithTime(date: string, locale: string) {
 function formatMonthYear(date: string, locale: string) {
   try {
     const fullLocale = locale === "es" ? "es-ES" : "en-US";
-    return new Date(date).toLocaleDateString(fullLocale, { month: "short", year: "numeric" });
+    const dateString = new Date(date).toLocaleDateString(fullLocale, { month: "short", year: "numeric" });
+    return capitalizeMonth(dateString, fullLocale);
   } catch {
     return date;
   }

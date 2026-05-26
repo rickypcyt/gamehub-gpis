@@ -99,8 +99,14 @@ export async function PUT(
 
     for (const [key, value] of Object.entries(updates)) {
       if (value !== undefined) {
-        setClauses.push(`${key} = $${paramIndex}`);
-        values.push(value);
+        // Remove leading slash from slug if present
+        if (key === 'slug' && typeof value === 'string') {
+          setClauses.push(`${key} = $${paramIndex}`);
+          values.push(value.startsWith('/') ? value.slice(1) : value);
+        } else {
+          setClauses.push(`${key} = $${paramIndex}`);
+          values.push(value);
+        }
         paramIndex++;
       }
     }

@@ -29,12 +29,23 @@ export default function EditNewsPage({ params }: { params: Promise<{ id: string 
     async function loadParams() {
       const { id } = await params;
       setId(id);
-      
-      // Load news data
+
+      // Load news data - try by ID first, then by slug
       try {
-        const response = await fetch(`/api/news/${id}`);
-        if (!response.ok) throw new Error("Noticia no encontrada");
-        const data = await response.json();
+        let response = await fetch(`/api/news/${id}`);
+        let data;
+
+        if (!response.ok) {
+          // Try by slug if ID fails
+          response = await fetch(`/api/news/detail/${id}`);
+          if (!response.ok) throw new Error("Noticia no encontrada");
+          data = await response.json();
+          // Update ID to the actual UUID for PUT/DELETE operations
+          if (data.id) setId(data.id);
+        } else {
+          data = await response.json();
+        }
+
         setNews(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error al cargar");

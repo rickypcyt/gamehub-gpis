@@ -69,8 +69,11 @@ export async function POST(request: Request) {
 
     const { title, slug, excerpt, content, cover_image, published, featured } = parsed.data;
 
+    // Remove leading slash from slug if present
+    const cleanSlug = slug.startsWith('/') ? slug.slice(1) : slug;
+
     // Check if slug already exists
-    const existing = await queryOne("SELECT id FROM news_posts WHERE slug = $1", [slug]);
+    const existing = await queryOne("SELECT id FROM news_posts WHERE slug = $1", [cleanSlug]);
     if (existing) {
       return NextResponse.json(
         { error: "Ya existe una noticia con ese slug" },
@@ -83,7 +86,7 @@ export async function POST(request: Request) {
       `INSERT INTO news_posts (id, title, slug, excerpt, content, cover_image, published, featured, author_id, created_at, updated_at)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
        RETURNING *`,
-      [id, title, slug, excerpt || null, content, cover_image || null, published, featured, session.user.id]
+      [id, title, cleanSlug, excerpt || null, content, cover_image || null, published, featured, session.user.id]
     );
 
     revalidatePath("/news");
