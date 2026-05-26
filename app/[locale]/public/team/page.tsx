@@ -1,12 +1,13 @@
 import { Newspaper, Users } from "lucide-react";
+import Image from "next/image";
 
 import type { Profile } from "@/lib/neon";
 import { cachedQuery } from "@/lib/neon";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { locales, defaultLocale, type Locale } from "@/i18n/config";
 
-export const revalidate = 3600; // Cache 1 hora (el equipo no cambia frecuentemente)
-export const dynamic = 'force-static';
+export const revalidate = 0; // Disable cache for development
+export const dynamic = 'force-dynamic';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -20,6 +21,8 @@ export default async function TeamPage({ params }: TeamPageProps) {
   const resolvedParams = await params;
   const locale = (resolvedParams?.locale ?? defaultLocale) as Locale;
   setRequestLocale(locale);
+
+  console.log('Team page locale:', locale);
 
   const t = await getTranslations({ locale, namespace: "team" });
 
@@ -88,9 +91,11 @@ function TeamCard({ member, t }: { member: Profile; t: (key: string) => string }
     <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 text-center transition hover:border-violet-500/50">
       <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-violet-500/10 text-violet-500">
         {member.avatar_url ? (
-          <img
+          <Image
             src={member.avatar_url}
             alt={member.name || ""}
+            width={80}
+            height={80}
             className="h-full w-full rounded-full object-cover"
           />
         ) : (
@@ -98,7 +103,7 @@ function TeamCard({ member, t }: { member: Profile; t: (key: string) => string }
         )}
       </div>
       <h4 className="font-semibold text-white">{member.name || t("noName")}</h4>
-      <p className="text-base text-violet-400 capitalize">{member.role}</p>
+      <p className="text-base text-violet-400 capitalize">{t(`roles.${member.role}`) || member.role}</p>
       {member.bio && (
         <p className="mt-3 text-base text-zinc-400 line-clamp-3">{member.bio}</p>
       )}

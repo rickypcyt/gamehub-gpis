@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const parsed = registerSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "Datos inválidos" },
+        { error: "Datos inválidos", details: parsed.error.issues },
         { status: 400 }
       );
     }
@@ -56,8 +56,9 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error("Registration error:", error);
+    console.error("Error details:", JSON.stringify(error, null, 2));
     return NextResponse.json(
-      { error: "Error al crear la cuenta" },
+      { error: "Error al crear la cuenta", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

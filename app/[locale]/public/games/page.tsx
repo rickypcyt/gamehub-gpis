@@ -1,7 +1,7 @@
 import type { Game } from "@/lib/neon";
 import GamesClient from "./GamesClient";
 import { cachedQuery } from "@/lib/neon";
-import { getLocale, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { locales, defaultLocale, type Locale } from "@/i18n/config";
 
 export const revalidate = 3600; // Cache 1 hora (los juegos no cambian frecuentemente)

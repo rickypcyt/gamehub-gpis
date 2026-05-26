@@ -50,54 +50,54 @@ export default async function AdminHomePage() {
   return (
     <div className="min-h-screen bg-zinc-950">
       <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-          <div className="flex items-center gap-4">
+        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-16">
+          <div className="flex items-center gap-3 sm:gap-4">
             <Link href="/dashboard" className="text-zinc-400 hover:text-white">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/10">
-                <Shield className="h-5 w-5 text-red-400" />
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/10 sm:h-8 sm:w-8">
+                <Shield className="h-4 w-4 text-red-400 sm:h-5 sm:w-5" />
               </div>
-              <h1 className="text-xl font-bold text-white">Panel de Administración</h1>
+              <h1 className="text-lg font-bold text-white sm:text-xl">Panel de Administración</h1>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 space-y-8">
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <main className="mx-auto max-w-7xl px-4 py-6 space-y-6 sm:py-8 sm:space-y-8">
+        <section className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat) => (
-            <div key={stat.label} className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+            <div key={stat.label} className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 sm:p-5">
               <div className="flex items-center justify-between">
-                <span className={`inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-sm font-medium ${stat.accent}`}>
+                <span className={`inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium sm:gap-2 sm:px-2.5 sm:py-1 sm:text-sm ${stat.accent}`}>
                   {stat.icon}
                   {stat.label}
                 </span>
               </div>
-              <p className="mt-4 text-3xl font-bold text-white">{stat.value}</p>
-              <p className="text-sm text-zinc-500">Total</p>
+              <p className="mt-3 text-2xl font-bold text-white sm:mt-4 sm:text-3xl">{stat.value}</p>
+              <p className="text-xs text-zinc-500 sm:text-sm">Total</p>
             </div>
           ))}
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-3">
+        <section className="grid gap-4 sm:gap-6 lg:grid-cols-3">
           {quickLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="group rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 transition hover:border-violet-500/40 hover:bg-zinc-900"
+              className="group rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5 transition hover:border-violet-500/40 hover:bg-zinc-900 sm:p-6"
             >
-              <div className="mb-4 inline-flex items-center gap-2 rounded-lg bg-violet-500/10 p-2 text-violet-400 group-hover:bg-violet-500/20">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-lg bg-violet-500/10 p-2 text-violet-400 group-hover:bg-violet-500/20 sm:mb-4">
                 {link.icon}
               </div>
-              <h2 className="text-lg font-semibold text-white group-hover:text-violet-300">{link.title}</h2>
-              <p className="mt-2 text-base text-zinc-400">{link.description}</p>
+              <h2 className="text-base font-semibold text-white group-hover:text-violet-300 sm:text-lg">{link.title}</h2>
+              <p className="mt-1.5 text-sm text-zinc-400 sm:mt-2 sm:text-base">{link.description}</p>
             </Link>
           ))}
         </section>
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5 sm:p-6">
           <div className="flex flex-col gap-4 text-sm text-zinc-400 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-base font-semibold text-white">Recomendación</p>
@@ -105,16 +105,16 @@ export default async function AdminHomePage() {
                 Revisa las secciones de usuarios y noticias para mantener la plataforma al día.
               </p>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               <Link
                 href="/admin/users"
-                className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-200 hover:border-violet-500 hover:text-white"
+                className="rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-200 hover:border-violet-500 hover:text-white sm:px-4"
               >
                 Gestionar usuarios
               </Link>
               <Link
                 href="/admin/news"
-                className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-200 hover:border-violet-500 hover:text-white"
+                className="rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-200 hover:border-violet-500 hover:text-white sm:px-4"
               >
                 Revisar noticias
               </Link>

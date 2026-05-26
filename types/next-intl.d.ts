@@ -12,7 +12,7 @@ declare module "next-intl/server" {
         }
   ): Promise<(key: string) => string>;
   export function getRequestConfig(
-    callback: () => Promise<{
+    callback: (params: { requestLocale?: string | Promise<string> }) => Promise<{
       locale: string;
       messages: Messages;
       timeZone?: string;

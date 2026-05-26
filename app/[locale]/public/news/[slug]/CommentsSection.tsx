@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2, Send, Trash2, User, X } from "lucide-react";
+import Image from "next/image";
 
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "next/navigation";
@@ -123,9 +124,11 @@ export function CommentsSection({ postId, comments, isAuthenticated }: CommentsS
             <div key={comment.id} className="flex gap-3 rounded-lg border border-zinc-800 bg-zinc-900/30 p-4">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-800">
                 {comment.author_avatar ? (
-                  <img
+                  <Image
                     src={comment.author_avatar}
                     alt={comment.author_name}
+                    width={32}
+                    height={32}
                     className="h-8 w-8 rounded-full"
                   />
                 ) : (

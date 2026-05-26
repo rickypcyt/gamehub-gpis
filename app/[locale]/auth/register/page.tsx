@@ -23,7 +23,6 @@ export default function RegisterPage() {
     email: "",
     password: "",
     confirmPassword: "",
-    terms: false,
   });
 
   const fieldErrors = {
@@ -51,8 +50,7 @@ export default function RegisterPage() {
       fields.username.length >= 2 &&
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email) &&
       fields.password.length >= 6 &&
-      fields.password === fields.confirmPassword &&
-      fields.terms
+      fields.password === fields.confirmPassword
     );
   }
 
@@ -72,7 +70,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -85,10 +83,14 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) {
+        console.error("Registration error:", data);
         if (response.status === 409) {
           showToast(data.error || "Ya existe una cuenta con este email", "error");
         } else {
           showToast(data.error || "Error al crear la cuenta", "error");
+          if (data.details) {
+            console.error("Validation details:", data.details);
+          }
         }
         setLoading(false);
         return;
@@ -195,33 +197,6 @@ export default function RegisterPage() {
               }
             />
 
-            {/* Terms */}
-            <label className="flex items-start gap-2.5 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={fields.terms}
-                onChange={(e) =>
-                  setFields((f) => ({ ...f, terms: e.target.checked }))
-                }
-                className="mt-0.5 h-4 w-4 rounded border-zinc-700 bg-zinc-800 text-violet-600 focus:ring-violet-500/20"
-              />
-              <span className="text-sm text-zinc-400">
-                Acepto los{" "}
-                <Link
-                  href="/terms"
-                  className="text-violet-400 hover:text-violet-300"
-                >
-                  términos y condiciones
-                </Link>{" "}
-                y la{" "}
-                <Link
-                  href="/privacy"
-                  className="text-violet-400 hover:text-violet-300"
-                >
-                  política de privacidad
-                </Link>
-              </span>
-            </label>
 
             {/* Submit */}
             <button

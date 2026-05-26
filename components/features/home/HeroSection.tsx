@@ -1,7 +1,6 @@
 'use client';
 
-import { ChevronRight, Gamepad2 } from 'lucide-react';
-
+import { ChevronRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 

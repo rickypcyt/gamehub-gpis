@@ -168,7 +168,11 @@
     "editors": "Editors",
     "contributors": "Contributors",
     "noName": "No name",
-    "empty": "The team is forming..."
+    "empty": "The team is forming...",
+    "roles": {
+      "redactor": "Editor",
+      "colaborador": "Contributor"
+    }
   },
   "auth": {
     "login": {
@@ -190,7 +194,6 @@
       "email": "Email",
       "password": "Password",
       "confirmPassword": "Confirm password",
-      "terms": "I agree to the terms and conditions",
       "submit": "Create account",
       "loading": "Creating account...",
       "hasAccount": "Already have an account?",

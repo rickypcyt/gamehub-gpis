@@ -28,7 +28,7 @@ export default async function DashboardLayout({
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile Header */}
         <header className="lg:hidden border-b border-zinc-800 bg-zinc-950/80 backdrop-blur px-4 py-3">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center gap-4">
             <span className="text-lg font-bold text-white">GameHub</span>
             <span className="text-xs text-zinc-500 capitalize">{role}</span>
           </div>

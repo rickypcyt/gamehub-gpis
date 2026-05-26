@@ -202,6 +202,7 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 rounded-lg px-3 py-3 text-base font-medium ${
                   isActive(item.href)
                     ? "bg-violet-500/10 text-violet-400"
@@ -216,6 +217,7 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 rounded-lg px-3 py-3 text-base font-medium ${
                   isActive(item.href)
                     ? "bg-violet-500/10 text-violet-400"
@@ -232,6 +234,7 @@ export default function Navbar() {
               {isLoggedIn ? (
                 <Link
                   href="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-3 rounded-lg bg-violet-600 px-3 py-3 text-base font-medium text-white hover:bg-violet-700"
                 >
                   <User className="h-4 w-4" />
@@ -241,12 +244,14 @@ export default function Navbar() {
                 <>
                   <Link
                     href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-3 rounded-lg px-3 py-3 text-base font-medium text-zinc-300 hover:bg-zinc-800 hover:text-white"
                   >
                     {t("login")}
                   </Link>
                   <Link
                     href="/register"
+                    onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-3 rounded-lg bg-violet-600 px-3 py-3 text-base font-medium text-white hover:bg-violet-700"
                   >
                     {t("register")}

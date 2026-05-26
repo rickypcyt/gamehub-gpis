@@ -1,5 +1,5 @@
 import { MessageSquare, Users } from "lucide-react";
-import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import Image from "next/image";
 
 import type { BlogPost } from "@/lib/neon";

@@ -9,6 +9,7 @@ import {
   Heart,
   Home,
   LayoutDashboard,
+  Menu,
   MessageSquare,
   Newspaper,
   PenLine,
@@ -16,10 +17,12 @@ import {
   ShieldAlert,
   User,
   Users,
+  X,
 } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 interface NavItem {
@@ -97,6 +100,7 @@ export default function DashboardSidebar({ role, userName }: DashboardSidebarPro
   const pathname = usePathname();
   const t = useTranslations("dashboard.sidebar");
   const sections = navItemsByRole[role] || navItemsByRole.suscriptor;
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (href: string) => {
     if (href === "/dashboard") return pathname === href || pathname === "/dashboard/";
@@ -104,57 +108,144 @@ export default function DashboardSidebar({ role, userName }: DashboardSidebarPro
   };
 
   return (
-    <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:shrink-0 lg:border-r lg:border-zinc-800 lg:bg-zinc-950">
-      {/* Brand */}
-      <div className="flex h-16 items-center gap-2 border-b border-zinc-800 px-6">
-        <Gamepad2 className="h-6 w-6 text-violet-500" />
-        <span className="text-lg font-bold text-white">GameHub</span>
-      </div>
+    <>
+      {/* Mobile menu button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(true)}
+        className="lg:hidden fixed top-4 right-4 z-50 rounded-lg bg-zinc-900 border border-zinc-800 p-2 text-zinc-400 hover:text-white"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
 
-      {/* User */}
-      <div className="border-b border-zinc-800 px-6 py-4">
-        <p className="text-sm font-medium text-white truncate">{userName || t("userFallback")}</p>
-        <p className="mt-0.5 text-xs text-zinc-500 capitalize">{role}</p>
-      </div>
+      {/* Mobile overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
 
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-4 py-4">
-        {sections.map((section) => (
-          <div key={section.sectionKey} className="mb-6">
-            <h3 className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-              {t(`sections.${section.sectionKey}`)}
-            </h3>
-            <ul className="space-y-0.5">
-              {section.items.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
-                      isActive(item.href)
-                        ? "bg-violet-500/10 text-violet-400"
-                        : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
-                    }`}
-                  >
-                    {item.icon}
-                    {t(`items.${item.labelKey}`)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+      {/* Mobile sidebar */}
+      <aside
+        className={`fixed inset-y-0 right-0 z-50 w-64 transform border-l border-zinc-800 bg-zinc-950 transition-transform duration-300 ease-in-out lg:hidden ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {/* Mobile header */}
+        <div className="flex h-16 items-center justify-between border-b border-zinc-800 px-6">
+          <div className="flex items-center gap-2">
+            <Gamepad2 className="h-6 w-6 text-violet-500" />
+            <span className="text-lg font-bold text-white">GameHub</span>
           </div>
-        ))}
-      </nav>
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="rounded-lg p-2 text-zinc-400 hover:text-white"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
 
-      {/* Back to home */}
-      <div className="border-t border-zinc-800 p-4">
-        <Link
-          href="/"
-          className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-400 transition hover:bg-zinc-900 hover:text-white"
-        >
-          <Home className="h-4 w-4" />
-          {t("backToHome")}
-        </Link>
-      </div>
-    </aside>
+        {/* User */}
+        <div className="border-b border-zinc-800 px-6 py-4">
+          <p className="text-sm font-medium text-white truncate text-center">{userName || t("userFallback")}</p>
+          <p className="mt-0.5 text-xs text-zinc-500 capitalize text-center">{role}</p>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto px-4 py-4">
+          {sections.map((section) => (
+            <div key={section.sectionKey} className="mb-6">
+              <h3 className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+                {t(`sections.${section.sectionKey}`)}
+              </h3>
+              <ul className="space-y-0.5">
+                {section.items.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                        isActive(item.href)
+                          ? "bg-violet-500/10 text-violet-400"
+                          : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                      }`}
+                    >
+                      {item.icon}
+                      {t(`items.${item.labelKey}`)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+
+        {/* Back to home */}
+        <div className="border-t border-zinc-800 p-4">
+          <Link
+            href="/"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-400 transition hover:bg-zinc-900 hover:text-white"
+          >
+            <Home className="h-4 w-4" />
+            {t("backToHome")}
+          </Link>
+        </div>
+      </aside>
+
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:shrink-0 lg:border-r lg:border-zinc-800 lg:bg-zinc-950">
+        {/* Brand */}
+        <div className="flex h-16 items-center gap-2 border-b border-zinc-800 px-6">
+          <Gamepad2 className="h-6 w-6 text-violet-500" />
+          <span className="text-lg font-bold text-white">GameHub</span>
+        </div>
+
+        {/* User */}
+        <div className="border-b border-zinc-800 px-6 py-4">
+          <p className="text-sm font-medium text-white truncate text-center">{userName || t("userFallback")}</p>
+          <p className="mt-0.5 text-xs text-zinc-500 capitalize text-center">{role}</p>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto px-4 py-4">
+          {sections.map((section) => (
+            <div key={section.sectionKey} className="mb-6">
+              <h3 className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+                {t(`sections.${section.sectionKey}`)}
+              </h3>
+              <ul className="space-y-0.5">
+                {section.items.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                        isActive(item.href)
+                          ? "bg-violet-500/10 text-violet-400"
+                          : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                      }`}
+                    >
+                      {item.icon}
+                      {t(`items.${item.labelKey}`)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+
+        {/* Back to home */}
+        <div className="border-t border-zinc-800 p-4">
+          <Link
+            href="/"
+            className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-400 transition hover:bg-zinc-900 hover:text-white"
+          >
+            <Home className="h-4 w-4" />
+            {t("backToHome")}
+          </Link>
+        </div>
+      </aside>
+    </>
   );
 }

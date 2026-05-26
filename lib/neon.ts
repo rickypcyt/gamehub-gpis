@@ -120,14 +120,10 @@ export function createClient() {
 
 // Helper para ejecutar queries con el cliente
 export async function query<T = unknown>(sqlStr: string, params?: unknown[]): Promise<T[]> {
-  console.log('[Neon Query] Executing SQL:', sqlStr.substring(0, 100) + '...');
-  console.log('[Neon Query] Params:', params);
-
   try {
     const sqlClient = createClient();
     const result = await sqlClient(sqlStr, params || []);
     const rows = Array.isArray(result) ? result : [];
-    console.log('[Neon Query] Success, rows returned:', rows.length);
     return rows as T[];
   } catch (error) {
     console.error('[Neon Query] Error:', error);

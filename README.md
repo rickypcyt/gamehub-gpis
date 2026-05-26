@@ -1,11 +1,5 @@
 # GameHub & Services Ecosystem
 
-Plataforma web completa para la industria del videojuego. Proyecto académico de Ingeniería del Software.
-
-## Descripción
-
-GameHub centraliza noticias, rankings de videojuegos, calendario de eventos, contenido multimedia y espacios de opinión en una única plataforma web moderna y responsive.
-
 ## Stack Tecnológico
 
 | Capa | Tecnología |
@@ -18,77 +12,6 @@ GameHub centraliza noticias, rankings de videojuegos, calendario de eventos, con
 | Autenticación | NextAuth.js v5 + bcrypt |
 | Validación | Zod |
 | Internacionalización | next-intl |
-
----
-
-# Tecnologías Principales
-
-## Next.js 16
-
-Next.js es el framework principal del proyecto, utilizando su **App Router** (introducido en Next.js 13) que ofrece una arquitectura moderna basada en el sistema de archivos.
-
-### Características Clave Implementadas
-
-- **App Router**: Estructura de rutas basada en el sistema de archivos en el directorio `app/`
-- **Server Components**: Por defecto, los componentes se renderizan en el servidor para mejor rendimiento
-- **Client Components**: Marcados con `"use client"` cuando se necesita interactividad (hooks, eventos)
-- **API Routes**: Endpoints RESTful en `app/api/` para operaciones CRUD
-- **Server Actions**: Capacidad de ejecutar código en el servidor directamente desde componentes
-- **Middleware**: Protección de rutas basada en roles de usuario
-- **Optimización**: Automatic code splitting, image optimization, font optimization
-
-### Estructura de Rutas
-
-```
-app/
-├── [locale]/              # Internacionalización (en, es)
-│   ├── layout.tsx         # Layout principal por locale
-│   ├── page.tsx           # Landing page (/)
-│   ├── news/              # Sección de noticias (/news)
-│   ├── events/            # Sección de eventos (/events)
-│   ├── blog/              # Blog de opinión (/blog/[slug])
-│   ├── contact/           # Formulario de contacto (/contact)
-│   └── dashboard/         # Panel de usuario protegido (/dashboard)
-└── api/                   # API Routes
-    ├── auth/              # Autenticación (login, registro)
-    ├── news/              # CRUD de noticias
-    ├── blog/              # CRUD de blog posts
-    ├── comments/          # CRUD de comentarios
-    ├── games/             # Catálogo de juegos
-    ├── profile/           # Gestión de perfil
-    ├── users/             # Gestión de usuarios (admin)
-    └── contact/           # Mensajes de contacto
-```
-
-### API Routes
-
-Las API Routes de Next.js funcionan como endpoints RESTful tradicionales pero con ventajas adicionales:
-
-- **Server-side execution**: Se ejecutan en el servidor (Node.js runtime)
-- **Edge runtime support**: Opción de ejecución en edge para menor latencia
-- **TypeScript full-stack**: Compartir tipos entre frontend y backend
-- **Built-in middleware**: Protección de rutas, rate limiting, etc.
-
-Ejemplo de estructura de una API Route:
-
-```typescript
-// app/api/news/route.ts
-import { NextResponse } from 'next/server';
-import { query } from '@/lib/neon';
-
-export async function GET() {
-  const news = await query('SELECT * FROM news_posts WHERE published = true');
-  return NextResponse.json(news);
-}
-
-export async function POST(request: Request) {
-  const body = await request.json();
-  // Validación y procesamiento
-  return NextResponse.json({ success: true });
-}
-```
-
----
 
 ## Neon (PostgreSQL Serverless)
 
@@ -150,162 +73,9 @@ export async function queryOne<T = unknown>(sql: string, params?: unknown[]): Pr
 - `revalidateInSeconds`: Tiempo en segundos antes de refrescar el cache
 - Ideal para datos que no cambian frecuentemente (listas de juegos, noticias publicadas)
 
-### Tipado de TypeScript
+## Tablas de la Base de Datos
 
-Todas las tablas tienen interfaces TypeScript definidas en `lib/neon.ts`:
-
-```typescript
-export interface Profile {
-  id: string;
-  email: string;
-  name: string | null;
-  role: UserRole;
-  bio: string | null;
-  location: string | null;
-  website: string | null;
-  avatar_url: string | null;
-  created_at: string;
-  updated_at: string;
-}
-```
-
-Esto permite:
-- Autocompletado en IDEs
-- Detección de errores en tiempo de compilación
-- Refactor seguro
-- Documentación en vivo
-
----
-
-# Gestión del Backend
-
-## Arquitectura del Backend
-
-El backend se gestiona integramente a través de **Next.js API Routes**, eliminando la necesidad de un servidor backend separado (Express, Fastify, etc.).
-
-### Flujo de Autenticación
-
-1. **NextAuth.js v5**: Framework de autenticación para Next.js
-2. **Credentials Provider**: Autenticación con email/contraseña
-3. **JWT Strategy**: Tokens JWT para sesiones sin estado
-4. **bcrypt**: Hash de contraseñas para seguridad
-
-**Configuración en `auth.config.ts`:**
-
-```typescript
-export default {
-  providers: [
-    Credentials({
-      async authorize(credentials, request) {
-        // Validación con Zod
-        const parsed = credentialsSchema.safeParse(credentials);
-        
-        // Rate limiting
-        const rateLimit = checkRateLimit(rateLimitKey);
-        
-        // Consulta a Neon
-        const profile = await queryOne<Profile & { password_hash: string }>(
-          "SELECT * FROM profiles WHERE email = $1",
-          [email]
-        );
-        
-        // Verificación de contraseña
-        const isValidPassword = await bcrypt.compare(password, profile.password_hash);
-        
-        return { id, email, name, role, image };
-      },
-    }),
-  ],
-  callbacks: {
-    async jwt({ token, user }) {
-      // Agregar role al token
-      token.role = user.role;
-      return token;
-    },
-    async session({ session, token }) {
-      // Exponer role en la sesión
-      session.user.role = token.role;
-      return session;
-    },
-  },
-} satisfies NextAuthConfig;
-```
-
-### Endpoints API
-
-#### Autenticación
-- `POST /api/auth/[...nextauth]` - Login/Logout (NextAuth)
-- `POST /api/auth/register` - Registro de usuarios
-
-#### Noticias
-- `GET /api/news` - Listar noticias
-- `GET /api/news/[id]` - Obtener noticia por ID
-- `GET /api/news/detail/[slug]` - Obtener noticia por slug
-- `POST /api/news` - Crear noticia (redactor+)
-- `PUT /api/news/[id]` - Actualizar noticia (redactor+)
-- `DELETE /api/news/[id]` - Eliminar noticia (redactor+)
-
-#### Blog
-- `GET /api/blog/posts/[slug]` - Obtener post por slug
-- `POST /api/blog/posts` - Crear post (colaborador+)
-- `PUT /api/blog/posts/[slug]` - Actualizar post (autor+)
-- `DELETE /api/blog/posts/[slug]` - Eliminar post (autor+)
-
-#### Comentarios
-- `GET /api/comments` - Listar comentarios
-- `POST /api/comments` - Crear comentario (suscriptor+)
-- `PUT /api/comments/[id]` - Actualizar comentario (autor+)
-- `DELETE /api/comments/[id]` - Eliminar comentario (autor+)
-- `GET /api/my-comments` - Comentarios del usuario actual
-
-#### Videojuegos
-- `GET /api/games` - Listar juegos
-- `POST /api/games` - Crear juego (redactor+)
-- `PUT /api/games` - Actualizar juego (redactor+)
-- `DELETE /api/games` - Eliminar juego (redactor+)
-
-#### Usuarios
-- `GET /api/users` - Listar usuarios (admin)
-- `GET /api/users/[id]` - Obtener usuario por ID
-- `PUT /api/users/[id]` - Actualizar usuario (admin/self)
-- `DELETE /api/users/[id]` - Eliminar usuario (admin)
-
-#### Perfil
-- `GET /api/profile` - Obtener perfil propio
-- `PUT /api/profile` - Actualizar perfil propio
-
-#### Contacto
-- `POST /api/contact` - Enviar mensaje de contacto
-
-### Protección de Rutas
-
-El middleware de Next.js protege las rutas según el rol:
-
-```typescript
-// middleware.ts
-export function middleware(request: NextRequest) {
-  const token = await getToken({ req: request });
-  const path = request.nextUrl.pathname;
-  
-  // Rutas protegidas
-  if (path.startsWith('/dashboard') && !token) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-  
-  // Protección por rol
-  if (path.startsWith('/admin') && token?.role !== 'admin') {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
-}
-```
-
----
-
-# Base de Datos - Tablas
-
-## Esquema de la Base de Datos
-
-El proyecto utiliza **8 tablas** en PostgreSQL gestionadas a través de Neon. El schema completo está en `neon/schema.sql`.
+El proyecto utiliza **8 tablas** en PostgreSQL gestionadas a través de Neon. El schema completo está en `lib/schema.sql`.
 
 ### 1. profiles
 
@@ -332,8 +102,6 @@ Almacena la información de los usuarios del sistema.
 **Relaciones:**
 - Es padre de: news_posts (author_id), blog_posts (author_id), comments (author_id)
 
----
-
 ### 2. games
 
 Catálogo de videojuegos con rankings y metadatos.
@@ -356,8 +124,6 @@ Catálogo de videojuegos con rankings y metadatos.
 **Características especiales:**
 - `genre` y `platform` son arrays de PostgreSQL, permitiendo múltiples valores
 - `press_score` y `user_score` permiten rankings duales (crítica vs comunidad)
-
----
 
 ### 3. news_posts
 
@@ -385,8 +151,6 @@ Noticias y artículos de actualidad del sector.
 **Relaciones:**
 - author_id → profiles.id (ON DELETE CASCADE)
 
----
-
 ### 4. blog_posts
 
 Artículos de opinión y blog posts.
@@ -410,8 +174,6 @@ Artículos de opinión y blog posts.
 - author_id → profiles.id (ON DELETE CASCADE)
 - Es padre de: comments (post_id)
 
----
-
 ### 5. comments
 
 Comentarios en los posts del blog.
@@ -424,16 +186,19 @@ Comentarios en los posts del blog.
 | updated_at | TIMESTAMP | Fecha de última actualización |
 | author_id | TEXT (FK) | ID del autor (ref: profiles) |
 | post_id | TEXT (FK) | ID del post (ref: blog_posts) |
+| post_type | TEXT | Tipo de post ('blog', 'news') |
+| parent_id | TEXT (FK) | ID del comentario padre (para respuestas) |
 
 **Índices:**
 - `idx_comments_post` en post_id
 - `idx_comments_author` en author_id
+- `idx_comments_post_type` en post_type
+- `idx_comments_parent` en parent_id
 
 **Relaciones:**
 - author_id → profiles.id (ON DELETE CASCADE)
 - post_id → blog_posts.id (ON DELETE CASCADE)
-
----
+- parent_id → comments.id (ON DELETE CASCADE)
 
 ### 6. multimedia
 
@@ -452,8 +217,6 @@ Hub multimedia: videos, streams y trailers.
 
 **Restricción CHECK:**
 - `type` debe ser uno de: 'video', 'stream', 'trailer'
-
----
 
 ### 7. events
 
@@ -477,8 +240,6 @@ Calendario de eventos, lanzamientos y convenciones.
 **Índices:**
 - `idx_events_start_date` en start_date (para consultas cronológicas)
 
----
-
 ### 8. contact_messages
 
 Mensajes enviados a través del formulario de contacto.
@@ -492,8 +253,6 @@ Mensajes enviados a través del formulario de contacto.
 | message | TEXT | Contenido del mensaje |
 | read | BOOLEAN | Si ha sido leído por admin |
 | created_at | TIMESTAMP | Fecha de envío |
-
----
 
 ## Diagrama de Relaciones
 
@@ -515,110 +274,191 @@ events (independiente)
 contact_messages (independiente)
 ```
 
----
+## Proxy / Middleware
 
-## Datos de Semilla (Seed Data)
+El archivo `proxy.ts` es un middleware de Next.js que maneja autenticación, localización y protección de rutas.
 
-El archivo `neon/seed.sql` contiene datos de prueba realistas:
+### Flujo Principal
 
-- **8 perfiles de usuario** (1 admin, 2 redactores, 2 colaboradores, 3 suscriptores)
-- **20 videojuegos** (10 históricos + 10 modernos 2020-2025)
-- **5 noticias** de actualidad del sector
-- **4 posts de blog** de opinión
-- **5 comentarios** en los posts
-- **8 elementos multimedia** (trailers, videos, streams)
-- **5 eventos** (lanzamientos y convenciones)
-- **5 mensajes de contacto**
+1. **next-intl middleware**: Primero aplica el middleware de internacionalización para manejar los locales (es, en) y asegurar que las rutas tengan el prefijo de idioma.
 
-Para ejecutar el seed data:
-```bash
-# En la consola de Neon o vía psql
-psql $DATABASE_URL -f neon/seed.sql
+2. **Auth wrapper**: Usa `auth()` de NextAuth para envolver toda la lógica y obtener información del usuario autenticado.
+
+### Protección de Rutas
+
+- **Rutas públicas**: `/`, `/news`, `/games`, `/blog`, `/multimedia`, `/events`, `/team`, `/contact` - accesibles sin autenticación.
+
+- **Rutas de autenticación**: `/api/auth/*` y `/login` - permitidas siempre.
+
+- **API protegidas**: `/api/news` y `/api/games` requieren autenticación. Los métodos POST/PUT/DELETE/PATCH solo para `admin` y `redactor`.
+
+- **Rutas protegidas por autenticación**: Si no está logueado, redirige a `/login`.
+
+### Control de Roles
+
+- **Admin**: Acceso exclusivo a rutas `/admin/*`.
+
+- **Redactor**: Puede escribir noticias, juegos, multimedia y eventos (`/dashboard/write/news`, `/dashboard/games`, etc.).
+
+- **Colaborador**: Solo puede escribir blogs (`/dashboard/write/blog`, `/dashboard/my-posts`).
+
+### Configuración Matcher
+
+El middleware se aplica a todas las rutas excepto: `api`, `_next`, `_vercel`, y archivos con extensión (como imágenes, CSS, etc.).
+
+## Internacionalización (i18n)
+
+El proyecto utiliza `next-intl` para soportar múltiples idiomas (español e inglés).
+
+### Configuración
+
+La configuración de i18n se encuentra en `i18n/config.ts`:
+
+```typescript
+export type Locale = "es" | "en";
+export const locales: Locale[] = ["es", "en"];
+export const defaultLocale: Locale = "es";
+
+export const localeLabels: Record<Locale, string> = {
+  es: "Español",
+  en: "English",
+};
 ```
 
----
+### Estructura de Rutas
 
-## Requisitos Funcionales Implementados
-
-- **RF-01**: Sistema de autenticación con 4 roles (Admin, Redactor, Colaborador, Suscriptor)
-- **RF-02**: Panel de usuario con funciones específicas por rol
-- **RF-03**: Catálogo de videojuegos con rankings (nota prensa/comunidad)
-- **RF-04**: Módulo de noticias y actualidad
-- **RF-05**: Blog de opinión con sistema de comentarios
-- **RF-06**: Hub multimedia (videos, streams, trailers)
-- **RF-07**: Agenda de eventos y lanzamientos
-- **RF-08**: Página del equipo de redacción
-- **RF-09**: Formulario de contacto
-- **RF-10**: Soporte ES/EN (estructura i18n lista)
-- **RF-11**: Diseño responsive (mobile-first)
-
-## Estructura del Proyecto
+Las rutas se organizan con el parámetro dinámico `[locale]`:
 
 ```
-├── app/                    # Rutas de Next.js App Router
-│   ├── api/               # API routes
-│   ├── login/             # Página de autenticación
-│   ├── dashboard/         # Panel de usuario
-│   ├── games/             # Catálogo de juegos
-│   ├── news/              # Noticias
-│   ├── blog/              # Blog de opinión
-│   ├── multimedia/        # Hub multimedia
-│   ├── events/            # Calendario de eventos
-│   ├── team/              # Equipo de redacción
-│   ├── contact/           # Formulario de contacto
-│   └── page.tsx           # Landing page
-├── components/ui/         # Componentes reutilizables
-├── lib/                   # Utilidades y clientes
-│   ├── neon.ts            # Cliente Neon + tipos
-│   └── utils.ts           # Utilidades (cn, etc)
-├── types/                 # Tipos globales
-├── messages/              # Traducciones i18n
-├── neon/                  # Schema SQL
-└── middleware.ts          # Autenticación y roles
+app/
+└── [locale]/
+    ├── layout.tsx         # Layout por locale
+    ├── page.tsx           # Home (/es, /en)
+    ├── news/              # Noticias (/es/news, /en/news)
+    ├── games/             # Juegos (/es/games, /en/games)
+    └── ...
 ```
 
-## Configuración de Neon
+### Archivos de Traducción
 
-1. Crear proyecto en [Neon](https://neon.tech)
-2. Ejecutar el schema SQL en `neon/schema.sql`
-3. Configurar variables de entorno:
+Las traducciones se almacenan en `messages/`:
 
-```bash
-DATABASE_URL=postgresql://user:password@host/database
-NEXTAUTH_SECRET=secreto_random
-NEXTAUTH_URL=http://localhost:3000
+- `messages/es.json` - Traducciones en español
+- `messages/en.json` - Traducciones en inglés
+
+Ejemplo de estructura:
+
+```json
+{
+  "home": {
+    "hero": {
+      "title": "Bienvenido a GameHub",
+      "description": "Tu destino para todo sobre videojuegos"
+    }
+  }
+}
 ```
 
-## Instalación y Desarrollo
+### Uso en Componentes
 
-```bash
-# Instalar dependencias
-bun install
+**En Server Components:**
 
-# Iniciar servidor de desarrollo
-bun dev
+```typescript
+import { getTranslations } from "next-intl/server";
+
+export default async function Page() {
+  const t = await getTranslations("home.hero");
+  return <h1>{t("title")}</h1>;
+}
 ```
 
-Abrir [http://localhost:3000](http://localhost:3000).
+**En Client Components:**
 
-## Roles de Usuario
+```typescript
+import { useTranslations } from "next-intl";
 
-| Rol | Permisos |
-|-----|----------|
-| **Admin** | Gestión completa: usuarios, mensajes, configuración |
-| **Redactor** | Crear noticias, gestionar juegos, multimedia, eventos |
-| **Colaborador** | Escribir en el blog de opinión |
-| **Suscriptor** | Comentar en posts, editar perfil |
+export default function Component() {
+  const t = useTranslations("home.hero");
+  return <h1>{t("title")}</h1>;
+}
+```
 
-## Seguridad Implementada
+### Navegación Internacional
 
-- Autenticación JWT con NextAuth.js
-- Hash de contraseñas con bcrypt
-- Validación de formularios con Zod
-- Middleware de protección de rutas por rol
-- Rate limiting en login
-- Protección contra XSS (escapado automático de React)
+Se utiliza el componente `Link` personalizado de `i18n/navigation`:
 
-## Licencia
+```typescript
+import { Link } from "@/i18n/navigation";
 
-Proyecto académico - Ingeniería del Software 2025-2026
+<Link href="/news">Noticias</Link>  // Automáticamente añade el locale actual
+```
+
+### Cambio de Idioma
+
+El componente `LanguageSwitcher` permite cambiar entre idiomas manteniendo la ruta actual.
+
+## Validación con Zod
+
+El proyecto utiliza **Zod** para validar esquemas de datos antes de procesarlos en las APIs. Esto asegura que los datos sean correctos antes de insertarlos en la base de datos.
+
+### Definición de Esquemas
+
+```typescript
+import { z } from "zod";
+
+// Esquema de registro de usuario
+const registerSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  name: z.string().min(2),
+});
+
+// Esquema de formulario de contacto
+const contactSchema = z.object({
+  name: z.string().min(2, "El nombre es requerido"),
+  email: z.string().email("Email inválido"),
+  subject: z.string().min(3, "El asunto es requerido"),
+  message: z.string().min(10, "El mensaje debe tener al menos 10 caracteres"),
+});
+```
+
+### Validación en APIs
+
+```typescript
+export async function POST(request: Request) {
+  const body = await request.json();
+  
+  // safeParse valida sin lanzar excepciones
+  const parsed = registerSchema.safeParse(body);
+  
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Datos inválidos" },
+      { status: 400 }
+    );
+  }
+  
+  // Si es válido, usar los datos tipados
+  const { email, password, name } = parsed.data;
+  // ... procesar datos
+}
+```
+
+### Uso en el Proyecto
+
+Zod se usa activamente en:
+- **auth.config.ts**: Valida email y password en el login
+- **api/auth/register/route.ts**: Valida registro de usuarios
+- **api/contact/route.ts**: Valida formulario de contacto
+- **api/comments/route.ts**: Valida comentarios
+- **api/news/route.ts**: Valida noticias
+- **api/games/route.ts**: Valida juegos
+- **api/profile/route.ts**: Valida perfil
+- **api/users/[id]/route.ts**: Valida actualización de usuarios
+
+### Ventajas de Zod
+
+- **TypeScript inference**: Los datos validados tienen tipos automáticos
+- **Mensajes de error personalizados**: `z.string().min(2, "Mensaje custom")`
+- **Validación robusta**: Email, regex, longitud, enums, etc.
+- **safeParse**: No lanza excepciones, ideal para APIs

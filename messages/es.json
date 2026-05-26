@@ -168,7 +168,11 @@
     "editors": "Redacción",
     "contributors": "Colaboradores",
     "noName": "Sin nombre",
-    "empty": "El equipo se está formando..."
+    "empty": "El equipo se está formando...",
+    "roles": {
+      "redactor": "Redactor",
+      "colaborador": "Colaborador"
+    }
   },
   "auth": {
     "login": {
@@ -190,7 +194,6 @@
       "email": "Email",
       "password": "Contraseña",
       "confirmPassword": "Confirmar contraseña",
-      "terms": "Acepto los términos y condiciones",
       "submit": "Crear cuenta",
       "loading": "Creando cuenta...",
       "hasAccount": "¿Ya tienes cuenta?",

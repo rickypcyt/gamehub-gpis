@@ -1,5 +1,5 @@
 import { Calendar, Clock, ExternalLink, MapPin } from "lucide-react";
-import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import type { Event } from "@/lib/neon";
 import { Link } from "@/i18n/navigation";
@@ -203,14 +203,12 @@ function EventCard({
     launch: "border-green-500/30 bg-green-500/5",
     convention: "border-blue-500/30 bg-blue-500/5",
     expo: "border-violet-500/30 bg-violet-500/5",
-    tournament: "border-orange-500/30 bg-orange-500/5",
-    other: "border-zinc-700 bg-zinc-900/50",
   };
 
   return (
     <div
       className={`rounded-xl border p-4 transition hover:border-violet-500/50 ${
-        isPast ? "border-zinc-800 bg-zinc-900/30 opacity-60" : typeColors[event.type] || typeColors.other
+        isPast ? "border-zinc-800 bg-zinc-900/30 opacity-60" : typeColors[event.type] || "border-zinc-700 bg-zinc-900/50"
       }`}
     >
       {/* Mobile date */}
