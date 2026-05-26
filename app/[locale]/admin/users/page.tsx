@@ -3,6 +3,7 @@ import { ArrowLeft, Crown, Edit3, Shield, User, UserCog } from "lucide-react";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { Link } from "@/i18n/navigation";
 import { auth } from "@/auth";
+import { capitalizeMonth } from "@/lib/date-utils";
 import { query } from "@/lib/neon";
 import { redirect } from "next/navigation";
 
@@ -158,11 +159,11 @@ export default async function AdminUsersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-base text-zinc-400">
-                          {new Date(user.created_at).toLocaleDateString("es-ES", {
+                          {capitalizeMonth(new Date(user.created_at).toLocaleDateString("es-ES", {
                             day: "numeric",
                             month: "long",
                             year: "numeric",
-                          })}
+                          }), "es-ES")}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">

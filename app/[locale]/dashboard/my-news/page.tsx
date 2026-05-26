@@ -6,8 +6,9 @@ import type { NewsPost } from "@/lib/neon";
 import { auth } from "@/auth";
 import { query } from "@/lib/neon";
 import { redirect } from "next/navigation";
+import { defaultLocale, type Locale } from "@/i18n/config";
 
-export default async function MyNewsPage() {
+export default async function MyNewsPage({ params }: { params: Promise<{ locale: string }> }) {
   const session = await auth();
 
   if (!session?.user) {
@@ -18,6 +19,9 @@ export default async function MyNewsPage() {
   if (!["admin", "redactor"].includes(userRole)) {
     redirect("/dashboard");
   }
+
+  const resolvedParams = await params;
+  const locale = (resolvedParams?.locale ?? defaultLocale) as Locale;
 
   // Si es admin, ve todas; si es redactor, solo las suyas
   const news = await query<NewsPost & { author_name: string }>(
@@ -104,7 +108,7 @@ export default async function MyNewsPage() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-base text-zinc-400">
-                      {new Date(item.created_at).toLocaleDateString("es-ES")}
+                      {new Date(item.created_at).toLocaleDateString(locale === "es" ? "es-ES" : "en-US")}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-2">

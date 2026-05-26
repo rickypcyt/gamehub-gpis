@@ -11,10 +11,12 @@ import {
   User,
   X,
 } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { capitalizeMonth } from "@/lib/date-utils";
+import { useLocale } from "next-intl";
 import { useParams } from "next/navigation";
 
 interface BlogPost {
@@ -41,6 +43,8 @@ interface Comment {
 export default function BlogPostPage() {
   const params = useParams();
   const slug = params.slug as string;
+  const locale = useLocale();
+  const localeTag = locale === "es" ? "es-ES" : "en-US";
 
   const [post, setPost] = useState<BlogPost | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -241,11 +245,11 @@ export default function BlogPostPage() {
                 {post.author_name || "Colaborador"}
               </p>
               <p className="text-sm text-zinc-500">
-                {new Date(post.created_at).toLocaleDateString("es-ES", {
+                {capitalizeMonth(new Date(post.created_at).toLocaleDateString(localeTag, {
                   day: "numeric",
                   month: "long",
                   year: "numeric",
-                })}
+                }), localeTag)}
               </p>
             </div>
             <span className="ml-auto rounded-full bg-zinc-800 px-3 py-1 text-xs font-medium text-violet-400">

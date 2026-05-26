@@ -1,11 +1,12 @@
 import { ArrowLeft, Calendar, Eye, MessageSquare, User } from "lucide-react";
-import Image from "next/image";
 import { query, queryOne } from "@/lib/neon";
 
 import { CommentsSection } from "./CommentsSection";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import type { NewsPost } from "@/lib/neon";
 import { auth } from "@/auth";
+import { capitalizeMonth } from "@/lib/date-utils";
 import { ensureCommentsSchema } from "@/lib/comments";
 import { notFound } from "next/navigation";
 
@@ -109,11 +110,11 @@ export default async function NewsDetailPage({ params }: PageProps) {
             </div>
             <span className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
-              {new Date(post.created_at).toLocaleDateString("es-ES", {
+              {capitalizeMonth(new Date(post.created_at).toLocaleDateString("es-ES", {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
-              })}
+              }), "es-ES")}
             </span>
             <span className="flex items-center gap-1">
               <Eye className="h-4 w-4" />

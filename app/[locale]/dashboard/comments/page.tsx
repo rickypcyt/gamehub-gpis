@@ -4,6 +4,8 @@ import { ArrowLeft, Loader2, MessageSquare, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Link } from "@/i18n/navigation";
+import { capitalizeMonth } from "@/lib/date-utils";
+import { useLocale } from "next-intl";
 
 interface Comment {
   id: string;
@@ -15,6 +17,8 @@ interface Comment {
 }
 
 export default function MyCommentsPage() {
+  const locale = useLocale();
+  const localeTag = locale === "es" ? "es-ES" : "en-US";
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -101,13 +105,13 @@ export default function MyCommentsPage() {
                     </Link>
                     <p className="mt-2 text-zinc-300 whitespace-pre-wrap">{comment.content}</p>
                     <p className="mt-3 text-base text-zinc-500">
-                      {new Date(comment.created_at).toLocaleDateString("es-ES", {
+                      {capitalizeMonth(new Date(comment.created_at).toLocaleDateString(localeTag, {
                         day: "numeric",
                         month: "long",
                         year: "numeric",
                         hour: "2-digit",
                         minute: "2-digit",
-                      })}
+                      }), localeTag)}
                     </p>
                   </div>
                   <button

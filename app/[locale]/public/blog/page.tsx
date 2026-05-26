@@ -6,6 +6,7 @@ import type { BlogPost } from "@/lib/neon";
 import { Link } from "@/i18n/navigation";
 import { cachedQuery } from "@/lib/neon";
 import { locales, defaultLocale, type Locale } from "@/i18n/config";
+import { capitalizeMonth } from "@/lib/date-utils";
 
 export const revalidate = 300; // Cache 5 minutos
 export const dynamic = 'force-static';
@@ -97,11 +98,11 @@ function BlogCard({
           <div>
             <p className="text-sm font-medium text-white">{post.author_name || t("authorFallback")}</p>
             <p className="text-xs text-zinc-500">
-              {new Date(post.created_at).toLocaleDateString(dateLocale, {
+              {capitalizeMonth(new Date(post.created_at).toLocaleDateString(dateLocale, {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
-              })}
+              }), dateLocale)}
             </p>
           </div>
         </div>

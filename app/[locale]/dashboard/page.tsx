@@ -793,7 +793,8 @@ function HistoryRow({ title, type, date, href }: { title: string; type: string; 
 
 function formatDate(date: string, locale: string, options?: Intl.DateTimeFormatOptions) {
   try {
-    return new Date(date).toLocaleDateString(locale, options ?? {
+    const fullLocale = locale === "es" ? "es-ES" : "en-US";
+    return new Date(date).toLocaleDateString(fullLocale, options ?? {
       day: "numeric",
       month: "short",
       year: "numeric",
@@ -805,7 +806,8 @@ function formatDate(date: string, locale: string, options?: Intl.DateTimeFormatO
 
 function formatDateWithTime(date: string, locale: string) {
   try {
-    return new Date(date).toLocaleString(locale, {
+    const fullLocale = locale === "es" ? "es-ES" : "en-US";
+    return new Date(date).toLocaleString(fullLocale, {
       day: "2-digit",
       month: "short",
       year: "numeric",
@@ -819,7 +821,8 @@ function formatDateWithTime(date: string, locale: string) {
 
 function formatMonthYear(date: string, locale: string) {
   try {
-    return new Date(date).toLocaleDateString(locale, { month: "short", year: "numeric" });
+    const fullLocale = locale === "es" ? "es-ES" : "en-US";
+    return new Date(date).toLocaleDateString(fullLocale, { month: "short", year: "numeric" });
   } catch {
     return date;
   }
@@ -830,7 +833,8 @@ function formatRelativeTime(date: string, locale: string) {
     const now = Date.now();
     const value = new Date(date).getTime();
     const diffMs = value - now;
-    const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+    const fullLocale = locale === "es" ? "es-ES" : "en-US";
+    const rtf = new Intl.RelativeTimeFormat(fullLocale, { numeric: "auto" });
     const diffMinutes = Math.round(diffMs / (1000 * 60));
     if (Math.abs(diffMinutes) < 60) {
       return rtf.format(diffMinutes, "minute");

@@ -5,6 +5,7 @@ import type { Event } from "@/lib/neon";
 import { Link } from "@/i18n/navigation";
 import { cachedQuery } from "@/lib/neon";
 import { locales, defaultLocale, type Locale } from "@/i18n/config";
+import { capitalizeMonth } from "@/lib/date-utils";
 
 export const revalidate = 300; // Cache 5 minutos
 export const dynamic = 'force-static';
@@ -68,7 +69,7 @@ export default async function EventsPage({ params }: EventsPageProps) {
                     {new Date(nextEvent.start_date).getDate()}
                   </p>
                   <p className="text-sm text-violet-400">
-                    {new Date(nextEvent.start_date).toLocaleDateString(localeTag, { month: "long" })}
+                    {capitalizeMonth(new Date(nextEvent.start_date).toLocaleDateString(localeTag, { month: "long" }), localeTag)}
                   </p>
                 </div>
                 <div className="h-12 w-px bg-violet-500/30" />
@@ -125,10 +126,10 @@ export default async function EventsPage({ params }: EventsPageProps) {
                         {/* Date - left on desktop when isLeft, right when not */}
                         <div className={`hidden md:block md:w-1/2 ${isLeft ? "text-right pr-8" : "text-left pl-8"}`}>
                           <span className={`text-sm font-medium ${isPast ? "text-zinc-500" : "text-violet-400"}`}>
-                            {new Date(event.start_date).toLocaleDateString(localeTag, {
+                            {capitalizeMonth(new Date(event.start_date).toLocaleDateString(localeTag, {
                               day: "numeric",
                               month: "long",
-                            })}
+                            }), localeTag)}
                           </span>
                           <p className="text-sm text-zinc-500">
                             {new Date(event.start_date).toLocaleTimeString(localeTag, {
@@ -167,17 +168,20 @@ export default async function EventsPage({ params }: EventsPageProps) {
 
 function groupEventsByMonth(events: Event[], localeTag: string): Record<string, Event[]> {
   const grouped: Record<string, Event[]> = {};
-  
+
   events.forEach(event => {
     const date = new Date(event.start_date);
-    const monthKey = date.toLocaleDateString(localeTag, { month: "long", year: "numeric" });
-    
+    const monthKey = capitalizeMonth(
+      date.toLocaleDateString(localeTag, { month: "long", year: "numeric" }),
+      localeTag
+    );
+
     if (!grouped[monthKey]) {
       grouped[monthKey] = [];
     }
     grouped[monthKey].push(event);
   });
-  
+
   return grouped;
 }
 
@@ -214,10 +218,10 @@ function EventCard({
       {/* Mobile date */}
       <div className="mb-2 md:hidden">
         <span className={`text-sm font-medium ${isPast ? "text-zinc-500" : "text-violet-400"}`}>
-          {new Date(event.start_date).toLocaleDateString(localeTag, {
+          {capitalizeMonth(new Date(event.start_date).toLocaleDateString(localeTag, {
             day: "numeric",
             month: "long",
-          })}
+          }), localeTag)}
         </span>
       </div>
 
