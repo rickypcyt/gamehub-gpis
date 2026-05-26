@@ -16,7 +16,7 @@ describe('Admin Usuarios API Integration Tests', () => {
       }),
     });
 
-    const response = await PATCH(request, { params: { id: '11' } } as { params: { id: string } });
+    const response = await PATCH(request, { params: Promise.resolve({ id: '11' }) } as { params: Promise<{ id: string }> });
     const data = await response.json();
 
     expect(response.status).toBe(400);
@@ -31,7 +31,7 @@ describe('Admin Usuarios API Integration Tests', () => {
       }),
     });
 
-    const response = await PATCH(request, { params: { id: '10' } } as { params: { id: string } });
+    const response = await PATCH(request, { params: Promise.resolve({ id: '10' }) } as { params: Promise<{ id: string }> });
     const data = await response.json();
 
     expect(response.status).toBe(400);
@@ -46,7 +46,7 @@ describe('Admin Usuarios API Integration Tests', () => {
       }),
     });
 
-    const response = await PATCH(request, { params: { id: '11' } } as { params: { id: string } });
+    const response = await PATCH(request, { params: Promise.resolve({ id: '11' }) } as { params: Promise<{ id: string }> });
     // La validación pasa, pero la capa de negocio puede devolver errores como 409
     expect([200, 404, 409, 500]).toContain(response.status);
   });
